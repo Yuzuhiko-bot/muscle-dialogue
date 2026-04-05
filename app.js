@@ -222,16 +222,17 @@ function initTraining() {
 
 async function generatePlan() {
   $('#no-plan').classList.add('hidden'); $('#plan-area').classList.add('hidden'); $('#loading-area').classList.remove('hidden');
-  $('#training-status-text').textContent = '筋肉ルーレット回転中...ヤー！！';
+  const tStatus = $('#training-status-text');
+  if (tStatus) tStatus.textContent = '筋肉ルーレット回転中...ヤー！！';
   try {
     const cond = gatherConditions(), hist = getRecentHistory(5), prompt = buildPrompt(cond, hist);
     const resp = await callGeminiAPI(prompt), plan = parseGeminiResponse(resp);
     state.currentPlan = plan; renderPlan(plan);
     $('#loading-area').classList.add('hidden'); $('#plan-area').classList.remove('hidden');
-    $('#training-status-text').textContent = 'メニュー生成完了！さあ、始めよう！💪';
+    if (tStatus) tStatus.textContent = 'メニュー生成完了！さあ、始めよう！💪';
   } catch (e) {
     console.error(e); $('#loading-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden');
-    $('#training-status-text').textContent = 'さあ、筋肉との対話を始めよう！';
+    if (tStatus) tStatus.textContent = 'さあ、筋肉との対話を始めよう！';
     showToast('エラーだ！もう一度試してくれ！😤 ' + e.message);
   }
 }

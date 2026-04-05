@@ -1528,6 +1528,7 @@ body {
   width: 100%;
   height: auto;
   display: block;
+  mix-blend-mode: multiply;
   filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1));
 }
 
