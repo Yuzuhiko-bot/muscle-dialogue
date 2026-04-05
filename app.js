@@ -82,9 +82,19 @@ function showScreen(id) {
 
 // ---------- SPLASH ----------
 function initSplash() {
-  $('#btn-splash-start').addEventListener('click', () => {
-    if (state.userProfile) { showScreen('main-screen'); renderCalendar(); } else { showScreen('onboarding-screen'); }
-  });
+  setTimeout(() => {
+    const splash = $('#splash-screen');
+    splash.style.opacity = '0';
+    setTimeout(() => {
+      if (state.userProfile) { 
+        showScreen('main-screen'); 
+        renderCalendar(); 
+      } else { 
+        showScreen('onboarding-screen'); 
+      }
+      splash.style.display = 'none';
+    }, 1000); // 1.0s fadeout
+  }, 2500); // 2.5s display time
 }
 
 // ---------- ONBOARDING ----------
@@ -317,7 +327,21 @@ function parseGeminiResponse(r) {
 
 function renderPlan(plan) {
   const list = $('#plan-list'); list.innerHTML = '';
-  if (plan.warmup) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--sky),var(--green))">🔥</div><div class="exercise-name">ウォームアップ</div></div><div class="exercise-note">${plan.warmup}</div>`; list.appendChild(d); }
+  if (plan.warmup) {
+    const d = document.createElement('div');
+    d.className = 'plan-exercise';
+    d.style.borderColor = 'var(--orange)';
+    d.innerHTML = `
+      <div class="exercise-header">
+        <div class="exercise-number" style="background:var(--orange)">🔥</div>
+        <div class="exercise-name" style="font-size:1.2rem;">ウォームアップ</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:1rem; margin-top:0.5rem;">
+        <img src="bike.png" alt="バイク" style="width:80px; height:auto; filter:drop-shadow(2px 2px 0 rgba(0,0,0,0.2));" onerror="this.style.display='none';">
+        <div class="exercise-note" style="flex:1; font-weight:900;">${plan.warmup}</div>
+      </div>`;
+    list.appendChild(d);
+  }
 
   const allEx = [...(plan.exercises || []), ...(plan.cardio_exercises || []).map(c => ({ ...c, _isCardio: true }))];
   allEx.forEach((ex, idx) => {
@@ -333,14 +357,21 @@ function renderPlan(plan) {
       for (let s = 0; s < (ex.sets || 3); s++) {
         inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}" style="width:20px;height:20px;accent-color:var(--green);cursor:pointer"></div>`;
       }
-      inputsHtml += `</div><div class="rpe-section"><div class="rpe-label">（筋肉に問いかけながら）<br>どうなんだい！？オレの筋肉！まだいけるのかい！？</div><div class="rpe-slider-row"><span style="font-size:0.75rem;color:var(--green)">余裕</span><input type="range" class="rpe-slider" min="1" max="10" value="7" data-ex="${idx}"><span style="font-size:0.75rem;color:var(--red)">限界</span><span class="rpe-value" data-rpe-display="${idx}">7</span></div></div>`;
+      inputsHtml += `</div>
+      <div class="rpe-section" style="background:transparent; border:none; padding:0; margin-top:1.5rem;">
+        <div class="rpe-label" style="font-size:0.95rem; line-height:1.4;">（筋肉に問いかけながら）<br>どうなんだい！？オレの筋肉！まだいけるのかい！？</div>
+        <div class="rpe-slider-wrapper">
+          <div class="rpe-track-bg">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+          </div>
+          <input type="range" class="rpe-slider" min="1" max="10" value="7" data-ex="${idx}">
+        </div>
+      </div>`;
     }
 
     div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${ex.note ? `<div class="exercise-note">💡 ${ex.note}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
-      const sl = div.querySelector('.rpe-slider'), dp = div.querySelector(`[data-rpe-display="${idx}"]`);
-      if (sl && dp) sl.addEventListener('input', () => { dp.textContent = sl.value; });
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
     }, 0);
   });
@@ -375,6 +406,8 @@ function completePlan() {
 
 function showCelebration(exercises) {
   $('#modal-complete').classList.remove('hidden');
+  const iconDiv = document.querySelector('.celebration-icon');
+  if(iconDiv) iconDiv.innerHTML = `<img src="rpe_smile.png" style="width:100px; height:100px; filter:drop-shadow(2px 2px 0 var(--text-primary)); border-radius:50%; border:3px solid var(--text-primary);" onerror="this.textContent='💪';">`;
   const ts = exercises.reduce((s, e) => s + (e.sets ? e.sets.length : 0), 0), tv = exercises.reduce((s, e) => s + (e.sets ? e.sets.reduce((a, st) => a + st.weight * st.reps, 0) : 0), 0);
   $('#celebration-stats').innerHTML = `<div class="stat-item"><div class="stat-value">${exercises.length}</div><div class="stat-label">種目</div></div><div class="stat-item"><div class="stat-value">${ts}</div><div class="stat-label">セット</div></div><div class="stat-item"><div class="stat-value">${Math.round(tv).toLocaleString()}</div><div class="stat-label">総ボリューム(kg)</div></div>`;
   spawnConfetti();
@@ -541,17 +574,22 @@ function showConfirm(message, onConfirm) {
     overlay = document.createElement('div');
     overlay.id = 'custom-confirm-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;';
-    overlay.innerHTML = `<div style="background:#251A45;border:2px solid #FF4D8D;border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center;box-shadow:0 0 30px rgba(255,77,141,0.3);">
-      <div id="confirm-message" style="color:white;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:1rem;margin-bottom:1.5rem;"></div>
-      <div style="display:flex;gap:0.75rem;justify-content:center;">
-        <button id="confirm-yes" style="padding:0.7rem 1.5rem;border:none;border-radius:12px;background:linear-gradient(135deg,#EF4444,#FF8C42);color:white;font-family:'Dela Gothic One',sans-serif;font-size:0.9rem;cursor:pointer;">削除する！</button>
-        <button id="confirm-no" style="padding:0.7rem 1.5rem;border:2px solid #C4B5E0;border-radius:12px;background:transparent;color:#C4B5E0;font-family:'Zen Maru Gothic',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">やめる</button>
+    
+    // インラインのダークテーマを廃止し、CSS変数と既存のポップ用クラス(btn-primary等)を使用して再構築
+    overlay.innerHTML = `
+      <div style="background:var(--white); border:4px solid var(--text-primary); border-radius:var(--radius-lg); padding:2.5rem 1.5rem; max-width:360px; width:100%; text-align:center; box-shadow:8px 8px 0px var(--yellow);">
+        <div id="confirm-message" style="color:var(--text-primary); font-family:var(--font-title); font-weight:900; font-size:1.15rem; margin-bottom:2rem; line-height:1.5; letter-spacing:0.05em;"></div>
+        <div style="display:flex; gap:1rem; justify-content:center;">
+          <button id="confirm-yes" class="btn-primary" style="flex:1; padding:0.8rem 0; font-size:1rem; width:auto; max-width:none;">削除する！</button>
+          <button id="confirm-no" class="btn-secondary" style="flex:1; padding:0.8rem 0; font-size:1rem; width:auto; max-width:none; background:var(--white); color:var(--text-primary);">やめる</button>
+        </div>
       </div>
-    </div>`;
+    `;
     document.body.appendChild(overlay);
   }
   $('#confirm-message').textContent = message;
   overlay.style.display = 'flex';
+  
   $('#confirm-yes').onclick = () => { overlay.style.display = 'none'; onConfirm(); };
   $('#confirm-no').onclick = () => { overlay.style.display = 'none'; };
   overlay.onclick = (e) => { if (e.target === overlay) overlay.style.display = 'none'; };

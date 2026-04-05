@@ -330,8 +330,9 @@ body {
 .radio-card:has(input:checked),
 .check-card:has(input:checked) {
   border-color: var(--red);
-  background: var(--red-light);
+  background: var(--pink-light);
   box-shadow: var(--shadow-sm);
+  color: var(--text-primary);
 }
 
 .radio-visual {
@@ -1496,11 +1497,11 @@ body {
   /* クリーンで力強い黒枠 */
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  margin-right: 6px;
   box-shadow: 6px 6px 0px var(--yellow);
   /* HP風のポップなオフセットシャドウ */
   position: relative;
-  overflow: hidden;
 }
 
 .hero-text-area {
@@ -1518,10 +1519,10 @@ body {
 }
 
 .hero-image-area {
-  width: 120px;
+  width: 140px;
   flex-shrink: 0;
   z-index: 2;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 
 .hero-kinnikun-img {
@@ -1529,6 +1530,7 @@ body {
   height: auto;
   display: block;
   mix-blend-mode: multiply;
+  margin-bottom: -1rem;
 }
 
 /* ★新デザイン：きんに君風ポップボタン */
@@ -1564,3 +1566,609 @@ body {
   /* 文字は真っ直ぐに補正 */
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
 }
+
+/* ============================================
+   ★新デザイン：プラン実行エリア＆RPEスライダー
+   ============================================ */
+/* プランの各エクササイズブロックを太枠ポップに変更 */
+.plan-exercise {
+  border: 3px solid var(--text-primary) !important;
+  box-shadow: 4px 4px 0px var(--text-primary) !important;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+.exercise-number {
+  border: 2px solid var(--text-primary);
+  box-shadow: 2px 2px 0px var(--text-primary);
+}
+
+/* RPEスライダーのコンテナと背景（ステップグラデーションと数字） */
+.rpe-slider-wrapper {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+.rpe-track-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 20px;
+  display: flex;
+  background: linear-gradient(to right,
+    #FFE600 0%, #FFE600 10%,
+    #FFD500 10%, #FFD500 20%,
+    #FFC400 20%, #FFC400 30%,
+    #FFB300 30%, #FFB300 40%,
+    #FFA200 40%, #FFA200 50%,
+    #FF8800 50%, #FF8800 60%,
+    #FF5500 60%, #FF5500 70%,
+    #EE2200 70%, #EE2200 80%,
+    #CC0000 80%, #CC0000 90%,
+    #AA0000 90%, #AA0000 100%
+  );
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.rpe-track-bg span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #1A1A1A;
+}
+.rpe-track-bg span:nth-child(n+8) {
+  color: #FFFFFF; /* 8, 9, 10は背景が濃いので白文字 */
+}
+
+/* スライダー本体（背景は透明にし、つまみだけを表示） */
+.rpe-slider {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  z-index: 2;
+  margin: 0;
+}
+
+.rpe-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 50px;
+  height: 50px;
+  background-image: url('rpe_smile.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+}
+
+/* ============================================
+   ★新デザイン：かっこいいマッスル・スタート画面
+   ============================================ */
+/* スプラッシュ全体 */
+#splash-screen {
+  background: var(--white);
+  color: var(--text-primary);
+  display: flex; /* !important を削除：JSで隠せるように */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+}
+
+/* ★背景写真の「うっすら」配置 */
+#splash-screen::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url('image_10ad84.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08; /* 極限まで薄く */
+  z-index: 1;
+  filter: grayscale(50%); /* 少し彩度を落として馴染ませる */
+}
+
+/* コンテンツエリア（テキスト、画像、パルス） */
+.splash-content {
+  position: relative;
+  z-index: 2; /* 写真の上に配置 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+/* メインタイトル（メガ・ポップGothic） */
+.splash-title-mega {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  border: 4px solid var(--text-primary);
+  background: var(--white);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 6px 6px 0px var(--yellow);
+  margin-bottom: 2rem;
+  transform: rotate(-3deg); /* 少し斜めにしてポップさを出す */
+}
+
+/* サブタイトル（マッスル解説） */
+.splash-subtitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-top: -1rem;
+  margin-bottom: 2rem;
+}
+
+/* メインイラスト（ダブルバイセップスきんに君） */
+.splash-kinnikun-img {
+  width: 140px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(4px 4px 0 var(--text-primary));
+  margin-bottom: 2rem;
+}
+
+/* ローディングコンテナ */
+.loading-muscle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ローディングテキスト（シュール文言） */
+.loading-text-muscle {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+/* 筋肉パルス（Pulse）エフェクトをレッドに */
+/* Tailwind class fallback in CSS */
+.animate-pulse {
+  animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background: var(--red);
+  border-radius: 9999px;
+  width: 25px;
+  height: 25px;
+}
+
+@keyframes pulse-red {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: .5;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--red-light);
+  }
+}
+
+
+/* ============================================
+   ★新デザイン：カレンダー＆実績タブ
+   ============================================ */
+/* カレンダーの曜日ヘッダー */
+.calendar-weekdays span {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  border-bottom: 3px solid var(--text-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* カレンダーグリッド全体のギャップ調整 */
+.calendar-grid {
+  gap: 4px;
+}
+
+/* 日付マス（ベース） */
+.cal-day {
+  border: 2px solid var(--text-primary) !important;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  transition: all 0.1s ease;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.cal-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 2px 4px 0px var(--text-primary);
+}
+
+/* 今日のマス */
+.cal-day.today {
+  border: 3px solid var(--red) !important;
+  color: var(--red);
+  background: var(--white);
+}
+
+/* トレーニング実施日のマス（ヤー！スタンプ風） */
+.cal-day.has-training {
+  background: var(--yellow) !important;
+  border-color: var(--text-primary) !important;
+  color: var(--text-primary);
+}
+
+.cal-day.has-training::after {
+  content: 'ヤー!';
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-family: var(--font-title);
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--red);
+  transform: rotate(-15deg);
+  text-shadow: 1px 1px 0px var(--white);
+  background: transparent;
+}
+
+/* 選択されたマス */
+.cal-day.selected {
+  border-color: var(--orange) !important;
+  box-shadow: 0 0 0 3px var(--orange-light) inset;
+}
+
+/* 実績詳細カード */
+.history-detail {
+  border: 3px solid var(--text-primary);
+  box-shadow: 4px 4px 0px var(--text-primary);
+  border-radius: var(--radius-md);
+  margin-top: 2rem;
+}
+
+.history-title {
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+/* 種目ごとの履歴ブロック */
+.history-exercise {
+  background: var(--white);
+  border: 2px solid var(--text-primary);
+  border-left: 6px solid var(--orange);
+  border-radius: var(--radius-sm);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  margin-bottom: 0.8rem;
+}
+
+.history-exercise-name {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+/* セット数のバッジ */
+.history-set-badge {
+  border: 2px solid var(--text-primary);
+  background: var(--white);
+  color: var(--text-primary);
+  font-weight: 900;
+  box-shadow: 1px 1px 0px var(--text-primary);
+}
+
+/* 手動追加・全削除などのサブボタン */
+.btn-secondary, .btn-danger-small, .btn-edit-ex, .btn-delete-ex {
+  border: 2px solid var(--text-primary) !important;
+  font-family: var(--font-title);
+  font-weight: 900;
+  box-shadow: 2px 2px 0px var(--text-primary);
+  border-radius: var(--radius-sm);
+  transition: all 0.1s ease;
+}
+
+.btn-secondary:active, .btn-danger-small:active, .btn-edit-ex:active, .btn-delete-ex:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--text-primary);
+}
+
+/* ============================================
+   ★新デザイン：モーダル画面（アメコミ・ポップ風）
+   ============================================ */
+/* モーダル本体の太枠と影 */
+.modal-content {
+  border: 4px solid var(--text-primary) !important;
+  box-shadow: 8px 8px 0px var(--yellow) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 2rem !important;
+}
+
+/* モーダルのタイトル（ヘッダー） */
+.modal-header h2 {
+  font-family: var(--font-title);
+  font-size: 1.3rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.05em;
+  border-bottom: 4px solid var(--text-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+/* 閉じるボタン（✕） */
+.modal-close {
+  border: 3px solid var(--text-primary) !important;
+  box-shadow: 2px 2px 0px var(--text-primary) !important;
+  font-weight: 900 !important;
+  color: var(--text-primary) !important;
+  background: var(--white) !important;
+  transition: all 0.1s ease;
+}
+.modal-close:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--text-primary) !important;
+}
+
+/* コンディション入力の選択ボタン類（時間、疲労度、部位など） */
+.time-btn, .fatigue-card, .check-card, .radio-card {
+  border: 3px solid var(--text-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: 3px 3px 0px var(--text-primary) !important;
+  font-family: var(--font-title);
+  font-weight: 900 !important;
+  transition: all 0.1s ease;
+  background-color: var(--white) !important;
+}
+.time-btn:active, .fatigue-card:active, .check-card:active, .radio-card:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--text-primary) !important;
+}
+
+/* 選択された状態（Active / Checked） */
+.time-btn.active, 
+.fatigue-card:has(input:checked), 
+.check-card:has(input:checked),
+.radio-card:has(input:checked) {
+  background-color: var(--yellow) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--text-primary) !important;
+}
+
+/* 自由記述欄や入力インプット */
+.textarea-muscle, .input-muscle {
+  border: 3px solid var(--text-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  font-family: var(--font-title);
+  font-weight: 700 !important;
+  box-shadow: inset 3px 3px 0px rgba(0,0,0,0.05) !important;
+  transition: all 0.2s ease;
+}
+.textarea-muscle:focus, .input-muscle:focus {
+  outline: none;
+  background-color: var(--yellow-light) !important;
+  box-shadow: inset 3px 3px 0px rgba(0,0,0,0.1) !important;
+}
+
+/* モーダル内の決定（Primary）ボタン */
+.modal .btn-primary {
+  border: 3px solid var(--text-primary) !important;
+  box-shadow: 4px 4px 0px var(--text-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  transform: skew(-2deg);
+  font-weight: 900 !important;
+  letter-spacing: 0.05em;
+  background: var(--red) !important;
+  color: var(--white) !important;
+  transition: all 0.1s ease;
+}
+.modal .btn-primary:active {
+  transform: skew(-2deg) translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--text-primary) !important;
+}
+
+/* ============================================
+   ★新デザイン：プロフィール・オンボーディング・タブナビ
+   ============================================ */
+/* コンテナ・セクションのコミックパネル化 */
+.profile-section, .onboard-container {
+  border: 4px solid var(--text-primary) !important;
+  box-shadow: 8px 8px 0px var(--yellow) !important;
+  border-radius: var(--radius-lg) !important;
+  background-color: var(--white);
+  padding: 1.5rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* セクションタイトル */
+.section-title, .onboard-header h1 {
+  font-family: var(--font-title);
+  font-size: 1.3rem !important;
+  font-weight: 900 !important;
+  border-bottom: 4px solid var(--text-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.2rem;
+  color: var(--text-primary);
+  letter-spacing: 0.05em;
+}
+
+/* 頻度設定スライダーのポップ化 */
+.slider-muscle {
+  height: 14px !important;
+  border: 3px solid var(--text-primary) !important;
+  background: linear-gradient(90deg, var(--yellow) 0%, var(--orange) 50%, var(--red) 100%) !important;
+  border-radius: 10px !important;
+}
+.slider-muscle::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 4px solid var(--text-primary) !important;
+  background-color: var(--white) !important;
+  box-shadow: 2px 2px 0px var(--text-primary) !important;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.slider-muscle::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+/* 数字の強調 */
+.frequency-num {
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  color: var(--red) !important;
+}
+
+/* タブナビゲーション（画面下・上部）の太枠ポップ化 */
+.tab-nav {
+  border-bottom: 4px solid var(--text-primary) !important;
+  background: var(--white) !important;
+  box-shadow: 0 4px 0px rgba(0,0,0,0.1) !important;
+}
+.tab-btn {
+  border-right: 3px solid var(--text-primary) !important;
+  font-weight: 900 !important;
+  color: var(--text-primary) !important;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+.tab-btn:last-child {
+  border-right: none !important;
+}
+.tab-btn:hover {
+  opacity: 0.8;
+  background-color: var(--yellow-light);
+}
+.tab-btn.active {
+  opacity: 1;
+  background-color: var(--yellow) !important;
+}
+.tab-btn.active::after {
+  height: 6px !important;
+  background: var(--red) !important;
+  width: 100% !important;
+  left: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* ============================================
+   ★新デザイン：タブナビゲーション（脱・絵文字）
+   ============================================ */
+/* アイコン画像の基本スタイル */
+.tab-icon-img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  opacity: 0.6; /* 非アクティブ時は少し薄く */
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 少しバウンスするアニメーション */
+  filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.1));
+}
+
+/* アクティブなタブのアイコン強調 */
+.tab-btn.active .tab-icon-img {
+  opacity: 1;
+  transform: scale(1.2) translateY(-2px); /* アクティブ時に大きく、少し上に浮く */
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+/* タブのラベル（文字）の太字化 */
+.tab-label {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   ★新デザイン：プロフィール等のアイコンスタイリング
+   ============================================ */
+/* インラインSVGアイコンの共通スタイル */
+.radio-visual svg, .section-title svg, .onboard-icon svg, .tab-icon-img, .celebration-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--text-primary); /* 黒の太線でポップに */
+  stroke-width: 2.5px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.2s ease;
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
+  margin-bottom: 0.2rem;
+}
+
+/* 選択された状態のアイコンは色を変える・動かす */
+.radio-card:has(input:checked) .radio-visual svg,
+.fatigue-card:has(input:checked) svg {
+  stroke: var(--red);
+  transform: scale(1.15) rotate(-5deg);
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+/* 絵文字がなくなった後の見出しデザイン強化 */
+.section-title, .onboard-header h1 {
+  display: flex !important;
+  align-items: center;
+  gap: 0.8rem;
+  border-left: 6px solid var(--red) !important;
+  padding-left: 1rem !important;
+  border-bottom: none !important;
+  background: var(--white) !important;
+  box-shadow: 3px 3px 0px var(--text-primary) !important;
+  border-radius: 4px;
+}
+
+/* チェックボックスから絵文字をなくした分のレイアウト調整 */
+.check-card {
+  justify-content: center;
+  font-family: var(--font-title);
+  font-weight: 900 !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.05em;
+  padding: 0.8rem !important;
+}
+
+/* 補足説明やヒントのアイコン（元💡や🛡️） */
+.form-hint::before, .backup-hint::before {
+  content: '!';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: var(--orange);
+  color: var(--white);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 15px; /* Adjust for centering ! */
+  font-weight: 900;
+  margin-right: 0.4rem;
+  border: 2px solid var(--text-primary);
+  font-size: 0.8rem;
+}
+
+
+
