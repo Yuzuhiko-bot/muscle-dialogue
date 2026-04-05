@@ -345,7 +345,7 @@ function renderPlan(plan) {
   });
 
   if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky))">🧘</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
-  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-size:1.5rem;margin-bottom:0.5rem">🗣️</div><div style="font-family:var(--font-title);color:var(--yellow-light);font-size:0.95rem">${plan.trainer_message}</div>`; list.appendChild(d); }
+  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-size:1.5rem;margin-bottom:0.5rem">💪</div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;">${plan.trainer_message}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
 }
 
