@@ -2,10 +2,10 @@
   "name": "マッスル・ダイアログ 💪 筋肉対話",
   "short_name": "マッスルダイアログ",
   "description": "AIパーソナルトレーナーがあなただけの筋トレメニューを生成！",
-  "start_url": "/",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1A1035",
-  "theme_color": "#FF4D8D",
+  "background_color": "#FAFAFA",
+  "theme_color": "#D4001F",
   "orientation": "portrait",
   "icons": [
     {

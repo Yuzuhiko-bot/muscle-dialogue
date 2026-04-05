@@ -1,10 +1,11 @@
-const CACHE_NAME = 'muscle-dialogue-v3';
+const CACHE_NAME = 'muscle-dialogue-v4';
 const ASSETS = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/manifest.json'
+    './',
+    './index.html',
+    './style.css',
+    './app.js',
+    './manifest.json',
+    './biceps.png'
 ];
 
 self.addEventListener('install', (event) => {
