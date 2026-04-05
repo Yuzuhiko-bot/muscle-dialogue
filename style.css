@@ -1529,7 +1529,6 @@ body {
   height: auto;
   display: block;
   mix-blend-mode: multiply;
-  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 /* ★新デザイン：きんに君風ポップボタン */
