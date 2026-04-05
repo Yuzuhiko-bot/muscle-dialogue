@@ -193,15 +193,22 @@
 
     <!-- タブB: トレーニング -->
     <div id="tab-training" class="tab-content">
-      <div class="training-hero">
-        <div class="hero-icon">🏋️‍♂️</div>
-        <h2 class="hero-title">本日のトレーニング</h2>
-        <p class="hero-sub" id="training-status-text">さあ、筋肉との対話を始めよう！</p>
+      <div class="training-hero-modern">
+        <div class="hero-text-area">
+          <h2 class="hero-title-mega">オレの筋肉！<br>今日のメニューは<br>どうするんだい！？</h2>
+        </div>
+        <div class="hero-image-area">
+          <img src="biceps.png" alt="きんに君" class="hero-kinnikun-img"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div
+            style="display:none; width:100px; height:100px; background:#F1E00B; border-radius:10px; text-align:center; line-height:100px; font-weight:bold;">
+            画像エリア</div>
+        </div>
       </div>
 
       <div id="no-plan" class="no-plan-area">
-        <button id="btn-generate" class="btn-primary btn-mega btn-generate">
-          <span class="btn-text">おい、オレの筋肉！<br>今日のメニューはどうなんだい！？💪</span>
+        <button id="btn-generate" class="btn-mega btn-kinnikun-style">
+          <span class="btn-text">メニューを作成する！パワー！💪</span>
           <span class="btn-effect"></span>
         </button>
       </div>
