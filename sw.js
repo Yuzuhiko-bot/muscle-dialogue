@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v8'; // 筋肉ルーレットのイラスト修正と回転速度調整を反映
+const CACHE_NAME = 'muscle-dialogue-v9'; // クールダウン視認性とメッセージタイトル追加を反映
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=8',
+    './app.js?v=9',
     './manifest.json',
     './biceps.png',
     './kinnikun_spinner.png',

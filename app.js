@@ -398,8 +398,8 @@ function renderPlan(plan) {
     }, 0);
   });
 
-  if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky))">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
-  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;">${plan.trainer_message}</div>`; list.appendChild(d); }
+  if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky)); color:var(--text-primary);">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
+  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);">★ なかやまきんに君からのひとこと ★</div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">${plan.trainer_message}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
 }
 
