@@ -106,7 +106,7 @@ function initOnboarding() {
     e.preventDefault();
     const fd = new FormData(form);
     state.userProfile = { goal: fd.get('goal'), experience: fd.get('experience'), activity: fd.get('activity'), painAreas: fd.getAll('pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('priority'), frequency: parseInt(sl.value), createdAt: new Date().toISOString() };
-    saveProfile(); showScreen('main-screen'); renderCalendar(); showToast('ヤー！！プロフィール登録完了！パワー！！💪');
+    saveProfile(); showScreen('main-screen'); renderCalendar(); showToast('ヤー！！プロフィール登録完了！パワー！！');
   });
 }
 
@@ -161,19 +161,19 @@ function showHistoryDetail(ds) {
   if (!rec) { det.classList.add('hidden'); return; }
   det.classList.remove('hidden');
   const d = new Date(ds + 'T00:00:00'), dn = ['日', '月', '火', '水', '木', '金', '土'];
-  $('#history-date-title').textContent = `${d.getMonth() + 1}/${d.getDate()}（${dn[d.getDay()]}）のトレーニング 💪`;
+  $('#history-date-title').textContent = `${d.getMonth() + 1}/${d.getDate()}（${dn[d.getDay()]}）のトレーニング`;
   const content = $('#history-content'); content.innerHTML = '';
   rec.exercises.forEach((ex, idx) => {
     const div = document.createElement('div'); div.className = 'history-exercise';
     const isC = isCardio(ex.id);
     let setsHtml = '';
     if (isC) {
-      setsHtml = `<span class="history-set-badge">⏱️ ${ex.duration || 0}分</span>`;
+      setsHtml = `<span class="history-set-badge">${ex.duration || 0}分</span>`;
     } else {
       setsHtml = ex.sets.map((s, i) => `<span class="history-set-badge">Set${i + 1}: ${s.weight}kg × ${s.reps}回${s.rpe ? ' (RPE' + s.rpe + ')' : ''}</span>`).join('');
     }
     div.innerHTML = `<div class="history-exercise-name">${ex.name}</div><div class="history-sets">${setsHtml}</div>
-      <div class="history-exercise-actions"><button class="btn-edit-ex" data-date="${ds}" data-idx="${idx}">✏️ 編集</button><button class="btn-delete-ex" data-date="${ds}" data-idx="${idx}">🗑️ 削除</button></div>`;
+      <div class="history-exercise-actions"><button class="btn-edit-ex" data-date="${ds}" data-idx="${idx}">編集</button><button class="btn-delete-ex" data-date="${ds}" data-idx="${idx}">削除</button></div>`;
     content.appendChild(div);
   });
   content.querySelectorAll('.btn-edit-ex').forEach(b => b.addEventListener('click', () => openEditExercise(b.dataset.date, parseInt(b.dataset.idx))));
@@ -203,7 +203,7 @@ function openEditExercise(date, idx) {
   const body = $('#edit-exercise-body');
   let html = `<h3 style="color:var(--pink-light);font-family:var(--font-title);margin-bottom:1rem;">${ex.name}</h3>`;
   if (isC) {
-    html += `<div class="form-group"><label class="form-label">⏱️ 実施時間（分）</label><input type="number" class="input-muscle" id="edit-duration" value="${ex.duration || 0}" min="1"></div>`;
+    html += `<div class="form-group"><label class="form-label">実施時間（分）</label><input type="number" class="input-muscle" id="edit-duration" value="${ex.duration || 0}" min="1"></div>`;
   } else {
     ex.sets.forEach((s, i) => {
       html += `<div class="manual-set-row"><span class="set-label">Set${i + 1}</span><input type="number" class="input-muscle edit-weight" value="${s.weight}" step="0.5" placeholder="kg"><input type="number" class="input-muscle edit-reps" value="${s.reps}" placeholder="回"></div>`;
@@ -216,7 +216,7 @@ function openEditExercise(date, idx) {
       const ws = body.querySelectorAll('.edit-weight'), rs = body.querySelectorAll('.edit-reps');
       ex.sets = []; ws.forEach((w, i) => { ex.sets.push({ weight: parseFloat(w.value) || 0, reps: parseInt(rs[i].value) || 0 }); });
     }
-    saveHistory(); closeModal('modal-edit-exercise'); showHistoryDetail(date); showToast('更新完了！パワー！💪');
+    saveHistory(); closeModal('modal-edit-exercise'); showHistoryDetail(date); showToast('更新完了！パワー！');
   };
   openModal('modal-edit-exercise');
 }
@@ -239,11 +239,11 @@ async function generatePlan() {
     const resp = await callGeminiAPI(prompt), plan = parseGeminiResponse(resp);
     state.currentPlan = plan; renderPlan(plan);
     $('#loading-area').classList.add('hidden'); $('#plan-area').classList.remove('hidden');
-    if (tStatus) tStatus.textContent = 'メニュー生成完了！さあ、始めよう！💪';
+    if (tStatus) tStatus.textContent = 'メニュー生成完了！さあ、始めよう！';
   } catch (e) {
     console.error(e); $('#loading-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden');
     if (tStatus) tStatus.textContent = 'さあ、筋肉との対話を始めよう！';
-    showToast('エラーだ！もう一度試してくれ！😤 ' + e.message);
+    showToast('エラーだ！もう一度試してくれ！ ' + e.message);
   }
 }
 
@@ -271,36 +271,31 @@ function buildPrompt(cond, hist) {
     }).join('\n'); return `【${h.date}】\n${ed}`;
   }).join('\n') : '（履歴なし）';
 
-  const sys = `あなたは「なかやまきんに君」です。以下の語彙と文体を【絶対】に守って、メニュー最後の短いメッセージを作成してください。
+  const sys = `あなたは「なかやまきんに君」です。以下のルールを守って、メニュー最後の短いメッセージを作成してください。
 
-## なかやまきんに君の語彙とトーン:
-- 自分の筋肉に話しかけるように「おい、オレの筋肉！」「大胸筋！」と呼びかける。
-- 疑問文は必ず「〜のかい？〜ないのかい？どっちなんだい！？」の構文にする。
-- 締めくくりは必ず「ヤー！！」と「パワー！！」と「ハッ（笑顔）」を組み合わせる。
-- 一般的なトレーナーのような「解説」「長文の励まし」「ハロー」「レッツ」等の横文字は一切使用してはいけません。
+## トーン＆マナー:
+- 基本は「爽やかで礼儀正しい、頼れるパーソナルトレーナー」として振る舞ってください。
+- 筋肉の部位（大胸筋など）には敬意を払って言及してください。
+- メッセージの最後（締めくくり）でのみ、「ヤー！」「パワー！」「ハッ（笑顔）」などの決め台詞を自然に使ってください。
+- 一般的なトレーナーのような「レッツ」「ハロー」等の横文字は使用しないでください。
 
-## メッセージ作成例（これを強く参考にして出力すること）:
-- 「おい、オレの筋肉！今日も最高のメニューができたぞ！やるのかい！？やらないのかい！？どっちなんだい！？……やーる！！パワー！！ハッ（笑顔）」
-- 「さあ、トレーニングの時間だ！大胸筋が喜んでるじゃないか！最後まで追い込めるのかい！？いけないのかい！？どっちなんだい！？ヤー！！パワー！！」
-- 「おい、オレの筋肉！今日は下半身を追い込むぞ！逃げるのかい！？逃げないのかい！？どっちなんだい！？……ヤー！！パワー！！ハッ（笑顔）」
+## メッセージ作成例:
+- 「今日のメニューが完成したぞ！しっかり大胸筋に効かせていこう！準備はいいかい？パワー！！」
+- 「素晴らしい心がけだ！無理のない範囲で、しっかり筋肉と対話していこう！ハッ（笑顔）」
 
 ## 種目マスタ（以下のみ使用可能）:
 ${exData}
 
 ## 絶対ルール:
 1. マスタにある種目のみ使用。
-2. **重量は各種目のweight_step刻みで設定**（マシン系は5kg刻み、バーベル系は2.5kg刻み、軽ダンベルは1kg刻み）。weight_stepが0の種目は自重。
-3. **primary/secondary muscleバランス考慮**: コンパウンド種目のsecondaryで使われた筋群→後続アイソレーションのセット数を1-2減らす。
-4. **漸進性過負荷**: 前回RPE≤8→重量をweight_step分増やすか回数+1-2。RPE9-10→維持。
-5. **自由要望は最優先**。
-6. 痛みある部位の種目は除外or軽負荷。
-7. 有酸素種目にはduration_minutesを設定（weight_kg/reps/setsは不要）。
+2. 重量は各種目のweight_step刻みで設定（0は自重）。
+3. 漸進性過負荷を意識し、前回のRPEに基づいて重量・回数を調整。
+4. 自由要望は最優先。痛みがある部位の種目は除外。
+5. 有酸素種目にはduration_minutesを設定。
 
-## JSON出力:
-\`\`\`json
-{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（大胸筋に効かせる一言）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動（バイク）","duration_minutes":20,"note":"（脂肪燃焼の一言）"}],"warmup":"ウォームアップ内容","cooldown":"クールダウン内容","total_estimated_minutes":45,"trainer_message":"（上記語彙を用いた最高にきんに君らしいメッセージ）"}
-\`\`\`
-JSONのみ出力。`;
+## JSON出力形式（必ずJSONのみを出力）:
+{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"ウォームアップ内容","cooldown":"クールダウン内容","total_estimated_minutes":45,"trainer_message":"（爽やかなきんに君メッセージ）"}
+`;
 
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
@@ -333,7 +328,7 @@ function renderPlan(plan) {
     d.style.borderColor = 'var(--orange)';
     d.innerHTML = `
       <div class="exercise-header">
-        <div class="exercise-number" style="background:var(--orange)">🔥</div>
+        <div class="exercise-number" style="background:var(--orange)">W</div>
         <div class="exercise-name" style="font-size:1.2rem;">ウォームアップ</div>
       </div>
       <div style="display:flex; align-items:center; gap:1rem; margin-top:0.5rem;">
@@ -351,7 +346,7 @@ function renderPlan(plan) {
 
     let inputsHtml = '';
     if (isCar) {
-      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label">分</span></div>`;
+      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label">分</span></div>`;
     } else {
       inputsHtml = `<div class="sets-container"><div class="set-row"><div class="set-label"></div><div class="input-header">重量(kg)</div><div class="input-header">回数</div><div class="input-header">✓</div></div>`;
       for (let s = 0; s < (ex.sets || 3); s++) {
@@ -369,15 +364,15 @@ function renderPlan(plan) {
       </div>`;
     }
 
-    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${ex.note ? `<div class="exercise-note">💡 ${ex.note}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
+    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${ex.note ? `<div class="exercise-note">${ex.note}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
     }, 0);
   });
 
-  if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky))">🧘</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
-  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-size:1.5rem;margin-bottom:0.5rem">💪</div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;">${plan.trainer_message}</div>`; list.appendChild(d); }
+  if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky))">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
+  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;">${plan.trainer_message}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
 }
 
@@ -447,7 +442,7 @@ function addManualExerciseEntry() {
     const exId = select.value;
     if (!exId) { inputsArea.innerHTML = ''; return; }
     if (isCardio(exId)) {
-      inputsArea.innerHTML = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle manual-duration" placeholder="分" min="1" value="20"><span class="cardio-duration-label">分</span></div>`;
+      inputsArea.innerHTML = `<div class="cardio-duration-row"><span class="cardio-duration-label">実施時間:</span><input type="number" class="input-muscle manual-duration" placeholder="分" min="1" value="20"><span class="cardio-duration-label">分</span></div>`;
     } else {
       const master = EXERCISE_MASTER.find(m => m.id === exId);
       const step = master ? master.weight_step : 2.5;
@@ -460,7 +455,7 @@ function addManualExerciseEntry() {
 }
 
 function saveManualTraining() {
-  const ds = $('#manual-date').value; if (!ds) { showToast('日付を入力してくれ！💪'); return; }
+  const ds = $('#manual-date').value; if (!ds) { showToast('日付を入力してくれ！'); return; }
   const exercises = [];
   $$('.manual-exercise-entry').forEach(entry => {
     const sel = entry.querySelector('.manual-exercise-select'); if (!sel.value) return;
@@ -474,10 +469,10 @@ function saveManualTraining() {
       if (sets.length > 0) exercises.push({ id: master.id, name: master.exercise_name, sets, rpe: null });
     }
   });
-  if (!exercises.length) { showToast('種目を1つ以上入力！パワー！💪'); return; }
+  if (!exercises.length) { showToast('種目を1つ以上入力！パワー！'); return; }
   if (state.trainingHistory[ds]) state.trainingHistory[ds].exercises.push(...exercises);
   else state.trainingHistory[ds] = { date: ds, exercises };
-  saveHistory(); closeModal('modal-manual'); renderCalendar(); showToast('手動記録完了！ヤー！！💪');
+  saveHistory(); closeModal('modal-manual'); renderCalendar(); showToast('手動記録完了！ヤー！！');
 }
 
 // ---------- PROFILE TAB ----------
@@ -488,7 +483,7 @@ function initProfile() {
   form.addEventListener('submit', e => {
     e.preventDefault(); const fd = new FormData(form);
     state.userProfile = { ...state.userProfile, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
-    saveProfile(); showToast('プロフィール更新完了！ヤー！！パワー！！💪');
+    saveProfile(); showToast('プロフィール更新完了！ヤー！！パワー！！');
   });
 }
 

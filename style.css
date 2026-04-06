@@ -2080,21 +2080,27 @@ body {
 /* ============================================
    ★新デザイン：タブナビゲーション（脱・絵文字）
    ============================================ */
-/* アイコン画像の基本スタイル */
-.tab-icon-img {
+/* ============================================
+   ★新デザイン：タブナビゲーション（インラインSVG対応）
+   ============================================ */
+.tab-icon-svg {
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
-  opacity: 0.6; /* 非アクティブ時は少し薄く */
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 少しバウンスするアニメーション */
-  filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.1));
+  stroke: var(--text-primary);
+  stroke-width: 2.5px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.6;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* アクティブなタブのアイコン強調 */
-.tab-btn.active .tab-icon-img {
+.tab-btn.active .tab-icon-svg {
   opacity: 1;
-  transform: scale(1.2) translateY(-2px); /* アクティブ時に大きく、少し上に浮く */
-  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+  stroke: var(--red);
+  transform: scale(1.2) translateY(-2px);
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
 }
 
 /* タブのラベル（文字）の太字化 */
