@@ -229,13 +229,11 @@
       </div>
 
       <div id="loading-area" class="loading-area hidden">
-        <div class="loading-spinner">
-          <div class="dumbbell-spin">
-            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M18 8h1a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-1M5 8h1a1 1 0 0 0 1 1v6a1 1 0 0 0-1 1H5M2 12h20M7 5v14M17 5v14"/></svg>
-          </div>
+        <div class="loading-spinner" style="margin-bottom:1rem;">
+          <img src="kinnikun_spinner.png" class="kinnikun-spin-img" alt="筋肉ルーレット" onerror="this.src='biceps.png'">
         </div>
-        <p class="loading-text">筋肉ルーレット、スタート！…</p>
-        <p class="loading-subtext">ヤー！！</p>
+        <p class="loading-text" style="color:var(--text-primary); font-size:1.4rem;">筋肉ルーレット、スタート！…</p>
+        <p id="loading-quote" class="loading-subtext" style="font-size:1.1rem; color:var(--red); height:2rem; margin-top:1rem;"></p>
       </div>
 
       <div id="plan-area" class="plan-area hidden">

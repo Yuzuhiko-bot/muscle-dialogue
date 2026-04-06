@@ -63,6 +63,16 @@ const KINNIKUN_QUOTES = [
   "食には色々気遣うが、全ては筋肉のためだから別にツラくない！"
 ];
 
+const LOADING_QUOTES = [
+  "ただいま大胸筋にお伺いを立てています……",
+  "筋肉の神と交信中（ピピピッ）……",
+  "どっちなんだいっ！？と筋肉に問いかけています……",
+  "プロテインをシェイクしながら考えています……",
+  "筋肉コンピューター、フル稼働中！パワー！！",
+  "細胞レベルでメニューを構成中……",
+  "美味しいブロッコリーを想像しながら処理中……"
+];
+
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
@@ -244,8 +254,10 @@ function initTraining() {
 
 async function generatePlan() {
   $('#no-plan').classList.add('hidden'); $('#plan-area').classList.add('hidden'); $('#loading-area').classList.remove('hidden');
+  const qEl = $('#loading-quote');
+  if (qEl) qEl.textContent = LOADING_QUOTES[Math.floor(Math.random() * LOADING_QUOTES.length)];
   const tStatus = $('#training-status-text');
-  if (tStatus) tStatus.textContent = '筋肉ルーレット回転中...ヤー！！';
+  if (tStatus) tStatus.textContent = '筋肉ルーレット回転中...';
   try {
     const cond = gatherConditions(), hist = getRecentHistory(5), prompt = buildPrompt(cond, hist);
     const resp = await callGeminiAPI(prompt), plan = parseGeminiResponse(resp);
