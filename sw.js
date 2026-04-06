@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v6'; // 手動入力のセット同期機能を反映
+const CACHE_NAME = 'muscle-dialogue-v7'; // 手動入力のセット同期ロジック強化とスプラッシュ画面修正を反映
 const ASSETS = [
     './',
     './index.html',

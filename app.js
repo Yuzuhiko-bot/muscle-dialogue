@@ -478,22 +478,32 @@ function addManualExerciseEntry() {
       // セット1の内容をセット2, 3へ自動反映するロジック
       const weights = inputsArea.querySelectorAll('.manual-weight');
       const reps = inputsArea.querySelectorAll('.manual-reps');
-      if (weights.length > 0) {
-        weights[0].addEventListener('input', () => {
-          for (let i = 1; i < weights.length; i++) {
-             // ユーザーが手動で編集していない場合、または単純に常に同期させる設定に
-             // セット1を入力した直後の利便性を優先し、ミラーリングを実装
-             weights[i].value = weights[0].value;
+      
+      // セット1の内容を同期させる関数 (すでにユーザーが触った欄は上書きしない)
+      const syncSets = (inputs, type) => {
+        if (inputs.length < 2) return;
+        
+        // セット2以降が「まだ一度も手動変更されていない」場合にのみセット1から同期
+        inputs.forEach((input, idx) => {
+          if (idx > 0) {
+            input.addEventListener('input', () => {
+              input.dataset.dirty = 'true';
+            });
           }
         });
-      }
-      if (reps.length > 0) {
-        reps[0].addEventListener('input', () => {
-          for (let i = 1; i < reps.length; i++) {
-             reps[i].value = reps[0].value;
+
+        inputs[0].addEventListener('input', (e) => {
+          const val = e.target.value;
+          for (let i = 1; i < inputs.length; i++) {
+            if (inputs[i].dataset.dirty !== 'true') {
+              inputs[i].value = val;
+            }
           }
         });
-      }
+      };
+
+      syncSets(weights, 'weight');
+      syncSets(reps, 'reps');
     }
   });
 
