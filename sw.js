@@ -1,11 +1,14 @@
-const CACHE_NAME = 'muscle-dialogue-v4';
+const CACHE_NAME = 'muscle-dialogue-v5'; // セッション内のUI変更（スライダー刷新等）を反映
 const ASSETS = [
     './',
     './index.html',
     './style.css',
     './app.js',
     './manifest.json',
-    './biceps.png'
+    './biceps.png',
+    './icon_calendar.svg',
+    './icon_training.svg',
+    './icon_profile.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -25,12 +28,29 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Network first for API calls, cache first for assets
+    // Gemini APIへのリクエストはキャッシュしない
     if (event.request.url.includes('generativelanguage.googleapis.com')) {
         event.respondWith(fetch(event.request));
         return;
     }
+
+    // Network First 戦略（最新のファイルを優先し、ダメならキャッシュを使う）
     event.respondWith(
-        caches.match(event.request).then(cached => cached || fetch(event.request))
+        fetch(event.request)
+            .then(response => {
+                // 通信成功したらキャッシュも最新化する
+                if (response && response.status === 200 && response.type === 'basic') {
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME)
+                        .then(cache => {
+                            cache.put(event.request, responseToCache);
+                        });
+                }
+                return response;
+            })
+            .catch(() => {
+                // オフライン時はキャッシュを返す
+                return caches.match(event.request);
+            })
     );
 });
