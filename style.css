@@ -2169,6 +2169,92 @@ body {
   border: 2px solid var(--text-primary);
   font-size: 0.8rem;
 }
+/* ============================================
+   ★新デザイン：頻度スライダー（RPEスライダー風）
+   ============================================ */
+/* スライダーのコンテナ */
+.frequency-slider {
+  display: block !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin-top: 1rem;
+}
 
+/* 数字表示部分（右側にあった数値を非表示化、バーの中に統合するため） */
+.frequency-display {
+  display: none !important;
+}
 
+/* RPEスライダーと同じ構造のラッパー */
+.frequency-slider-wrapper {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  margin: 0.5rem 0;
+}
+
+/* 7段階のステップグラデーション背景 */
+.frequency-track-bg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 20px;
+  display: flex;
+  background: linear-gradient(to right,
+    #FFE600 0%, #FFE600 14.28%,
+    #FFD500 14.28%, #FFD500 28.57%,
+    #FFB300 28.57%, #FFB300 42.85%,
+    #FFA200 42.85%, #FFA200 57.14%,
+    #FF8800 57.14%, #FF8800 71.42%,
+    #FF5500 71.42%, #FF5500 85.71%,
+    #EE2200 85.71%, #EE2200 100%
+  );
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* バーの中の数字 */
+.frequency-track-bg span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #1A1A1A;
+}
+.frequency-track-bg span:nth-child(n+6) {
+  color: #FFFFFF; /* 6, 7は背景が濃いので白文字 */
+}
+
+/* スライダー本体（背景透明） */
+.slider-muscle {
+  position: absolute !important;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent !important;
+  outline: none;
+  z-index: 2;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* 頻度スライダーのつまみ（シンプルな丸型太枠） */
+.slider-muscle::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  border: 4px solid var(--text-primary) !important;
+  background-color: var(--white) !important;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px var(--text-primary) !important;
+  transition: transform 0.1s;
+}
+.slider-muscle::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
 

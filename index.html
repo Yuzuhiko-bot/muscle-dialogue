@@ -135,7 +135,12 @@
         <div class="form-group">
           <label class="form-label">週に何回トレーニングするんだい！？</label>
           <div class="frequency-slider">
-            <input type="range" id="frequency" name="frequency" min="1" max="7" value="3" class="slider-muscle">
+            <div class="frequency-slider-wrapper">
+              <div class="frequency-track-bg">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+              </div>
+              <input type="range" id="frequency" name="frequency" min="1" max="7" value="3" class="slider-muscle">
+            </div>
             <div class="frequency-display">
               <span id="frequency-value" class="frequency-num">3</span>
               <span class="frequency-unit">回/週</span>
@@ -335,7 +340,12 @@
           <div class="form-group">
             <label class="form-label">週の頻度</label>
             <div class="frequency-slider">
-              <input type="range" id="p-frequency" name="p-frequency" min="1" max="7" value="3" class="slider-muscle">
+              <div class="frequency-slider-wrapper">
+                <div class="frequency-track-bg">
+                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+                </div>
+                <input type="range" id="p-frequency" name="p-frequency" min="1" max="7" value="3" class="slider-muscle">
+              </div>
               <div class="frequency-display">
                 <span id="p-frequency-value" class="frequency-num">3</span>
                 <span class="frequency-unit">回/週</span>
