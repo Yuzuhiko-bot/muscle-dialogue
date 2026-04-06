@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v5'; // セッション内のUI変更（スライダー刷新等）を反映
+const CACHE_NAME = 'muscle-dialogue-v6'; // 手動入力のセット同期機能を反映
 const ASSETS = [
     './',
     './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
     './app.js',
     './manifest.json',
     './biceps.png',
+    './kinnikun_spinner.png',
     './icon_calendar.svg',
     './icon_training.svg',
     './icon_profile.svg'

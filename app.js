@@ -474,6 +474,26 @@ function addManualExerciseEntry() {
       const master = EXERCISE_MASTER.find(m => m.id === exId);
       const step = master ? master.weight_step : 2.5;
       inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}"><input type="number" class="input-muscle manual-reps" placeholder="回"></div>`).join('')}`;
+      
+      // セット1の内容をセット2, 3へ自動反映するロジック
+      const weights = inputsArea.querySelectorAll('.manual-weight');
+      const reps = inputsArea.querySelectorAll('.manual-reps');
+      if (weights.length > 0) {
+        weights[0].addEventListener('input', () => {
+          for (let i = 1; i < weights.length; i++) {
+             // ユーザーが手動で編集していない場合、または単純に常に同期させる設定に
+             // セット1を入力した直後の利便性を優先し、ミラーリングを実装
+             weights[i].value = weights[0].value;
+          }
+        });
+      }
+      if (reps.length > 0) {
+        reps[0].addEventListener('input', () => {
+          for (let i = 1; i < reps.length; i++) {
+             reps[i].value = reps[0].value;
+          }
+        });
+      }
     }
   });
 
