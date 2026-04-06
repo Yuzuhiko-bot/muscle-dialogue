@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v7'; // 手動入力のセット同期ロジック強化とスプラッシュ画面修正を反映
+const CACHE_NAME = 'muscle-dialogue-v8'; // 筋肉ルーレットのイラスト修正と回転速度調整を反映
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js',
+    './app.js?v=8',
     './manifest.json',
     './biceps.png',
     './kinnikun_spinner.png',
