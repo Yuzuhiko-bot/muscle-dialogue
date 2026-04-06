@@ -51,6 +51,18 @@ const EXERCISE_MASTER = [
   { id: "cardio_003", exercise_name: "有酸素運動（クロストレーナー）", primary_muscle: "心肺機能", secondary_muscles: ["全身"], equipment: "クロストレーナー", weight_step: 0, is_cardio: true }
 ];
 
+// ---------- KINNIKUN QUOTES ----------
+const KINNIKUN_QUOTES = [
+  "筋肉は最高のファッションだ！",
+  "筋トレは人生の教科書。努力を積み重ねればいつか結果が返ってくる。",
+  "トレーニングで大切なのは『各駅停車』。慌てない慌てない、それが1番の近道さ。",
+  "トレーニングで一番面白いのは、筋肉に重さが乗ってるとき。",
+  "やれることのみをやる。それが大事なんだ！",
+  "今日の自分は、昨日より強い！",
+  "筋肉は裏切らない！",
+  "食には色々気遣うが、全ては筋肉のためだから別にツラくない！"
+];
+
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
@@ -271,17 +283,20 @@ function buildPrompt(cond, hist) {
     }).join('\n'); return `【${h.date}】\n${ed}`;
   }).join('\n') : '（履歴なし）';
 
+  // ★名言をランダムに1つ選択
+  const randomQuote = KINNIKUN_QUOTES[Math.floor(Math.random() * KINNIKUN_QUOTES.length)];
+
+  // 先ほど修正した爽やかなトーンのプロンプトに、名言の指示を追加
   const sys = `あなたは「なかやまきんに君」です。以下のルールを守って、メニュー最後の短いメッセージを作成してください。
 
 ## トーン＆マナー:
 - 基本は「爽やかで礼儀正しい、頼れるパーソナルトレーナー」として振る舞ってください。
-- 筋肉の部位（大胸筋など）には敬意を払って言及してください。
-- メッセージの最後（締めくくり）でのみ、「ヤー！」「パワー！」「ハッ（笑顔）」などの決め台詞を自然に使ってください。
-- 一般的なトレーナーのような「レッツ」「ハロー」等の横文字は使用しないでください。
+- 筋肉の部位には敬意を払って言及してください。
+- メッセージの最後（締めくくり）でのみ、「ヤー！」「パワー！」「ハッ（笑顔）」などを自然に使ってください。
 
-## メッセージ作成例:
-- 「今日のメニューが完成したぞ！しっかり大胸筋に効かせていこう！準備はいいかい？パワー！！」
-- 「素晴らしい心がけだ！無理のない範囲で、しっかり筋肉と対話していこう！ハッ（笑顔）」
+## ★必須条件（名言の組み込み）:
+以下の【本日の名言】を、メッセージの中に文脈に合うように自然に組み込んでください。
+【本日の名言】：${randomQuote}
 
 ## 種目マスタ（以下のみ使用可能）:
 ${exData}
@@ -294,7 +309,7 @@ ${exData}
 5. 有酸素種目にはduration_minutesを設定。
 
 ## JSON出力形式（必ずJSONのみを出力）:
-{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"ウォームアップ内容","cooldown":"クールダウン内容","total_estimated_minutes":45,"trainer_message":"（爽やかなきんに君メッセージ）"}
+{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"ウォームアップ内容","cooldown":"クールダウン内容","total_estimated_minutes":45,"trainer_message":"（名言を交えた爽やかなメッセージ）"}
 `;
 
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
