@@ -1,5 +1,5 @@
 /* ============================================
-   マッスル・ダイアログ - Design System ?v=187
+   マッスル・ダイアログ - Design System ?v=188
    なかやまきんに君 HP 世界観
    シンプル × スタイリッシュ × シュール
    ============================================ */
@@ -2173,7 +2173,7 @@ body {
 }
 
 /* 絵文字がなくなった後の見出しデザイン強化 */
-.section-title, .onboard-header h1 {
+.section-title {
   display: flex !important;
   align-items: center;
   gap: 0.8rem;
@@ -2183,6 +2183,36 @@ body {
   background: var(--white) !important;
   box-shadow: 3px 3px 0px var(--text-primary) !important;
   border-radius: 4px;
+}
+
+/* オンボーディング見出し専用のスタイル（Flex崩れ防止＋オチの強調） */
+.onboard-title-muscle {
+  display: block !important; /* Flexを解除して横書きに */
+  font-family: var(--font-title);
+  font-size: 1.15rem !important; /* スマホで収まりやすいサイズ */
+  font-weight: 900 !important;
+  line-height: 1.6;
+  border-left: 6px solid var(--red) !important;
+  padding-left: 1rem !important;
+  background: var(--white) !important;
+  box-shadow: 3px 3px 0px var(--text-primary) !important;
+  border-radius: 4px;
+  text-align: left;
+  margin-top: 1rem;
+  margin-bottom: 1.2rem;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.catchphrase-punch {
+  display: block;
+  font-size: 1.8rem;
+  color: var(--red);
+  text-align: right;
+  margin-top: 0.8rem;
+  margin-bottom: 0.2rem;
+  transform: rotate(-3deg);
+  text-shadow: 2px 2px 0px var(--yellow);
 }
 
 /* チェックボックスから絵文字をなくした分のレイアウト調整 */
