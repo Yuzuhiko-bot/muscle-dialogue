@@ -1,5 +1,5 @@
 /* ============================================
-   マッスル・ダイアログ - Design System ?v=194
+   マッスル・ダイアログ - Design System ?v=195
    なかやまきんに君 HP 世界観
    シンプル × スタイリッシュ × シュール
    ============================================ */
@@ -2172,13 +2172,26 @@ body {
   filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
 }
 
+/* 初心者絵文字のシャドウとアニメーション */
+.beginner-emoji {
+  font-size: 2.2rem;
+  filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.15));
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.radio-card:has(input:checked) .beginner-emoji {
+  filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.3));
+  transform: scale(1.1) rotate(-5deg);
+}
+
 .beginner-icon-svg {
-  width: 32px;
-  height: 32px;
-  fill: var(--text-primary);
-  /* 黒のシルエット */
-  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
-  transition: all 0.2s ease;
+  width: 2.2rem;
+  height: 2.2rem;
+  fill: #333;
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.15));
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .radio-card:has(input:checked) .beginner-icon-svg {
