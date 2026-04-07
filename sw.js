@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v174'; // 分割法とボリューム設定のAIプロンプト更新
+const CACHE_NAME = 'muscle-dialogue-v175'; // AIトレーナーメッセージの自然化
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=174',
+    './app.js?v=175',
     './manifest.json',
     './sw.js',
     './biceps.png',
