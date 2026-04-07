@@ -373,7 +373,7 @@ function renderPlan(plan) {
 
     let inputsHtml = '';
     if (isCar) {
-      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label">分</span></div>`;
+      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label" style="margin-right:auto;">分</span><input type="checkbox" class="set-check" data-ex="${idx}" style="width:24px;height:24px;accent-color:var(--green);cursor:pointer;"></div>`;
     } else {
       inputsHtml = `<div class="sets-container"><div class="set-row"><div class="set-label"></div><div class="input-header">重量(kg)</div><div class="input-header">回数</div><div class="input-header">✓</div></div>`;
       for (let s = 0; s < (ex.sets || 3); s++) {
@@ -428,8 +428,12 @@ function completePlan() {
 
 function showCelebration(exercises) {
   $('#modal-complete').classList.remove('hidden');
-  const iconDiv = document.querySelector('.celebration-icon');
-  if(iconDiv) iconDiv.innerHTML = `<img src="rpe_smile.png" style="width:100px; height:100px; filter:drop-shadow(2px 2px 0 var(--text-primary)); border-radius:50%; border:3px solid var(--text-primary);" onerror="this.textContent='💪';">`;
+  
+  // 名言をランダムに表示
+  const randomQuote = KINNIKUN_QUOTES[Math.floor(Math.random() * KINNIKUN_QUOTES.length)];
+  const quoteEl = $('#celebration-quote-text');
+  if(quoteEl) quoteEl.textContent = randomQuote;
+
   const ts = exercises.reduce((s, e) => s + (e.sets ? e.sets.length : 0), 0), tv = exercises.reduce((s, e) => s + (e.sets ? e.sets.reduce((a, st) => a + st.weight * st.reps, 0) : 0), 0);
   $('#celebration-stats').innerHTML = `<div class="stat-item"><div class="stat-value">${exercises.length}</div><div class="stat-label">種目</div></div><div class="stat-item"><div class="stat-value">${ts}</div><div class="stat-label">セット</div></div><div class="stat-item"><div class="stat-value">${Math.round(tv).toLocaleString()}</div><div class="stat-label">総ボリューム(kg)</div></div>`;
   spawnConfetti();
@@ -473,7 +477,7 @@ function addManualExerciseEntry() {
     } else {
       const master = EXERCISE_MASTER.find(m => m.id === exId);
       const step = master ? master.weight_step : 2.5;
-      inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}"><input type="number" class="input-muscle manual-reps" placeholder="回"></div>`).join('')}`;
+      inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10"></div>`).join('')}`;
       
       // セット1の内容をセット2, 3へ自動反映するロジック
       const weights = inputsArea.querySelectorAll('.manual-weight');
@@ -522,7 +526,11 @@ function saveManualTraining() {
       exercises.push({ id: master.id, name: master.exercise_name, duration: parseInt(dur?.value) || 0, sets: [], rpe: null });
     } else {
       const ws = entry.querySelectorAll('.manual-weight'), rs = entry.querySelectorAll('.manual-reps'), sets = [];
-      ws.forEach((w, i) => { const wt = parseFloat(w.value), rp = parseInt(rs[i].value); if (wt || rp) sets.push({ weight: wt || 0, reps: rp || 0 }); });
+      const rpes = entry.querySelectorAll('.manual-rpe');
+      ws.forEach((w, i) => { 
+        const wt = parseFloat(w.value), rp = parseInt(rs[i].value), rpeVal = parseInt(rpes[i].value); 
+        if (wt || rp) sets.push({ weight: wt || 0, reps: rp || 0, rpe: rpeVal || null }); 
+      });
       if (sets.length > 0) exercises.push({ id: master.id, name: master.exercise_name, sets, rpe: null });
     }
   });

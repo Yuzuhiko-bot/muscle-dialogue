@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v160'; // 筋肥大アイコンの最終進化（インパクトライン入り最強アーム）
+const CACHE_NAME = 'muscle-dialogue-v170'; // 機能整合性の向上とUIの洗練（有酸素チェック、RPE追加、完了画面刷新）
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=160',
+    './app.js?v=170',
     './manifest.json',
     './sw.js',
     './biceps.png',

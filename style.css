@@ -2268,4 +2268,13 @@ body {
 .slider-muscle::-webkit-slider-thumb:active {
   transform: scale(1.1);
 }
+
+/* 手動入力行の列を4つに変更（ラベル、重量、回数、RPE） */
+.manual-set-row {
+  grid-template-columns: auto 1fr 1fr 1fr !important;
+}
+
+.manual-rpe {
+  background-color: var(--yellow-light) !important;
+}
 

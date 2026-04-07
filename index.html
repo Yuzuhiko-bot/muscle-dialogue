@@ -56,7 +56,7 @@
         <div class="form-group">
           <label class="form-label">トレーニングの目的はなんだい！？</label>
           <div class="radio-group" id="goal-group">
-            <!-- Build V160: Ultimate Muscle Icon (Requested Design with Impact Lines) -->
+            <!-- Build V170: Ultimate Muscle Icon (Requested Design with Impact Lines) -->
             <label class="radio-card"><input type="radio" name="goal" value="筋肥大" checked>
               <span class="radio-visual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -578,15 +578,15 @@
   <div id="modal-complete" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-celebration">
-      <div class="celebration-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      <h2 class="celebration-title" style="font-size:2rem; letter-spacing:0.05em; margin-bottom:1.5rem; color:var(--text-primary);">TRAINING<br>COMPLETE</h2>
+      <div id="celebration-quote-area" style="background:var(--yellow-light); border:3px solid var(--text-primary); border-radius:var(--radius-sm); padding:1rem; margin-bottom:1.5rem; position:relative;">
+        <svg style="position:absolute; top:-15px; left:10px; width:30px; height:30px; fill:var(--white); stroke:var(--text-primary); stroke-width:2;" viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zM15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+        <p id="celebration-quote-text" style="font-family:var(--font-title); font-weight:900; font-size:0.95rem; line-height:1.6; color:var(--text-primary);"></p>
       </div>
-      <h2 class="celebration-title">素晴らしい<br>バルクアップ！</h2>
-      <p class="celebration-text">おい、オレの筋肉！<br>喜んでるぞ！</p>
-      <p class="celebration-yell">ヤー！！パワー！！</p>
       <div id="celebration-stats" class="celebration-stats"></div>
-      <button id="btn-close-complete" class="btn-primary">
-        <span class="btn-text">また明日も対話しよう！</span>
+      <button id="btn-close-complete" class="btn-primary btn-mega">
+        <span class="btn-text">完了する</span>
+        <span class="btn-effect"></span>
       </button>
       <div class="confetti-container" id="confetti"></div>
     </div>
@@ -624,7 +624,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=160"></script>
+  <script src="app.js?v=170"></script>
 </body>
 
 </html>
