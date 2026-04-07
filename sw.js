@@ -1,10 +1,11 @@
-const CACHE_NAME = 'muscle-dialogue-v9'; // クールダウン視認性とメッセージタイトル追加を反映
+const CACHE_NAME = 'muscle-dialogue-v50'; // 反映テスト用
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=9',
+    './app.js?v=50',
     './manifest.json',
+    './sw.js',
     './biceps.png',
     './kinnikun_spinner.png',
     './icon_calendar.svg',
