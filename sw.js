@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v176'; // 筋肥大アイコンのSVG更新
+const CACHE_NAME = 'muscle-dialogue-v181'; // 筋肥大アイコンの表示不具合を完全修正
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=176',
+    './app.js?v=181',
     './manifest.json',
     './sw.js',
     './biceps.png',
