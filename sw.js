@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v100'; // 筋肥大アイコンの最終版（Lucide公式パス採用）
+const CACHE_NAME = 'muscle-dialogue-v105'; // モアイ顔バグ修正、マッスルアーム公式版
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=100',
+    './app.js?v=105',
     './manifest.json',
     './sw.js',
     './biceps.png',
