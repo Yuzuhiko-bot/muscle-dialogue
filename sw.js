@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v80'; // アイコン最終調整（力こぶ・体重計の視覚強化）
+const CACHE_NAME = 'muscle-dialogue-v100'; // 筋肥大アイコンの最終版（Lucide公式パス採用）
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=80',
+    './app.js?v=100',
     './manifest.json',
     './sw.js',
     './biceps.png',
