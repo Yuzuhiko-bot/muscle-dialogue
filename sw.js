@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v50'; // 反映テスト用
+const CACHE_NAME = 'muscle-dialogue-v60'; // 新アイコン（赤ちゃん/中級者/ゴリラ/体重計）反映
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=50',
+    './app.js?v=60',
     './manifest.json',
     './sw.js',
     './biceps.png',
