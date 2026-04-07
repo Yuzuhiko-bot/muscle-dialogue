@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v105'; // モアイ顔バグ修正、マッスルアーム公式版
+const CACHE_NAME = 'muscle-dialogue-v110'; // 筋肥大アイコンの視認性改善（シンプル版に復元）
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=105',
+    './app.js?v=110',
     './manifest.json',
     './sw.js',
     './biceps.png',
