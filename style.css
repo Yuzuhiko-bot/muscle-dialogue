@@ -1,5 +1,5 @@
 /* ============================================
-   マッスル・ダイアログ - Design System ?v=185
+   マッスル・ダイアログ - Design System ?v=186
    なかやまきんに君 HP 世界観
    シンプル × スタイリッシュ × シュール
    ============================================ */
@@ -273,25 +273,26 @@ body {
 
 .onboard-main-msg {
   font-family: var(--font-title);
-  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-size: clamp(1.1rem, 4.2vw, 1.5rem);
   font-weight: 900;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-primary);
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
 
 .phrase {
   display: inline-block;
+  white-space: nowrap;
 }
 
 .naru-highlight {
-  font-size: clamp(2.4rem, 8vw, 3.2rem);
+  font-size: clamp(1.8rem, 7vw, 2.8rem);
   color: var(--red);
   display: block;
-  margin-top: 0.8rem;
+  margin-top: 0.6rem;
   font-style: italic;
   text-shadow: 2px 2px 0 var(--yellow);
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .onboard-sub-msg {
