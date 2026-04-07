@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v175'; // AIトレーナーメッセージの自然化
+const CACHE_NAME = 'muscle-dialogue-v176'; // 筋肥大アイコンのSVG更新
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=175',
+    './app.js?v=176',
     './manifest.json',
     './sw.js',
     './biceps.png',
