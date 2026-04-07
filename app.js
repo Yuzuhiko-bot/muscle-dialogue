@@ -192,7 +192,11 @@ function showHistoryDetail(ds) {
     if (isC) {
       setsHtml = `<span class="history-set-badge">${ex.duration || 0}分</span>`;
     } else {
-      setsHtml = ex.sets.map((s, i) => `<span class="history-set-badge">Set${i + 1}: ${s.weight}kg × ${s.reps}回${s.rpe ? ' (RPE' + s.rpe + ')' : ''}</span>`).join('');
+      setsHtml = ex.sets.map((s, i) => {
+        // 手動入力のセット単位RPE、またはAI入力の種目単位RPEを取得
+        const rpeVal = s.rpe || ex.rpe; 
+        return `<span class="history-set-badge">Set${i + 1}: ${s.weight}kg × ${s.reps}回${rpeVal ? ' (RPE' + rpeVal + ')' : ''}</span>`;
+      }).join('');
     }
     div.innerHTML = `<div class="history-exercise-name">${ex.name}</div><div class="history-sets">${setsHtml}</div>
       <div class="history-exercise-actions"><button class="btn-edit-ex" data-date="${ds}" data-idx="${idx}">編集</button><button class="btn-delete-ex" data-date="${ds}" data-idx="${idx}">削除</button></div>`;

@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v172'; // RPE同期の修正
+const CACHE_NAME = 'muscle-dialogue-v173'; // 実績詳細のRPE表示バグ修正
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=172',
+    './app.js?v=173',
     './manifest.json',
     './sw.js',
     './biceps.png',
