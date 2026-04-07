@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v130'; // 筋肥大アイコンの最高品質化（参考イラスト準拠）
+const CACHE_NAME = 'muscle-dialogue-v140'; // 筋肥大アイコンの最高品質化（究極のシルエット採用）
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=130',
+    './app.js?v=140',
     './manifest.json',
     './sw.js',
     './biceps.png',
