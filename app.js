@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v196';
+const APP_VERSION = 'v197';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -233,15 +233,22 @@ function openEditExercise(date, idx) {
     html += `<div class="form-group"><label class="form-label">実施時間（分）</label><input type="number" class="input-muscle" id="edit-duration" value="${ex.duration || 0}" min="1"></div>`;
   } else {
     ex.sets.forEach((s, i) => {
-      html += `<div class="manual-set-row"><span class="set-label">Set${i + 1}</span><input type="number" class="input-muscle edit-weight" value="${s.weight}" step="0.5" placeholder="kg"><input type="number" class="input-muscle edit-reps" value="${s.reps}" placeholder="回"></div>`;
+      html += `<div class="manual-set-row"><span class="set-label">Set${i + 1}</span><input type="number" class="input-muscle edit-weight" value="${s.weight}" step="0.5" placeholder="kg"><input type="number" class="input-muscle edit-reps" value="${s.reps}" placeholder="回"><input type="number" class="input-muscle edit-rpe manual-rpe" value="${s.rpe || ''}" placeholder="RPE" min="1" max="10"></div>`;
     });
   }
   body.innerHTML = html;
   $('#btn-save-edit').onclick = () => {
     if (isC) { ex.duration = parseInt($('#edit-duration').value) || 0; }
     else {
-      const ws = body.querySelectorAll('.edit-weight'), rs = body.querySelectorAll('.edit-reps');
-      ex.sets = []; ws.forEach((w, i) => { ex.sets.push({ weight: parseFloat(w.value) || 0, reps: parseInt(rs[i].value) || 0 }); });
+      const ws = body.querySelectorAll('.edit-weight'), rs = body.querySelectorAll('.edit-reps'), rpes = body.querySelectorAll('.edit-rpe');
+      ex.sets = []; 
+      ws.forEach((w, i) => { 
+        ex.sets.push({ 
+          weight: parseFloat(w.value) || 0, 
+          reps: parseInt(rs[i].value) || 0,
+          rpe: parseInt(rpes[i].value) || null
+        }); 
+      });
     }
     saveHistory(); closeModal('modal-edit-exercise'); showHistoryDetail(date); showToast('更新完了！パワー！');
   };
