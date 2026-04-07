@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v184'; // 筋肥大アイコンの表示不具合を完全修正
+const CACHE_NAME = 'muscle-dialogue-v185'; // 筋肥大アイコンの表示不具合を完全修正
 const ASSETS = [
     './',
     './index.html',
