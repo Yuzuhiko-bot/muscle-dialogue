@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v150'; // 筋肥大アイコンのデザイン統一（他のアイコンとテイストを合わせた線画）
+const CACHE_NAME = 'muscle-dialogue-v155'; // 各種不整合の解消（「首」項目の追加など）
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=150',
+    './app.js?v=155',
     './manifest.json',
     './sw.js',
     './biceps.png',
