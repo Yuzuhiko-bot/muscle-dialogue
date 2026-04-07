@@ -1,5 +1,5 @@
 /* ============================================
-   マッスル・ダイアログ - Design System v3
+   マッスル・ダイアログ - Design System ?v=184
    なかやまきんに君 HP 世界観
    シンプル × スタイリッシュ × シュール
    ============================================ */
@@ -248,27 +248,52 @@ body {
 }
 
 .onboard-header {
-  text-align: center;
-  margin-bottom: 2rem;
+  text-align: left;
+  margin-bottom: 2.5rem;
 }
 
-.onboard-icon {
-  font-size: 4rem;
-}
-
-.onboard-header h1 {
+.onboard-logo {
   font-family: var(--font-title);
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 900;
-  line-height: 1.6;
-  margin-top: 1rem;
-  color: var(--text-primary);
+  color: var(--white);
+  background: var(--red);
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.1em;
+  box-shadow: 4px 4px 0 var(--text-primary);
 }
 
-.onboard-sub {
-  color: var(--text-secondary);
+.onboard-message-box {
+  border-left: 6px solid var(--red);
+  padding-left: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.onboard-main-msg {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.naru-highlight {
+  font-size: 2.4rem;
+  color: var(--red);
+  display: block;
   margin-top: 0.5rem;
-  font-size: 0.9rem;
+  font-style: italic;
+  text-shadow: 2px 2px 0 var(--yellow);
+}
+
+.onboard-sub-msg {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 /* Form Groups */
