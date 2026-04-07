@@ -488,22 +488,23 @@ function addManualExerciseEntry() {
       const syncSets = (inputs, type) => {
         if (inputs.length < 2) return;
         
-        // セット2以降が「まだ一度も手動変更されていない」場合にのみセット1から同期
-        inputs.forEach((input, idx) => {
-          if (idx > 0) {
-            input.addEventListener('input', () => {
-              input.dataset.dirty = 'true';
-            });
-          }
-        });
-
-        inputs[0].addEventListener('input', (e) => {
-          const val = e.target.value;
-          for (let i = 1; i < inputs.length; i++) {
-            if (inputs[i].dataset.dirty !== 'true') {
-              inputs[i].value = val;
+        ['input', 'change'].forEach(evName => {
+          inputs.forEach((input, idx) => {
+            if (idx > 0) {
+              input.addEventListener(evName, () => {
+                input.dataset.dirty = 'true';
+              });
             }
-          }
+          });
+
+          inputs[0].addEventListener(evName, (e) => {
+            const val = e.target.value;
+            for (let i = 1; i < inputs.length; i++) {
+              if (inputs[i].dataset.dirty !== 'true') {
+                inputs[i].value = val;
+              }
+            }
+          });
         });
       };
 
