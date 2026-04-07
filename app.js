@@ -482,6 +482,7 @@ function addManualExerciseEntry() {
       // セット1の内容をセット2, 3へ自動反映するロジック
       const weights = inputsArea.querySelectorAll('.manual-weight');
       const reps = inputsArea.querySelectorAll('.manual-reps');
+      const rpes = inputsArea.querySelectorAll('.manual-rpe');
       
       // セット1の内容を同期させる関数 (すでにユーザーが触った欄は上書きしない)
       const syncSets = (inputs, type) => {
@@ -508,6 +509,7 @@ function addManualExerciseEntry() {
 
       syncSets(weights, 'weight');
       syncSets(reps, 'reps');
+      syncSets(rpes, 'rpe');
     }
   });
 

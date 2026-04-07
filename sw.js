@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v170'; // 機能整合性の向上とUIの洗練（有酸素チェック、RPE追加、完了画面刷新）
+const CACHE_NAME = 'muscle-dialogue-v171'; // 手動入力のRPE同期対応
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=170',
+    './app.js?v=171',
     './manifest.json',
     './sw.js',
     './biceps.png',
