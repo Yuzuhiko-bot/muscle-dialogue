@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v60'; // 新アイコン（赤ちゃん/中級者/ゴリラ/体重計）反映
+const CACHE_NAME = 'muscle-dialogue-v70'; // アイコン修正（力こぶ復活/体重計改善）反映
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=60',
+    './app.js?v=70',
     './manifest.json',
     './sw.js',
     './biceps.png',
