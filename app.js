@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v203';
+const APP_VERSION = 'v204';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -669,12 +669,24 @@ function initBackup() {
 }
 
 function downloadBackup() {
-  const data = { version: 1, exportDate: new Date().toISOString(), profile: state.userProfile, history: state.trainingHistory, body: state.bodyRecord };
+  // 体重記録(bodyRecord)も含めた全データをバックアップ
+  const data = { 
+    version: 1, 
+    exportDate: new Date().toISOString(), 
+    profile: state.userProfile, 
+    history: state.trainingHistory,
+    body: state.bodyRecord 
+  };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = `muscle_dialogue_backup_${formatDate(new Date())}.json`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-  showToast('バックアップ完了！データを守ったぞ！💪');
+  const a = document.createElement('a'); 
+  a.href = url; 
+  a.download = `muscle_dialogue_backup.json`; // ★ファイル名を固定化
+  document.body.appendChild(a); 
+  a.click(); 
+  document.body.removeChild(a); 
+  URL.revokeObjectURL(url);
+  showToast('バックアップ完了！最新のデータを保存したぞ！💪');
 }
 
 function restoreBackup(e) {
