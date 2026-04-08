@@ -1,7 +1,4 @@
-// ============================================
-// マッスル・ダイアログ - App Logic v180
-// ============================================
-const APP_VERSION = 'v210';
+const APP_VERSION = 'v1.0 (Muscle-Ver)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }

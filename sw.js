@@ -1,16 +1,14 @@
-const CACHE_NAME = 'muscle-dialogue-v210'; // マイマッスル・ダッシュボード（成長記録グラフ）実装
+const CACHE_NAME = 'muscle-dialogue-v1.0'; // Ver.1.0 記念
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=183',
+    './app.js?v=1.0',
     './manifest.json',
     './sw.js',
     './biceps.png',
     './kinnikun_spinner.png',
-    './icon_calendar.svg',
-    './icon_training.svg',
-    './icon_profile.svg'
+    './rpe_smile.png'
 ];
 
 self.addEventListener('install', (event) => {
