@@ -1,8 +1,10 @@
-const APP_VERSION = 'v1.0 (Muscle-Ver)';
+const APP_VERSION = 'v1.1 (Gemini-3-Hybrid)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
-function getApiUrl() { return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${getApiKey()}`; }
+function getApiUrl(model = 'gemini-3-flash') { 
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${getApiKey()}`; 
+}
 
 // ---------- EXERCISE MASTER DATA ----------
 const EXERCISE_MASTER = [
@@ -397,12 +399,50 @@ ${exData}
 async function callGeminiAPI({ systemPrompt, userPrompt }) {
   const apiKey = getApiKey();
   if (!apiKey) { showApiKeyModal(); throw new Error('APIキーが未設定です'); }
-  const url = getApiUrl();
-  const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: userPrompt }] }], systemInstruction: { parts: [{ text: systemPrompt }] }, generationConfig: { temperature: 0.7, topP: 0.9, topK: 40, responseMimeType: "application/json" } }) });
-  if (r.status === 400 || r.status === 403) { showApiKeyModal(); throw new Error('APIキーが無効です。プロフィールタブから再設定してくれ！'); }
-  if (r.status === 429) throw new Error('本日のAPIパワー（上限）を使い切ったぞ！今日は「手動で記録」から自分でメニューを組んでみよう！ヤー！！');
-  if (!r.ok) throw new Error(`API Error ${r.status}`);
-  return r.json();
+
+  const models = ['gemini-3-flash', 'gemini-2.5-flash'];
+  let lastError = null;
+
+  for (const model of models) {
+    try {
+      console.log(`Trying model: ${model}...`);
+      const url = getApiUrl(model);
+      const r = await fetch(url, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ 
+          contents: [{ parts: [{ text: userPrompt }] }], 
+          systemInstruction: { parts: [{ text: systemPrompt }] }, 
+          generationConfig: { 
+            temperature: 0.7, 
+            topP: 0.9, 
+            topK: 40, 
+            responseMimeType: "application/json" 
+          } 
+        }) 
+      });
+
+      if (!r.ok) {
+        // 特定のエラー（APIキー無効、上限）以外は次を試す
+        if (r.status === 403) { showApiKeyModal(); throw new Error('APIキーが無効です。プロフィールタブから再設定してくれ！'); }
+        if (r.status === 429) throw new Error('本日のAPIパワー（上限）を使い切ったぞ！');
+        
+        console.warn(`Model ${model} returned error ${r.status}.`);
+        lastError = new Error(`API Error ${r.status}`);
+        continue; // 次のモデルへ（例：gemini-3 がまだ使えない場合など）
+      }
+
+      const res = await r.json();
+      console.log(`Model ${model} success!`);
+      return res;
+    } catch (e) {
+      lastError = e;
+      // 致命的なエラーはループを抜ける
+      if (e.message.includes('APIキーが無効') || e.message.includes('APIパワー（上限）')) throw e;
+      console.warn(`Model ${model} path failed, trying next...`, e);
+    }
+  }
+  throw lastError || new Error('AIとの対話に失敗したぞ！もう一度試してくれ！');
 }
 
 function parseGeminiResponse(r) {

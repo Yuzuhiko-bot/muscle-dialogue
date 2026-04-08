@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.0'; // Ver.1.0 記念
+const CACHE_NAME = 'muscle-dialogue-v1.1'; // Gemini 3 Hybrid Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.0',
+    './app.js?v=1.1',
     './manifest.json',
     './sw.js',
     './biceps.png',
