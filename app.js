@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v208';
+const APP_VERSION = 'v209';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -208,13 +208,6 @@ function renderCalendar() {
       }
 
       c.classList.add(`heatmap-level-${level}`);
-
-      // ランダムスタンプ（おみくじ要素）の生成（日付をシードにして固定化する）
-      const stamps = ['ヤー!', 'パワー!', 'ハッ!', '💪', '🔥'];
-      // 日付文字列から擬似乱数インデックスを作成（毎日開くたびに変わらないようにするため）
-      const seed = ds.split('-').reduce((acc, val) => acc + parseInt(val), 0);
-      const stampText = stamps[seed % stamps.length];
-      c.setAttribute('data-stamp', stampText);
     }
     if (ds === state.selectedDate) c.classList.add('selected');
     c.addEventListener('click', () => { state.selectedDate = ds; renderCalendar(); showHistoryDetail(ds); });
