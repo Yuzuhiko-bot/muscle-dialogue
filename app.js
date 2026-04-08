@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v205';
+const APP_VERSION = 'v206';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -174,7 +174,8 @@ function renderCalendar() {
   const fd = new Date(y, m, 1).getDay(), dim = new Date(y, m + 1, 0).getDate(), todayStr = formatDate(new Date());
   for (let i = 0; i < fd; i++) { const e = document.createElement('div'); e.className = 'cal-day empty'; grid.appendChild(e); }
   for (let d = 1; d <= dim; d++) {
-    const ds = formatDate(new Date(y, m, d)), c = document.createElement('div'); c.className = 'cal-day'; c.textContent = d;
+    const ds = formatDate(new Date(y, m, d)), c = document.createElement('div'); c.className = 'cal-day'; 
+    c.innerHTML = `<span class="cal-date-num">${d}</span>`;
     if (ds === todayStr) c.classList.add('today');
     if (state.trainingHistory[ds]) {
       c.classList.add('has-training');

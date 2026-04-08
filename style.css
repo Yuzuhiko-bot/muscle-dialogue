@@ -1818,19 +1818,22 @@ body {
 }
 
 /* 日付マス（ベース） */
-.cal-day {
-  border: 2px solid var(--text-primary) !important;
-  border-radius: var(--radius-sm);
-  font-family: var(--font-title);
-  font-size: 1rem;
-  font-weight: 900;
-  color: var(--text-primary);
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-  transition: all 0.1s ease;
-  background: var(--white);
   position: relative;
+  padding: 0 !important; /* 内側の余白をリセット */
   overflow: visible !important; /* ★追加: 枠外にはみ出たスタンプを表示する */
 }
+
+/* 左上に配置する日付の数字 */
+.cal-date-num {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  z-index: 2;
+}
+
 
 .cal-day:hover {
   transform: translateY(-2px);
@@ -1869,30 +1872,44 @@ body {
   color: var(--red) !important;
 }
 
-/* 共通のスタンプ（ハンコ）スタイル：統一サイズ */
+/* 豪華版：マッスル認定印スタイル（ゴム印風） */
 .cal-day.has-training::after {
   content: attr(data-stamp);
   position: absolute;
-  bottom: -6px;  /* 枠の下から少しだけはみ出させる黄金比 */
-  right: -4px;
+  bottom: 0px;
+  right: -5px; /* 少しだけ右にはみ出させる */
+  
+  /* フォントとサイズを巨大化 */
   font-family: var(--font-title);
-  font-size: 0.8rem !important; /* ★変更: すべてのスタンプをこのサイズに統一 */
+  font-size: 1.1rem !important; 
   font-weight: 900;
+  white-space: nowrap;
+  
+  /* 本物のハンコっぽくする装飾 */
   color: var(--red);
-  transform: rotate(-15deg) !important; /* ★変更: 角度も統一 */
-  text-shadow: 1px 1px 0px var(--white);
-  background: transparent;
+  border: 3px solid var(--red);
+  border-radius: 6px;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.85); /* ヒートマップの上でも文字が読めるように白背景を敷く */
+  
+  /* 傾きと立体感 */
+  transform: rotate(-20deg) !important; 
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
+  
+  z-index: 10;
   pointer-events: none;
-  opacity: 0.9;
-  z-index: 10; /* ★追加: 下のマスや枠線よりも手前に表示させる */
 }
 
-/* レベル3の時はサイズを変えず、色（オーラ）だけを強化して統一感を保つ */
+/* レベル3（ハード）の時はスタンプをさらに巨大化・オーラ追加 */
 .cal-day.heatmap-level-3::after {
+  font-size: 1.25rem !important;
+  transform: rotate(-25deg) scale(1.1) !important;
+  border-color: var(--red);
   color: var(--red);
-  text-shadow: 2px 2px 0px var(--yellow);
-  /* ※font-sizeやtransformの変更は行わない */
+  box-shadow: 3px 3px 0px var(--yellow);
+  background: var(--white);
 }
+
 
 
 
