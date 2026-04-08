@@ -21,6 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -206,7 +207,7 @@
       </button>
       <button class="tab-btn" data-tab="profile">
         <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span class="tab-label">プロフィール</span>
+        <span class="tab-label">マイマッスル</span>
       </button>
     </nav>
 
@@ -284,170 +285,114 @@
       </div>
     </div>
 
-    <!-- タブC: プロフィール -->
+    <!-- タブC: マイマッスル (成長記録) -->
     <div id="tab-profile" class="tab-content">
+      
       <div class="profile-section">
-        <h2 class="section-title">プロフィール設定</h2>
-        <p class="section-sub">いつでも変更できるぞ！筋肉は日々進化するからな！ヤー！！</p>
+        <h2 class="section-title">ボディ・チャート</h2>
+        <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
+          <canvas id="weightChart"></canvas>
+        </div>
+        
+        <div class="weight-input-area">
+          <div style="display:flex; gap:0.5rem; margin-bottom: 0.5rem;">
+            <input type="date" id="body-date" class="input-muscle" style="flex:1;">
+            <input type="number" id="body-weight" class="input-muscle" step="0.1" placeholder="体重(kg)" style="flex:1;">
+          </div>
+          <button id="btn-save-weight" class="btn-primary" style="width:100%; padding:0.8rem;">
+            <span class="btn-text">体重を記録する！パワー！</span>
+          </button>
+        </div>
+        
+        <div id="body-feedback" class="muscle-feedback-box hidden">
+          <div class="feedback-icon">💪</div>
+          <p id="body-feedback-text" class="feedback-text"></p>
+        </div>
+      </div>
 
+      <div class="profile-section">
+        <h2 class="section-title">筋肉の基本プロフィール</h2>
         <form id="profile-form" class="onboard-form">
-          <div class="form-group">
-            <label class="form-label">目的</label>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label class="form-label">🎯 目標体重 (kg)</label>
+            <input type="number" name="p-targetWeight" id="p-targetWeight" class="input-muscle" step="0.1" placeholder="例: 70.0">
+          </div>
+          
+          <div class="form-group"><label class="form-label">目的</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-goal" value="筋肥大">
-                <span class="radio-visual">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));"><!-- Bicep Outline ONLY --><path d="M12.409 13.017A5 5 0 0 1 22 15c0 3.866-4 7-9 7c-4.077 0-8.153-.82-10.371-2.462c-.426-.316-.631-.832-.62-1.362C2.118 12.723 2.627 2 10 2a3 3 0 0 1 3 3a2 2 0 0 1-2 2c-1.105 0-1.64-.444-2-1" /><path d="M15 14a5 5 0 0 0-7.584 2" /><path d="M9.964 6.825C8.019 7.977 9.5 13 8 15" /></svg>
-                </span>
-                <span class="radio-text">筋肥大</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="ダイエット">
-                <span class="radio-visual">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <path d="M7 6h10 M12 6v3" />
-                    <rect x="8" y="11" width="8" height="6" rx="1" />
-                  </svg>
-                </span>
-                <span class="radio-text">ダイエット</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="健康維持">
-                <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg></span>
-                <span class="radio-text">健康維持</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="筋力アップ">
-                <span class="radio-visual">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" />
-                    <path d="m2.5 21.5 1.4-1.4" />
-                    <path d="m20.1 3.9 1.4-1.4" />
-                    <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.828z" />
-                    <path d="m9.6 14.4 4.8-4.8" />
-                  </svg>
-                </span>
-                <span class="radio-text">筋力UP</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="筋肥大"><span class="radio-text">筋肥大</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="ダイエット"><span class="radio-text">ダイエット</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="健康維持"><span class="radio-text">健康維持</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="筋力アップ"><span class="radio-text">筋力UP</span></label>
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">経験</label>
+          <div class="form-group"><label class="form-label">経験</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-experience" value="初心者">
-                <span class="radio-visual">
-                  <span class="beginner-emoji">🔰</span>
-                </span>
-                <span class="radio-text">初心者</span></label>
-              <label class="radio-card"><input type="radio" name="p-experience" value="中級者">
-                <span class="radio-visual">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                  </svg>
-                </span>
-                <span class="radio-text">中級者</span></label>
-              <label class="radio-card"><input type="radio" name="p-experience" value="上級者">
-                <span class="radio-visual">
-                  <span class="gorilla-emoji shadow-muscle">🦍</span>
-                </span>
-                <span class="radio-text">上級者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="初心者"><span class="radio-text">初心者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="中級者"><span class="radio-text">中級者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="上級者"><span class="radio-text">上級者</span></label>
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">活動量</label>
+          <div class="form-group"><label class="form-label">活動量</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-activity" value="デスクワーク">
-                <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="4" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
-                <span class="radio-text">デスクワーク</span></label>
-              <label class="radio-card"><input type="radio" name="p-activity" value="普通">
-                <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M7 21l3 -4" /><path d="M16 21l-2 -4l-3 -3l1 -6" /><path d="M6 12l2 -3l4 -1l3 3l3 1" /></svg></span>
-                <span class="radio-text">普通</span></label>
-              <label class="radio-card"><input type="radio" name="p-activity" value="力仕事">
-                <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg></span>
-                <span class="radio-text">力仕事</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="デスクワーク"><span class="radio-text">デスク</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="普通"><span class="radio-text">普通</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="力仕事"><span class="radio-text">力仕事</span></label>
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">痛みのある部位</label>
+          <div class="form-group"><label class="form-label">痛みのある部位</label>
             <div class="checkbox-group" id="p-pain-group">
               <label class="check-card"><input type="checkbox" name="p-pain" value="なし"><span class="check-text">なし</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="肩"><span
-                  class="check-text">肩</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="腰"><span
-                  class="check-text">腰</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="膝"><span
-                  class="check-text">膝</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="肘"><span
-                  class="check-text">肘</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="手首"><span
-                  class="check-text">手首</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="首"><span
-                  class="check-text">首</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="肩"><span class="check-text">肩</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="腰"><span class="check-text">腰</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="膝"><span class="check-text">膝</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="肘"><span class="check-text">肘</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="手首"><span class="check-text">手首</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="首"><span class="check-text">首</span></label>
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">優先部位</label>
+          <div class="form-group"><label class="form-label">優先部位</label>
             <div class="checkbox-group" id="p-priority-group">
               <label class="check-card"><input type="checkbox" name="p-priority" value="胸"><span class="check-text">胸</span></label>
               <label class="check-card"><input type="checkbox" name="p-priority" value="背中"><span class="check-text">背中</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="下半身"><span
-                  class="check-text">下半身</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="下半身"><span class="check-text">下半身</span></label>
               <label class="check-card"><input type="checkbox" name="p-priority" value="肩"><span class="check-text">肩</span></label>
               <label class="check-card"><input type="checkbox" name="p-priority" value="腕"><span class="check-text">腕</span></label>
               <label class="check-card"><input type="checkbox" name="p-priority" value="腹"><span class="check-text">腹</span></label>
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">週の頻度</label>
+          <div class="form-group"><label class="form-label">週の頻度</label>
             <div class="frequency-slider">
               <div class="frequency-slider-wrapper">
-                <div class="frequency-track-bg">
-                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
-                </div>
+                <div class="frequency-track-bg"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
                 <input type="range" id="p-frequency" name="p-frequency" min="1" max="7" value="3" class="slider-muscle">
-              </div>
-              <div class="frequency-display">
-                <span id="p-frequency-value" class="frequency-num">3</span>
-                <span class="frequency-unit">回/週</span>
               </div>
             </div>
           </div>
-
-          <button type="submit" class="btn-primary btn-mega">
+          <button type="submit" class="btn-primary" style="width:100%;">
             <span class="btn-text">プロフィール更新！パワー！！</span>
-            <span class="btn-effect"></span>
           </button>
         </form>
       </div>
 
-      <!-- APIキー設定 -->
-      <div class="profile-section">
-        <h2 class="section-title">Gemini APIキー</h2>
-        <p class="section-sub">AIメニュー生成に必要だ！キーはこの端末だけに保存され、外部には送信されないぞ！</p>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <input type="password" id="profile-api-key" class="input-muscle" placeholder="AIzaSy..."
-            style="flex:1;text-align:left;">
-          <button id="btn-save-apikey" class="btn-primary" style="padding:0.5rem 1rem;white-space:nowrap;">
-            <span class="btn-text">保存</span>
-          </button>
+      <div class="profile-section" style="background:var(--bg-input);">
+        <h2 class="section-title" style="font-size:1rem; border:none; box-shadow:none; padding-left:0; background:transparent;">システム設定</h2>
+        
+        <label class="form-label">Gemini APIキー</label>
+        <div style="display:flex;gap:0.5rem;align-items:center; margin-bottom:1.5rem;">
+          <input type="password" id="profile-api-key" class="input-muscle" placeholder="AIzaSy..." style="flex:1;text-align:left;">
+          <button id="btn-save-apikey" class="btn-primary" style="padding:0.5rem 1rem;">保存</button>
         </div>
-        <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.5rem;">※
-          キーはこのデバイスのLocalStorageにのみ保存されます。サーバーには一切送信されません。</p>
-      </div>
 
-      <!-- バックアップ & リストア -->
-      <div class="profile-section">
-        <h2 class="section-title">データバックアップ</h2>
-        <p class="section-sub">トレーニング記録を守れ！筋肉は失っても取り戻せるが、データは…！</p>
+        <label class="form-label">データバックアップ</label>
         <div class="backup-buttons">
-          <button id="btn-backup" class="btn-secondary btn-backup">
-            <span>バックアップをダウンロード</span>
-          </button>
+          <button id="btn-backup" class="btn-secondary btn-backup"><span>エクスポート（保存）</span></button>
           <label class="btn-secondary btn-backup btn-restore-label">
-            <span>バックアップから復元</span>
-            <input type="file" id="file-restore" accept=".json" style="display:none">
+            <span>インポート（復元）</span><input type="file" id="file-restore" accept=".json" style="display:none">
           </label>
         </div>
-        <p class="backup-hint">「ホーム画面に追加」でアプリ化するとデータが消えにくくなるぞ！</p>
       </div>
+
     </div>
   </div>
 

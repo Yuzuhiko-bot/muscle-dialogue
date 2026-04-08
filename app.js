@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v199';
+const APP_VERSION = 'v200';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -78,13 +78,13 @@ const LOADING_QUOTES = [
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
-let state = { userProfile: null, trainingHistory: {}, currentPlan: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
+let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
-  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey();
+  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initBodyDashboard();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 });
 
@@ -92,12 +92,15 @@ function loadState() {
   try {
     const p = localStorage.getItem('muscleDialog_profile');
     const h = localStorage.getItem('muscleDialog_history');
+    const b = localStorage.getItem('muscleDialog_bodyRecord');
     if (p) state.userProfile = JSON.parse(p);
     if (h) state.trainingHistory = JSON.parse(h);
+    if (b) state.bodyRecord = JSON.parse(b);
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
 function saveHistory() { localStorage.setItem('muscleDialog_history', JSON.stringify(state.trainingHistory)); }
+function saveBodyRecord() { localStorage.setItem('muscleDialog_bodyRecord', JSON.stringify(state.bodyRecord)); }
 
 function showScreen(id) {
   $$('.screen').forEach(s => s.classList.remove('active'));
@@ -259,7 +262,11 @@ function openEditExercise(date, idx) {
 // ---------- TRAINING ----------
 function initTraining() {
   $('#btn-generate').addEventListener('click', () => openModal('modal-conditions'));
-  $('#btn-regenerate').addEventListener('click', () => { state.currentPlan = null; $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); openModal('modal-conditions'); });
+  $('#btn-regenerate').addEventListener('click', () => { 
+    showConfirm('貴重なAPIパワー（1日20回制限）を消費してメニューを作り直すかい！？', () => {
+      state.currentPlan = null; $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); openModal('modal-conditions'); 
+    });
+  });
   $$('.time-btn').forEach(b => b.addEventListener('click', () => { $$('.time-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.selectedTime = parseInt(b.dataset.time); }));
   $('#btn-start-generate').addEventListener('click', () => { closeModal('modal-conditions'); generatePlan(); });
   $('#btn-complete').addEventListener('click', completePlan);
@@ -364,6 +371,7 @@ async function callGeminiAPI({ systemPrompt, userPrompt }) {
   const url = getApiUrl();
   const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: userPrompt }] }], systemInstruction: { parts: [{ text: systemPrompt }] }, generationConfig: { temperature: 0.7, topP: 0.9, topK: 40, responseMimeType: "application/json" } }) });
   if (r.status === 400 || r.status === 403) { showApiKeyModal(); throw new Error('APIキーが無効です。プロフィールタブから再設定してくれ！'); }
+  if (r.status === 429) throw new Error('本日のAPIパワー（上限）を使い切ったぞ！今日は「手動で記録」から自分でメニューを組んでみよう！ヤー！！');
   if (!r.ok) throw new Error(`API Error ${r.status}`);
   return r.json();
 }
@@ -576,7 +584,7 @@ function initProfile() {
   setupExclusiveNone('p-pain');
   form.addEventListener('submit', e => {
     e.preventDefault(); const fd = new FormData(form);
-    state.userProfile = { ...state.userProfile, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
+    state.userProfile = { ...state.userProfile, targetWeight: parseFloat(fd.get('p-targetWeight')) || null, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
     saveProfile(); showToast('プロフィール更新完了！ヤー！！パワー！！');
   });
 }
@@ -584,6 +592,7 @@ function initProfile() {
 function populateProfileForm() {
   if (!state.userProfile) return;
   const p = state.userProfile;
+  if (p.targetWeight) $('#p-targetWeight').value = p.targetWeight;
   const setRadio = (name, val) => { const r = $(`input[name="${name}"][value="${val}"]`); if (r) r.checked = true; };
   setRadio('p-goal', p.goal); setRadio('p-experience', p.experience); setRadio('p-activity', p.activity);
   $$('input[name="p-pain"]').forEach(cb => { cb.checked = p.painAreas.includes(cb.value) || (p.painAreas.length === 0 && cb.value === 'なし'); });
@@ -622,7 +631,7 @@ function initBackup() {
 }
 
 function downloadBackup() {
-  const data = { version: 1, exportDate: new Date().toISOString(), profile: state.userProfile, history: state.trainingHistory };
+  const data = { version: 1, exportDate: new Date().toISOString(), profile: state.userProfile, history: state.trainingHistory, body: state.bodyRecord };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = `muscle_dialogue_backup_${formatDate(new Date())}.json`;
@@ -639,7 +648,8 @@ function restoreBackup(e) {
       const data = JSON.parse(ev.target.result);
       if (data.profile) state.userProfile = data.profile;
       if (data.history) state.trainingHistory = data.history;
-      saveProfile(); saveHistory(); renderCalendar(); populateProfileForm();
+      if (data.body) state.bodyRecord = data.body;
+      saveProfile(); saveHistory(); saveBodyRecord(); renderCalendar(); populateProfileForm();
       showToast('復元完了！筋肉のデータが蘇ったぞ！ヤー！！💪');
     } catch (err) { showToast('ファイルが読み込めなかったぞ！😤'); }
   };
@@ -669,7 +679,7 @@ function showConfirm(message, onConfirm) {
       <div style="background:var(--white); border:4px solid var(--text-primary); border-radius:var(--radius-lg); padding:2.5rem 1.5rem; max-width:360px; width:100%; text-align:center; box-shadow:8px 8px 0px var(--yellow);">
         <div id="confirm-message" style="color:var(--text-primary); font-family:var(--font-title); font-weight:900; font-size:1.15rem; margin-bottom:2rem; line-height:1.5; letter-spacing:0.05em;"></div>
         <div style="display:flex; gap:1rem; justify-content:center;">
-          <button id="confirm-yes" class="btn-primary" style="flex:1; padding:0.8rem 0; font-size:1rem; width:auto; max-width:none;">削除する！</button>
+          <button id="confirm-yes" class="btn-primary" style="flex:1; padding:0.8rem 0; font-size:1rem; width:auto; max-width:none;">はい</button>
           <button id="confirm-no" class="btn-secondary" style="flex:1; padding:0.8rem 0; font-size:1rem; width:auto; max-width:none; background:var(--white); color:var(--text-primary);">やめる</button>
         </div>
       </div>
@@ -682,4 +692,108 @@ function showConfirm(message, onConfirm) {
   $('#confirm-yes').onclick = () => { overlay.style.display = 'none'; onConfirm(); };
   $('#confirm-no').onclick = () => { overlay.style.display = 'none'; };
   overlay.onclick = (e) => { if (e.target === overlay) overlay.style.display = 'none'; };
+}
+
+// ---------- BODY DASHBOARD (マイマッスル) ----------
+let weightChartInstance = null;
+
+function initBodyDashboard() {
+  $('#body-date').value = formatDate(new Date());
+  $('#btn-save-weight').addEventListener('click', saveWeight);
+  
+  // タブ切り替え時にグラフを描画
+  $$('.tab-btn[data-tab="profile"]').forEach(btn => {
+    btn.addEventListener('click', renderWeightChart);
+  });
+}
+
+function saveWeight() {
+  const ds = $('#body-date').value;
+  const wt = parseFloat($('#body-weight').value);
+  if (!ds || !wt) { showToast('日付と体重を入力してくれ！パワー！'); return; }
+  
+  const prevWeight = getLatestWeightBefore(ds);
+  state.bodyRecord[ds] = wt;
+  saveBodyRecord();
+  renderWeightChart();
+  showToast('ボディ記録完了！ヤー！');
+  showLocalFeedback(wt, prevWeight);
+}
+
+function getLatestWeightBefore(dateStr) {
+  const dates = Object.keys(state.bodyRecord).filter(d => d < dateStr).sort();
+  return dates.length > 0 ? state.bodyRecord[dates[dates.length - 1]] : null;
+}
+
+function showLocalFeedback(current, prev) {
+  const box = $('#body-feedback');
+  const textEl = $('#body-feedback-text');
+  const goal = state.userProfile?.goal || '健康維持';
+  let msg = '素晴らしい継続だ！筋肉も喜んでるぞ！ヤー！！';
+
+  if (prev) {
+    const diff = current - prev;
+    if (goal === 'ダイエット') {
+      if (diff < 0) msg = `前回から ${Math.abs(diff).toFixed(1)}kg 減ったぞ！しっかり絞れてきてるな！その調子だ！ハッ（笑顔）`;
+      else if (diff > 0) msg = `少し体重が増えたな！だが気にするな！筋肉が増えた証拠かもしれないぞ！パワー！！`;
+    } else if (goal === '筋肥大' || goal === '筋力アップ') {
+      if (diff > 0) msg = `前回から ${diff.toFixed(1)}kg 増えたぞ！素晴らしいバルクアップだ！筋肉がデカくなりたがってるぞ！ヤー！！`;
+      else if (diff < 0) msg = `少し落ちたが気にするな！しっかり食べて、重いものを挙げるだけだ！パワー！！`;
+    }
+  }
+  
+  textEl.textContent = msg;
+  box.classList.remove('hidden');
+}
+
+function renderWeightChart() {
+  const ctx = $('#weightChart');
+  if (!ctx) return;
+  
+  const sortedDates = Object.keys(state.bodyRecord).sort().slice(-14); // 直近14日分
+  const weights = sortedDates.map(d => state.bodyRecord[d]);
+  
+  // 目標体重の配列作成（設定されていれば）
+  const targetWt = state.userProfile?.targetWeight;
+  const targetData = targetWt ? sortedDates.map(() => targetWt) : [];
+
+  if (weightChartInstance) weightChartInstance.destroy();
+
+  weightChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: sortedDates.map(d => d.slice(5).replace('-','/')), // MM/DD
+      datasets: [
+        {
+          label: '体重 (kg)',
+          data: weights,
+          borderColor: '#D4001F',
+          backgroundColor: '#D4001F',
+          borderWidth: 3,
+          tension: 0.3,
+          pointRadius: 5,
+        },
+        ...(targetWt ? [{
+          label: '目標',
+          data: targetData,
+          borderColor: '#1F7BCB',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 0,
+          fill: false
+        }] : [])
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { 
+          suggestedMin: Math.min(...weights, targetWt || Infinity) - 2,
+          suggestedMax: Math.max(...weights, targetWt || -Infinity) + 2
+        }
+      }
+    }
+  });
 }

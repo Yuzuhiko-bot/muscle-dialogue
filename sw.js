@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v199'; // スプラッシュ背景を濃くしてパワーアップ
+const CACHE_NAME = 'muscle-dialogue-v200'; // マイマッスル・ダッシュボード（成長記録グラフ）実装
 const ASSETS = [
     './',
     './index.html',

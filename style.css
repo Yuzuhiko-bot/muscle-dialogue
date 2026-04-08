@@ -1,5 +1,5 @@
 /* ============================================
-   マッスル・ダイアログ - Design System ?v=199
+   マッスル・ダイアログ - Design System ?v=200
    なかやまきんに君 HP 世界観
    シンプル × スタイリッシュ × シュール
    ============================================ */
@@ -2370,5 +2370,36 @@ body {
 
 .manual-rpe {
   background-color: var(--yellow-light) !important;
+}
+
+/* ============================================
+   マイマッスルダッシュボード用スタイル
+   ============================================ */
+.muscle-feedback-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--yellow-light);
+  border: 3px solid var(--text-primary);
+  border-radius: var(--radius-md);
+  box-shadow: 4px 4px 0px var(--text-primary);
+  animation: modalIn 0.3s ease-out;
+}
+
+.feedback-icon {
+  font-size: 2rem;
+  filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+.feedback-text {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  padding-top: 0.2rem;
 }
 
