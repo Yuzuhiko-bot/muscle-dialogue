@@ -1818,10 +1818,20 @@ body {
 }
 
 /* 日付マス（ベース） */
+.cal-day {
+  border: 2px solid var(--text-primary) !important;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font-family: var(--font-title);
+  font-weight: 900;
+  color: var(--text-primary);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  transition: all 0.1s ease;
   position: relative;
   padding: 0 !important; /* 内側の余白をリセット */
-  overflow: visible !important; /* ★追加: 枠外にはみ出たスタンプを表示する */
+  overflow: visible !important; /* ★追記: 枠外にはみ出たスタンプを表示する */
 }
+
 
 /* 左上に配置する日付の数字 */
 .cal-date-num {
