@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v198'; // 筋肥大アイコンの表示不具合を完全修正
+const CACHE_NAME = 'muscle-dialogue-v199'; // スプラッシュ背景を濃くしてパワーアップ
 const ASSETS = [
     './',
     './index.html',

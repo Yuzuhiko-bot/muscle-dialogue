@@ -1,5 +1,5 @@
 /* ============================================
-   マッスル・ダイアログ - Design System ?v=198
+   マッスル・ダイアログ - Design System ?v=199
    なかやまきんに君 HP 世界観
    シンプル × スタイリッシュ × シュール
    ============================================ */
@@ -1714,9 +1714,9 @@ body {
   background-image: url('image_10ad84.jpg');
   background-size: cover;
   background-position: center;
-  opacity: 0.08; /* 極限まで薄く */
+  opacity: 0.2; /* 筋肉の存在感を強調 */
   z-index: 1;
-  filter: grayscale(50%); /* 少し彩度を落として馴染ませる */
+  filter: grayscale(30%); /* 彩度を少し戻してパワーを注入 */
 }
 
 /* コンテンツエリア（テキスト、画像、パルス） */
