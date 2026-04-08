@@ -1882,48 +1882,37 @@ body {
   color: var(--red) !important;
 }
 
-/* 豪華版：マッスル認定印スタイル（ゴム印風） */
+/* きんに君の笑顔スタンプ（RPEアイコン統一） */
 .cal-day.has-training::after {
-  content: attr(data-stamp);
+  content: ''; /* テキストから画像へ変更 */
   position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-10deg);
   
-  /* ▼ 変更部分：マスのど真ん中（空いたスペース）にドカンと配置 ▼ */
-  top: 55%;  /* 真ん中より少しだけ下 */
-  left: 50%; /* 左右のど真ん中 */
-  /* translate(-50%, -50%) で自身の中心を基準に配置し、傾きを加える */
-  transform: translate(-50%, -50%) rotate(-15deg) !important; 
-  /* ▲ ここまで ▲ */
-
-  font-family: var(--font-title);
-  font-size: 1.1rem !important; 
-  font-weight: 900;
-  white-space: nowrap;
+  /* アイコンサイズ設定 */
+  width: 1.6rem;
+  height: 1.6rem;
+  background-image: url('rpe_smile.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   
-  /* 本物のハンコっぽくする装飾 */
-  color: var(--red);
-  border: 3px solid var(--red);
-  border-radius: 6px;
-  padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.85); /* ヒートマップの上でも文字が読めるように白背景を敷く */
-  
-  /* 立体感 */
-  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
-  
+  filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.15));
   z-index: 10;
   pointer-events: none;
 }
 
 
-/* レベル3（ハード）の時のスタイルも translate を追加して中央を維持する */
+
+/* レベル3（ハード）の時はさらに巨大化・オーラ追加 */
 .cal-day.heatmap-level-3::after {
-  font-size: 1.25rem !important;
-  /* translateを入れないと位置がズレるため追加 */
-  transform: translate(-50%, -50%) rotate(-20deg) scale(1.1) !important;
-  border-color: var(--red);
-  color: var(--red);
-  box-shadow: 3px 3px 0px var(--yellow);
-  background: var(--white);
+  width: 2.0rem;
+  height: 2.0rem;
+  transform: translate(-50%, -50%) rotate(-15deg) !important;
+  filter: drop-shadow(2px 2px 0px var(--yellow));
 }
+
 
 
 
