@@ -1699,7 +1699,8 @@ body {
   display: flex; /* !important を削除：JSで隠せるように */
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* 上寄せに変更 */
+  padding-top: 48vh; /* 顔（上部30%）を避け、胸の位置にロゴを配置 */
   position: fixed;
   inset: 0;
   z-index: 10000;
@@ -1734,14 +1735,14 @@ body {
 /* メインタイトル（メガ・ポップGothic） */
 .splash-title-mega {
   font-family: var(--font-title);
-  font-size: 2.2rem;
+  font-size: 3rem; /* さらにメガ・サイズに！ */
   font-weight: 900;
   color: var(--text-primary);
-  line-height: 1.1;
-  letter-spacing: 0.1em;
+  line-height: 1.05;
+  letter-spacing: 0.15em;
   border: 4px solid var(--text-primary);
   background: var(--white);
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 2.2rem;
   border-radius: var(--radius-sm);
   box-shadow: 6px 6px 0px var(--yellow);
   margin-bottom: 2rem;
