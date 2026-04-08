@@ -1,14 +1,16 @@
-const CACHE_NAME = 'muscle-dialogue-v1.1'; // Gemini 3 Hybrid Update
+const CACHE_NAME = 'muscle-dialogue-v1.1.1'; // Muscle Restore Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.1',
+    './app.js?v=1.1.1',
     './manifest.json',
     './sw.js',
     './biceps.png',
     './kinnikun_spinner.png',
-    './rpe_smile.png'
+    './rpe_smile.png',
+    './bike.png',
+    './image_10ad84.jpg'
 ];
 
 self.addEventListener('install', (event) => {

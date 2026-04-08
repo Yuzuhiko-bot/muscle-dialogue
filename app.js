@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.1 (Gemini-3-Hybrid)';
+const APP_VERSION = 'v1.1.1 (Muscle-Restore)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
