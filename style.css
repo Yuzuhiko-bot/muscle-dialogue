@@ -1890,9 +1890,9 @@ body {
   left: 50%;
   transform: translate(-50%, -50%) rotate(-10deg);
   
-  /* アイコンサイズ設定 */
-  width: 1.6rem;
-  height: 1.6rem;
+  /* アイコンサイズ設定：1.5倍に巨大化！ */
+  width: 2.4rem;
+  height: 2.4rem;
   background-image: url('rpe_smile.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -1907,11 +1907,12 @@ body {
 
 /* レベル3（ハード）の時はさらに巨大化・オーラ追加 */
 .cal-day.heatmap-level-3::after {
-  width: 2.0rem;
-  height: 2.0rem;
+  width: 3.0rem;
+  height: 3.0rem;
   transform: translate(-50%, -50%) rotate(-15deg) !important;
   filter: drop-shadow(2px 2px 0px var(--yellow));
 }
+
 
 
 
