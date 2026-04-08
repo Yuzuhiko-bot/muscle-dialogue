@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v202';
+const APP_VERSION = 'v203';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -176,7 +176,45 @@ function renderCalendar() {
   for (let d = 1; d <= dim; d++) {
     const ds = formatDate(new Date(y, m, d)), c = document.createElement('div'); c.className = 'cal-day'; c.textContent = d;
     if (ds === todayStr) c.classList.add('today');
-    if (state.trainingHistory[ds]) c.classList.add('has-training');
+    if (state.trainingHistory[ds]) {
+      c.classList.add('has-training');
+      
+      const dayData = state.trainingHistory[ds];
+      let dailyVolume = 0;
+      let dailySets = 0;
+      let dailyCardioMin = 0;
+
+      // その日のボリュームとセット数、有酸素時間を計算
+      dayData.exercises.forEach(ex => {
+        if (ex.duration) {
+          dailyCardioMin += ex.duration;
+        } else if (ex.sets) {
+          dailySets += ex.sets.length;
+          ex.sets.forEach(s => { dailyVolume += ((s.weight || 0) * (s.reps || 0)); });
+        }
+      });
+
+      const goal = state.userProfile?.goal || '健康維持';
+      let level = 1;
+
+      // 目的別のヒートマップ判定ロジック
+      if (goal === '筋肥大' || goal === '筋力アップ') {
+        if (dailyVolume >= 8000 || dailySets >= 15) level = 3;
+        else if (dailyVolume >= 4000 || dailySets >= 8) level = 2;
+      } else {
+        if (dailyVolume >= 4000 || dailyCardioMin >= 40 || dailySets >= 10) level = 3;
+        else if (dailyVolume >= 2000 || dailyCardioMin >= 20 || dailySets >= 5) level = 2;
+      }
+
+      c.classList.add(`heatmap-level-${level}`);
+
+      // ランダムスタンプ（おみくじ要素）の生成（日付をシードにして固定化する）
+      const stamps = ['ヤー!', 'パワー!', 'ハッ!', '💪', '🔥'];
+      // 日付文字列から擬似乱数インデックスを作成（毎日開くたびに変わらないようにするため）
+      const seed = ds.split('-').reduce((acc, val) => acc + parseInt(val), 0);
+      const stampText = stamps[seed % stamps.length];
+      c.setAttribute('data-stamp', stampText);
+    }
     if (ds === state.selectedDate) c.classList.add('selected');
     c.addEventListener('click', () => { state.selectedDate = ds; renderCalendar(); showHistoryDetail(ds); });
     grid.appendChild(c);

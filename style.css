@@ -593,17 +593,8 @@ body {
   font-weight: 900;
 }
 
-.cal-day.has-training {
-  background: var(--yellow-light);
-  border-color: var(--yellow);
-}
 
-.cal-day.has-training::after {
-  content: '💪';
-  font-size: 0.5rem;
-  position: absolute;
-  bottom: 1px;
-}
+
 
 .cal-day.other-month {
   opacity: 0.3;
@@ -1853,26 +1844,56 @@ body {
   background: var(--white);
 }
 
-/* トレーニング実施日のマス（ヤー！スタンプ風） */
-.cal-day.has-training {
-  background: var(--yellow) !important;
-  border-color: var(--text-primary) !important;
+/* ============================================
+   ★新デザイン：カレンダー ヒートマップ＆スタンプ
+   ============================================ */
+
+/* Level 1: 軽め（黄色） */
+.cal-day.heatmap-level-1 {
+  background: var(--yellow-light) !important;
+  border-color: var(--yellow) !important;
   color: var(--text-primary);
 }
 
+/* Level 2: 普通（オレンジ） */
+.cal-day.heatmap-level-2 {
+  background: var(--orange-light) !important;
+  border-color: var(--orange) !important;
+  color: var(--text-primary);
+}
+
+/* Level 3: ハード（赤色） */
+.cal-day.heatmap-level-3 {
+  background: var(--red-light) !important;
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+}
+
+/* 共通のスタンプ（ハンコ）スタイル */
 .cal-day.has-training::after {
-  content: 'ヤー!';
+  content: attr(data-stamp); /* JSで設定したランダムスタンプを読み込む */
   position: absolute;
-  bottom: -2px;
+  bottom: -4px;
   right: -2px;
   font-family: var(--font-title);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 900;
   color: var(--red);
   transform: rotate(-15deg);
   text-shadow: 1px 1px 0px var(--white);
   background: transparent;
+  pointer-events: none;
+  opacity: 0.9;
 }
+
+/* レベル3の時はスタンプも気合を入れる */
+.cal-day.heatmap-level-3::after {
+  font-size: 0.85rem;
+  transform: rotate(-20deg) scale(1.1);
+  color: var(--red);
+  text-shadow: 2px 2px 0px var(--yellow);
+}
+
 
 /* 選択されたマス */
 .cal-day.selected {
