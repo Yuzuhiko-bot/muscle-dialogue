@@ -1,7 +1,7 @@
 // ============================================
 // マッスル・ダイアログ - App Logic v180
 // ============================================
-const APP_VERSION = 'v206';
+const APP_VERSION = 'v207';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -760,11 +760,40 @@ function initBodyDashboard() {
 
 function saveWeight() {
   const ds = $('#body-date').value;
-  const wt = parseFloat($('#body-weight').value);
-  if (!ds || !wt) { showToast('日付と体重を入力してくれ！パワー！'); return; }
+  const weightStr = $('#body-weight').value.trim();
+  
+  // 日付の入力は必須
+  if (!ds) { 
+    showToast('日付を選択してくれ！パワー！'); 
+    return; 
+  }
+  
+  // ▼ 1. 体重が空欄の場合（削除処理）
+  if (weightStr === '') {
+    if (state.bodyRecord[ds]) {
+      delete state.bodyRecord[ds]; // データを削除
+      saveBodyRecord();
+      renderWeightChart();
+      showToast('記録を削除したぞ！ヤー！');
+      $('#body-feedback').classList.add('hidden'); // フィードバックを非表示に戻す
+    } else {
+      showToast('その日にはまだ記録がないぞ！');
+    }
+    return;
+  }
+  
+  // ▼ 2. 体重が入力されている場合（新規追加 or 上書き処理）
+  const wt = parseFloat(weightStr);
+  if (isNaN(wt)) {
+    showToast('正しい数値を入力してくれ！パワー！');
+    return;
+  }
   
   const prevWeight = getLatestWeightBefore(ds);
-  state.bodyRecord[ds] = wt;
+  
+  // 同じ日付 ds が既に存在すれば、自動的にこの1行で上書きされます
+  state.bodyRecord[ds] = wt; 
+  
   saveBodyRecord();
   renderWeightChart();
   showToast('ボディ記録完了！ヤー！');
