@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v204'; // マイマッスル・ダッシュボード（成長記録グラフ）実装
+const CACHE_NAME = 'muscle-dialogue-v205'; // マイマッスル・ダッシュボード（成長記録グラフ）実装
 const ASSETS = [
     './',
     './index.html',

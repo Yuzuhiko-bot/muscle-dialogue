@@ -1829,7 +1829,7 @@ body {
   transition: all 0.1s ease;
   background: var(--white);
   position: relative;
-  overflow: hidden;
+  overflow: visible !important; /* ★追加: 枠外にはみ出たスタンプを表示する */
 }
 
 .cal-day:hover {
@@ -1869,30 +1869,31 @@ body {
   color: var(--red) !important;
 }
 
-/* 共通のスタンプ（ハンコ）スタイル */
+/* 共通のスタンプ（ハンコ）スタイル：統一サイズ */
 .cal-day.has-training::after {
-  content: attr(data-stamp); /* JSで設定したランダムスタンプを読み込む */
+  content: attr(data-stamp);
   position: absolute;
-  bottom: -4px;
-  right: -2px;
+  bottom: -6px;  /* 枠の下から少しだけはみ出させる黄金比 */
+  right: -4px;
   font-family: var(--font-title);
-  font-size: 0.75rem;
+  font-size: 0.8rem !important; /* ★変更: すべてのスタンプをこのサイズに統一 */
   font-weight: 900;
   color: var(--red);
-  transform: rotate(-15deg);
+  transform: rotate(-15deg) !important; /* ★変更: 角度も統一 */
   text-shadow: 1px 1px 0px var(--white);
   background: transparent;
   pointer-events: none;
   opacity: 0.9;
+  z-index: 10; /* ★追加: 下のマスや枠線よりも手前に表示させる */
 }
 
-/* レベル3の時はスタンプも気合を入れる */
+/* レベル3の時はサイズを変えず、色（オーラ）だけを強化して統一感を保つ */
 .cal-day.heatmap-level-3::after {
-  font-size: 0.85rem;
-  transform: rotate(-20deg) scale(1.1);
   color: var(--red);
   text-shadow: 2px 2px 0px var(--yellow);
+  /* ※font-sizeやtransformの変更は行わない */
 }
+
 
 
 /* 選択されたマス */
