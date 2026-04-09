@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.4.0'; // Typography Perfection
+const CACHE_NAME = 'muscle-dialogue-v1.4.1'; // Checkbox Alignment
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.4.0',
+    './app.js?v=1.4.1',
     './manifest.json',
     './sw.js',
     './biceps.png',

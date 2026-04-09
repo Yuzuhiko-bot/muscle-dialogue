@@ -537,11 +537,11 @@ function renderPlan(plan) {
 
     let inputsHtml = '';
     if (isCar) {
-      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label" style="margin-right:auto;">分</span><input type="checkbox" class="set-check" data-ex="${idx}" style="width:24px;height:24px;accent-color:var(--green);cursor:pointer;"></div>`;
+      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label" style="margin-right:auto;">分</span><input type="checkbox" class="set-check" data-ex="${idx}"></div>`;
     } else {
       inputsHtml = `<div class="sets-container"><div class="set-row"><div class="set-label"></div><div class="input-header">重量(kg)</div><div class="input-header">回数</div><div class="input-header">✓</div></div>`;
       for (let s = 0; s < (ex.sets || 3); s++) {
-        inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}" style="width:20px;height:20px;accent-color:var(--green);cursor:pointer"></div>`;
+        inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}"></div>`;
       }
       inputsHtml += `</div>
       <div class="rpe-section" style="background:transparent; border:none; padding:0; margin-top:1.5rem;">

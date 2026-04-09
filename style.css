@@ -875,6 +875,15 @@ body {
   text-align: center;
 }
 
+.set-check {
+  justify-self: center; /* グリッドセル内で中央に配置 */
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+  cursor: pointer;
+  margin: 0; /* 余計なマージンを排除 */
+}
+
 .input-muscle {
   width: 100%;
   padding: 0.5rem;
