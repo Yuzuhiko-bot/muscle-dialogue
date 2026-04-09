@@ -1,3 +1,4 @@
+const APP_VERSION = 'v1.3.1 (Strict-Error)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
