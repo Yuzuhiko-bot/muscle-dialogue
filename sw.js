@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.3.6'; // Ultimate Parser Update
+const CACHE_NAME = 'muscle-dialogue-v1.3.7'; // Typography & Responsive Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.3.6',
+    './app.js?v=1.3.7',
     './manifest.json',
     './sw.js',
     './biceps.png',

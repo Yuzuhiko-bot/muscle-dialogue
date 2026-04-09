@@ -68,6 +68,11 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* 日本語の不自然な改行を防ぐ（文節の塊を作る） */
+.text-keep {
+  display: inline-block;
+}
+
 .hidden {
   display: none !important;
 }
@@ -1463,8 +1468,13 @@ body {
 
 .hero-title-mega {
   font-family: var(--font-title);
-  font-size: 1.4rem;
+  /* 画面が狭い時は1remまで縮み、基本は1.4remを維持する */
+  font-size: clamp(1rem, 4vw + 0.2rem, 1.4rem); 
   font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.5; /* 少し余裕を持たせる */
+  letter-spacing: 0.05em;
+}
   color: var(--text-primary);
   line-height: 1.4;
   letter-spacing: 0.05em;
@@ -2191,9 +2201,10 @@ body {
 
 /* オンボーディング見出し専用のスタイル（Flex崩れ防止＋オチの強調） */
 .onboard-title-muscle {
-  display: block !important; /* Flexを解除して横書きに */
+  display: block !important; 
   font-family: var(--font-title);
-  font-size: 1.15rem !important; /* スマホで収まりやすいサイズ */
+  /* スマホの狭い画面でも収まるように上限と下限を設定 */
+  font-size: clamp(1rem, 4.5vw, 1.15rem) !important; 
   font-weight: 900 !important;
   line-height: 1.6;
   border-left: 6px solid var(--red) !important;
@@ -2373,4 +2384,4 @@ body {
   letter-spacing: 0.05em;
   padding-top: 0.2rem;
 }
-
+
