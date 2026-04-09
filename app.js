@@ -3,7 +3,7 @@ function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || '';
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
 // AIモデルの取得と保存
-function getSelectedModel() { return localStorage.getItem('muscleDialog_aiModel') || 'gemini-3.1-flash-lite'; }
+function getSelectedModel() { return localStorage.getItem('muscleDialog_aiModel') || 'gemini-3.1-flash-lite-preview'; }
 function saveSelectedModel(model) { localStorage.setItem('muscleDialog_aiModel', model); }
 
 function getApiUrl(model) { 

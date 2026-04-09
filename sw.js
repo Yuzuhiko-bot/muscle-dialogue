@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.3.1'; // Strict Error Update
+const CACHE_NAME = 'muscle-dialogue-v1.3.2'; // Correct Model IDs Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.3.1',
+    './app.js?v=1.3.2',
     './manifest.json',
     './sw.js',
     './biceps.png',

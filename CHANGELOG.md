@@ -24,6 +24,10 @@ AI（なかやまきんに君）として、礼儀正しく、情熱的で、シ
 
 ---
 
+## [v1.3.2] - 2026-04-09 (Correct-Model-IDs)
+- **AIモデルIDの精密化**: `index.html` および `app.js` 内のモデルIDを正確な技術名称（ `-preview`, `-it` 等）に更新。
+- **UIラベル調整**: Gemini 3.1 Flash Lite に「（推奨）」ラベルを再追加。
+
 ## [v1.3.1] - 2026-04-09 (Strict-Error-Handling / Clean-up)
 - **デッドコードの削除**: `app.js` から未使用の `APP_VERSION` 定数を削除。
 - **CSSの最適化**: `style.css` からスプラッシュ、オンボーディング、セレブレーション等の未使用クラス（計11箇所）を削除。
