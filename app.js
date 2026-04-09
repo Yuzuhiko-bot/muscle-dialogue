@@ -545,7 +545,7 @@ function renderPlan(plan) {
       }
       inputsHtml += `</div>
       <div class="rpe-section" style="background:transparent; border:none; padding:0; margin-top:1.5rem;">
-        <div class="rpe-label" style="font-size:0.95rem; line-height:1.4;">（筋肉に問いかけながら）<br>どうなんだい！？オレの筋肉！まだいけるのかい！？</div>
+        <div class="rpe-label" style="font-size:0.95rem; line-height:1.4;"><span class="text-keep">（筋肉に問いかけながら）</span><br><span class="text-keep">どうなんだい！？オレの筋肉！</span><span class="text-keep">まだいけるのかい！？</span></div>
         <div class="rpe-slider-wrapper">
           <div class="rpe-track-bg">
             <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
@@ -563,7 +563,7 @@ function renderPlan(plan) {
   });
 
   if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky)); color:var(--text-primary);">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
-  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);">★ なかやまきんに君からのひとこと ★</div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">${plan.trainer_message}</div>`; list.appendChild(d); }
+  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);"><span class="text-keep">★ なかやまきんに君からの</span><span class="text-keep">ひとこと ★</span></div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">${plan.trainer_message}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
 }
 
@@ -635,7 +635,7 @@ function showCelebration(exercises) {
   if(quoteEl) quoteEl.textContent = randomQuote;
 
   const ts = exercises.reduce((s, e) => s + (e.sets ? e.sets.length : 0), 0), tv = exercises.reduce((s, e) => s + (e.sets ? e.sets.reduce((a, st) => a + st.weight * st.reps, 0) : 0), 0);
-  $('#celebration-stats').innerHTML = `<div class="stat-item"><div class="stat-value">${exercises.length}</div><div class="stat-label">種目</div></div><div class="stat-item"><div class="stat-value">${ts}</div><div class="stat-label">セット</div></div><div class="stat-item"><div class="stat-value">${Math.round(tv).toLocaleString()}</div><div class="stat-label">総ボリューム(kg)</div></div>`;
+  $('#celebration-stats').innerHTML = `<div class="stat-item"><div class="stat-value">${exercises.length}</div><div class="stat-label">種目</div></div><div class="stat-item"><div class="stat-value">${ts}</div><div class="stat-label">セット</div></div><div class="stat-item"><div class="stat-value">${Math.round(tv).toLocaleString()}</div><div class="stat-label"><span class="text-keep">総ボリューム</span><span class="text-keep">(kg)</span></div></div>`;
   spawnConfetti();
   $('#btn-close-complete').onclick = () => { $('#modal-complete').classList.add('hidden'); $$('.tab-btn').forEach(b => b.classList.remove('active')); $$('.tab-content').forEach(c => c.classList.remove('active')); $$('.tab-btn')[0].classList.add('active'); $('#tab-calendar').classList.add('active'); renderCalendar(); };
 }
