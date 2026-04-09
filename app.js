@@ -1,8 +1,13 @@
-const APP_VERSION = 'v1.2.2 (Grand-Roulette)';
+const APP_VERSION = 'v1.3 (Model-Selector)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
-function getApiUrl(model = 'gemini-3-flash') { 
+
+// AIモデルの取得と保存
+function getSelectedModel() { return localStorage.getItem('muscleDialog_aiModel') || 'gemini-3.1-flash-lite'; }
+function saveSelectedModel(model) { localStorage.setItem('muscleDialog_aiModel', model); }
+
+function getApiUrl(model) { 
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${getApiKey()}`; 
 }
 
@@ -425,7 +430,10 @@ async function callGeminiAPI({ systemPrompt, userPrompt }) {
   const apiKey = getApiKey();
   if (!apiKey) { showApiKeyModal(); throw new Error('APIキーが未設定です'); }
 
-  const models = ['gemini-3-flash', 'gemini-2.5-flash'];
+  // 選択されたモデルを最優先にし、失敗時は確実なLite版にフォールバックする
+  const selectedModel = getSelectedModel();
+  const models = [selectedModel, 'gemini-3.1-flash-lite'].filter((v, i, a) => a.indexOf(v) === i); // 重複排除
+  
   let lastError = null;
 
   for (const model of models) {
@@ -717,6 +725,15 @@ function initProfile() {
     state.userProfile = { ...state.userProfile, targetWeight: parseFloat(fd.get('p-targetWeight')) || null, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
     saveProfile(); showToast('プロフィール更新完了！ヤー！！パワー！！');
   });
+
+  // モデル選択プルダウンのイベントリスナー
+  const modelSelect = $('#profile-ai-model');
+  if (modelSelect) {
+    modelSelect.addEventListener('change', (e) => {
+      saveSelectedModel(e.target.value);
+      showToast('AIモデルを変更したぞ！パワー！');
+    });
+  }
 }
 
 function populateProfileForm() {
@@ -731,6 +748,10 @@ function populateProfileForm() {
   // Show masked API key
   const ak = getApiKey();
   if (ak) $('#profile-api-key').value = ak.substring(0, 8) + '...' + ak.substring(ak.length - 4);
+
+  // プルダウンに現在の設定を反映
+  const ms = $('#profile-ai-model');
+  if (ms) ms.value = getSelectedModel();
 }
 
 // ---------- API KEY MANAGEMENT ----------

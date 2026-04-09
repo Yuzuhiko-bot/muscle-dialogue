@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.2.2'; // Grand Roulette Update
+const CACHE_NAME = 'muscle-dialogue-v1.3'; // Model Selector Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.2.2',
+    './app.js?v=1.3',
     './manifest.json',
     './sw.js',
     './biceps.png',
