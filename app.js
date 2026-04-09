@@ -488,31 +488,37 @@ async function callGeminiAPI({ systemPrompt, userPrompt }) {
 }
 
 function parseGeminiResponse(r) {
-  const t = r.candidates[0].content.parts[0].text;
+  // APIからの応答自体が空の場合のガード
+  if (!r || !r.candidates || !r.candidates[0] || !r.candidates[0].content) {
+    throw new Error('AIから空の返事が来たぞ！パワー！');
+  }
+  
+  let text = r.candidates[0].content.parts[0].text;
   
   try { 
-    // 1. まずはそのままパースを試みる（Geminiなど優等生用）
-    return JSON.parse(t.trim()); 
+    // 1. まずはそのままパース（Geminiなどの優等生用）
+    return JSON.parse(text.trim()); 
   } catch (e1) { 
+    console.warn("Direct JSON parse failed. Cleaning text...");
+    
+    // 2. Markdown記号（```json や ```）や前後の余計なテキストをサニタイズ
     try {
-      // 2. Markdownのコードブロック ```json ... ``` の中身だけを探す
-      const m = t.match(/```(?:json)?\s*([\s\S]*?)```/);
-      if (m) return JSON.parse(m[1].trim());
-      throw new Error('Markdown match failed');
-    } catch (e2) {
-      try {
-        // 3. 最終手段：テキストの中から最初と最後の { } を無理やり切り抜く
-        const start = t.indexOf('{');
-        const end = t.lastIndexOf('}');
-        if (start !== -1 && end !== -1 && end > start) {
-          const jsonStr = t.substring(start, end + 1);
-          return JSON.parse(jsonStr.trim());
-        }
-        throw new Error('Brute force extraction failed');
-      } catch (e3) {
-        console.error('JSON Parse Error Detail:', t);
-        throw new Error('AIの出力が筋肉（JSON）の形式になっていないようだ！もう一度ルーレットを回してくれ！パワー！');
+      // 最初の { と 最後の } を探す（これが最も確実な筋肉の切り出し方だ！）
+      const start = text.indexOf('{');
+      const end = text.lastIndexOf('}');
+      
+      if (start !== -1 && end !== -1 && end > start) {
+        let cleanText = text.substring(start, end + 1);
+        
+        // 特殊な改行文字や制御文字を整理
+        cleanText = cleanText.replace(/[\u0000-\u001F\u007F-\u009F]/g, " ");
+        
+        return JSON.parse(cleanText);
       }
+      throw new Error('No valid JSON structure found');
+    } catch (e2) {
+      console.error('Final Parse Attempt Failed:', text);
+      throw new Error('AIの筋肉（JSON）が壊れているようだ！もう一度ルーレットを回してくれ！パワー！');
     }
   }
 }
