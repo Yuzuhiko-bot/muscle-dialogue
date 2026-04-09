@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.2.1 (Stoic-Select)';
+const APP_VERSION = 'v1.2.2 (Grand-Roulette)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }

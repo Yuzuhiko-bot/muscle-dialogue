@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.2.1'; // Stoic Select Update
+const CACHE_NAME = 'muscle-dialogue-v1.2.2'; // Grand Roulette Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.2.1',
+    './app.js?v=1.2.2',
     './manifest.json',
     './sw.js',
     './biceps.png',
