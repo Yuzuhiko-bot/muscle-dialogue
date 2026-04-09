@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.3 (Model-Selector)';
+const APP_VERSION = 'v1.3.1 (Strict-Error)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -428,54 +428,64 @@ ${exData}
 
 async function callGeminiAPI({ systemPrompt, userPrompt }) {
   const apiKey = getApiKey();
-  if (!apiKey) { showApiKeyModal(); throw new Error('APIキーが未設定です'); }
-
-  // 選択されたモデルを最優先にし、失敗時は確実なLite版にフォールバックする
-  const selectedModel = getSelectedModel();
-  const models = [selectedModel, 'gemini-3.1-flash-lite'].filter((v, i, a) => a.indexOf(v) === i); // 重複排除
-  
-  let lastError = null;
-
-  for (const model of models) {
-    try {
-      console.log(`Trying model: ${model}...`);
-      const url = getApiUrl(model);
-      const r = await fetch(url, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ 
-          contents: [{ parts: [{ text: userPrompt }] }], 
-          systemInstruction: { parts: [{ text: systemPrompt }] }, 
-          generationConfig: { 
-            temperature: 0.7, 
-            topP: 0.9, 
-            topK: 40, 
-            responseMimeType: "application/json" 
-          } 
-        }) 
-      });
-
-      if (!r.ok) {
-        // 特定のエラー（APIキー無効、上限）以外は次を試す
-        if (r.status === 403) { showApiKeyModal(); throw new Error('APIキーが無効です。プロフィールタブから再設定してくれ！'); }
-        if (r.status === 429) throw new Error('本日のAPIパワー（上限）を使い切ったぞ！');
-        
-        console.warn(`Model ${model} returned error ${r.status}.`);
-        lastError = new Error(`API Error ${r.status}`);
-        continue; // 次のモデルへ（例：gemini-3 がまだ使えない場合など）
-      }
-
-      const res = await r.json();
-      console.log(`Model ${model} success!`);
-      return res;
-    } catch (e) {
-      lastError = e;
-      // 致命的なエラーはループを抜ける
-      if (e.message.includes('APIキーが無効') || e.message.includes('APIパワー（上限）')) throw e;
-      console.warn(`Model ${model} path failed, trying next...`, e);
-    }
+  if (!apiKey) { 
+    showApiKeyModal(); 
+    throw new Error('APIキーが未設定だ！設定してくれ！パワー！'); 
   }
-  throw lastError || new Error('AIとの対話に失敗したぞ！もう一度試してくれ！');
+
+  // ★変更: ループを廃止し、現在選択されているモデルのみを愚直に実行する
+  const selectedModel = getSelectedModel();
+  const url = getApiUrl(selectedModel);
+
+  try {
+    console.log(`Trying model: ${selectedModel}...`);
+    const r = await fetch(url, { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' }, 
+      body: JSON.stringify({ 
+        contents: [{ parts: [{ text: userPrompt }] }], 
+        systemInstruction: { parts: [{ text: systemPrompt }] }, 
+        generationConfig: { 
+          temperature: 0.7, 
+          topP: 0.9, 
+          topK: 40, 
+          responseMimeType: "application/json" 
+        } 
+      }) 
+    });
+
+    if (!r.ok) {
+      // ★追加: HTTPステータスコードに応じた具体的なエラーメッセージの分岐
+      if (r.status === 400) {
+        throw new Error('リクエストが不正だ！(400) プロフィールの設定を見直してくれ！');
+      }
+      if (r.status === 403) { 
+        showApiKeyModal(); 
+        throw new Error('APIキーが無効だ！(403) 正しいキーを設定してくれ！'); 
+      }
+      if (r.status === 429) {
+        throw new Error(`【${selectedModel}】のAPI上限（回数制限）に達したぞ！(429) 「マイマッスル」から別のAIモデルに変更してくれ！`);
+      }
+      if (r.status === 500) {
+        throw new Error('Googleのサーバーでエラーが発生したぞ！(500) 別のモデルに変更するか、時間を置いて試してくれ！');
+      }
+      if (r.status === 503) {
+        throw new Error('現在AIのサーバーが混み合っているぞ！(503) 別のモデルに変更するか、時間を置いて試してくれ！');
+      }
+      
+      // その他の予期せぬエラー
+      throw new Error(`謎のエラーだ！(ステータス: ${r.status}) 「マイマッスル」から別のAIモデルに変更してみてくれ！`);
+    }
+
+    const res = await r.json();
+    console.log(`Model ${selectedModel} success!`);
+    return res;
+    
+  } catch (e) {
+    console.warn(`Model ${selectedModel} failed...`, e);
+    // 発生したエラー（カスタムメッセージ）をそのまま generatePlan に投げてトースト表示させる
+    throw e; 
+  }
 }
 
 function parseGeminiResponse(r) {
