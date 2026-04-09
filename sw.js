@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.4.2'; // Total Bulk Typography
+const CACHE_NAME = 'muscle-dialogue-v1.4.3'; // Toast Typography
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.4.2',
+    './app.js?v=1.4.3',
     './manifest.json',
     './sw.js',
     './biceps.png',

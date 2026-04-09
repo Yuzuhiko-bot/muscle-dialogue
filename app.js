@@ -506,7 +506,7 @@ function parseGeminiResponse(r) {
       throw new Error('No valid JSON block found');
     } catch (e2) {
       console.error('Final Parse Attempt Failed:', text);
-      throw new Error('AIの筋肉（JSON）が壊れているようだ！もう一度ルーレットを回してくれ！パワー！');
+      throw new Error('<span class="text-keep">AIの筋肉（JSON）が</span><span class="text-keep">壊れているようだ！</span><br><span class="text-keep">もう一度ルーレットを回してくれ！</span><span class="text-keep">パワー！</span>');
     }
   }
 }
@@ -751,7 +751,7 @@ function initProfile() {
   form.addEventListener('submit', e => {
     e.preventDefault(); const fd = new FormData(form);
     state.userProfile = { ...state.userProfile, targetWeight: parseFloat(fd.get('p-targetWeight')) || null, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
-    saveProfile(); showToast('プロフィール更新完了！ヤー！！パワー！！');
+    saveProfile(); showToast('<span class="text-keep">プロフィール更新完了！</span><span class="text-keep">ヤー！！パワー！！</span>');
   });
 
   // モデル選択プルダウンのイベントリスナー
@@ -791,7 +791,7 @@ function initApiKey() {
     const key = $('#apikey-input').value.trim();
     if (!key) { showToast('APIキーを入力してくれ！💪'); return; }
     saveApiKey(key); closeModal('modal-apikey');
-    showToast('APIキー保存完了！さあ、筋肉との対話だ！💪');
+    showToast('<span class="text-keep">APIキー保存完了！</span><span class="text-keep">さあ、筋肉との対話だ！💪</span>');
   });
   // Profile tab save button
   $('#btn-save-apikey').addEventListener('click', () => {
@@ -841,7 +841,7 @@ function restoreBackup(e) {
       if (data.history) state.trainingHistory = data.history;
       if (data.body) state.bodyRecord = data.body;
       saveProfile(); saveHistory(); saveBodyRecord(); renderCalendar(); populateProfileForm();
-      showToast('復元完了！筋肉のデータが蘇ったぞ！ヤー！！💪');
+      showToast('<span class="text-keep">復元完了！筋肉のデータが</span><span class="text-keep">蘇ったぞ！ヤー！！💪</span>');
     } catch (err) { showToast('ファイルが読み込めなかったぞ！😤'); }
   };
   reader.readAsText(file); e.target.value = '';
@@ -852,8 +852,16 @@ function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).p
 
 function showToast(msg) {
   let t = $('#toast-notification');
-  if (!t) { t = document.createElement('div'); t.id = 'toast-notification'; t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(300px);background:#D4001F;color:white;padding:1rem 2rem;border-radius:12px;font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:0.9rem;z-index:9999;box-shadow:0 4px 16px rgba(212,0,31,0.3);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-width:90%;text-align:center;'; document.body.appendChild(t); }
-  t.textContent = msg; requestAnimationFrame(() => { t.style.transform = 'translateX(-50%) translateY(0)'; });
+  if (!t) { 
+    t = document.createElement('div'); 
+    t.id = 'toast-notification'; 
+    // ★ width:max-content と word-break:keep-all を追加して箱のサイズと改行位置を最適化
+    t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(300px);background:#D4001F;color:white;padding:1rem 2rem;border-radius:12px;font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:0.9rem;z-index:9999;box-shadow:0 4px 16px rgba(212,0,31,0.3);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);width:max-content;max-width:90%;word-break:keep-all;text-align:center;'; 
+    document.body.appendChild(t); 
+  }
+  // ★ HTMLタグ（.text-keepなど）をそのまま解釈できるように innerHTML に変更
+  t.innerHTML = msg; 
+  requestAnimationFrame(() => { t.style.transform = 'translateX(-50%) translateY(0)'; });
   setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(300px)'; }, 3000);
 }
 
