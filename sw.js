@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.3.8'; // AI Model Cleanup
+const CACHE_NAME = 'muscle-dialogue-v1.3.9'; // CSS Syntax Fix
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.3.8',
+    './app.js?v=1.3.9',
     './manifest.json',
     './sw.js',
     './biceps.png',
