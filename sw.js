@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.3.9'; // CSS Syntax Fix
+const CACHE_NAME = 'muscle-dialogue-v1.4.0'; // Typography Perfection
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.3.9',
+    './app.js?v=1.4.0',
     './manifest.json',
     './sw.js',
     './biceps.png',

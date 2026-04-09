@@ -71,6 +71,7 @@ body {
 /* 日本語の不自然な改行を防ぐ（文節の塊を作る） */
 .text-keep {
   display: inline-block;
+  white-space: nowrap; /* ★追加: 絶対に途中で改行（折り返し）させない */
 }
 
 .hidden {
@@ -1468,8 +1469,8 @@ body {
 
 .hero-title-mega {
   font-family: var(--font-title);
-  /* 画面が狭い時は1remまで縮み、基本は1.4remを維持する */
-  font-size: clamp(1rem, 4vw + 0.2rem, 1.4rem); 
+  /* ★変更: 下限を0.85remに下げ、縮みやすさを 3.5vw に調整 */
+  font-size: clamp(0.85rem, 3.5vw + 0.2rem, 1.4rem); 
   font-weight: 900;
   color: var(--text-primary);
   line-height: 1.5;
