@@ -489,7 +489,32 @@ async function callGeminiAPI({ systemPrompt, userPrompt }) {
 
 function parseGeminiResponse(r) {
   const t = r.candidates[0].content.parts[0].text;
-  try { return JSON.parse(t); } catch { const m = t.match(/```(?:json)?\s*([\s\S]*?)```/); if (m) return JSON.parse(m[1]); throw new Error('JSONパースエラー'); }
+  
+  try { 
+    // 1. まずはそのままパースを試みる（Geminiなど優等生用）
+    return JSON.parse(t.trim()); 
+  } catch (e1) { 
+    try {
+      // 2. Markdownのコードブロック ```json ... ``` の中身だけを探す
+      const m = t.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (m) return JSON.parse(m[1].trim());
+      throw new Error('Markdown match failed');
+    } catch (e2) {
+      try {
+        // 3. 最終手段：テキストの中から最初と最後の { } を無理やり切り抜く
+        const start = t.indexOf('{');
+        const end = t.lastIndexOf('}');
+        if (start !== -1 && end !== -1 && end > start) {
+          const jsonStr = t.substring(start, end + 1);
+          return JSON.parse(jsonStr.trim());
+        }
+        throw new Error('Brute force extraction failed');
+      } catch (e3) {
+        console.error('JSON Parse Error Detail:', t);
+        throw new Error('AIの出力が筋肉（JSON）の形式になっていないようだ！もう一度ルーレットを回してくれ！パワー！');
+      }
+    }
+  }
 }
 
 function renderPlan(plan) {
