@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.1.1'; // Muscle Restore Update
+const CACHE_NAME = 'muscle-dialogue-v1.2'; // Plan Persistence Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.1.1',
+    './app.js?v=1.2',
     './manifest.json',
     './sw.js',
     './biceps.png',

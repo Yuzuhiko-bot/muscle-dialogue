@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.1.1 (Muscle-Restore)';
+const APP_VERSION = 'v1.2 (Plan-Persistence)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -92,14 +92,23 @@ function loadState() {
     const p = localStorage.getItem('muscleDialog_profile');
     const h = localStorage.getItem('muscleDialog_history');
     const b = localStorage.getItem('muscleDialog_bodyRecord');
+    const cp = localStorage.getItem('muscleDialog_currentPlan');
     if (p) state.userProfile = JSON.parse(p);
     if (h) state.trainingHistory = JSON.parse(h);
     if (b) state.bodyRecord = JSON.parse(b);
+    if (cp) state.currentPlan = JSON.parse(cp);
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
 function saveHistory() { localStorage.setItem('muscleDialog_history', JSON.stringify(state.trainingHistory)); }
 function saveBodyRecord() { localStorage.setItem('muscleDialog_bodyRecord', JSON.stringify(state.bodyRecord)); }
+function saveCurrentPlan() {
+  if (state.currentPlan) {
+    localStorage.setItem('muscleDialog_currentPlan', JSON.stringify(state.currentPlan));
+  } else {
+    localStorage.removeItem('muscleDialog_currentPlan');
+  }
+}
 
 function showScreen(id) {
   $$('.screen').forEach(s => s.classList.remove('active'));
@@ -292,10 +301,24 @@ function openEditExercise(date, idx) {
 
 // ---------- TRAINING ----------
 function initTraining() {
+  // 既に作成途中のプランがある場合、画面を復元して再描画
+  if (state.currentPlan) {
+    $('#no-plan').classList.add('hidden');
+    $('#plan-area').classList.remove('hidden');
+    $('#btn-complete').classList.remove('hidden');
+    renderPlan(state.currentPlan);
+  } else {
+    $('#no-plan').classList.remove('hidden');
+    $('#plan-area').classList.add('hidden');
+    $('#btn-complete').classList.add('hidden');
+  }
+
   $('#btn-generate').addEventListener('click', () => openModal('modal-conditions'));
   $('#btn-regenerate').addEventListener('click', () => { 
     showConfirm('貴重なAPIパワー（1日20回制限）を消費してメニューを作り直すかい！？', () => {
-      state.currentPlan = null; $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); openModal('modal-conditions'); 
+      state.currentPlan = null;
+      saveCurrentPlan(); 
+      $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); openModal('modal-conditions'); 
     });
   });
   $$('.time-btn').forEach(b => b.addEventListener('click', () => { $$('.time-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.selectedTime = parseInt(b.dataset.time); }));
@@ -312,7 +335,9 @@ async function generatePlan() {
   try {
     const cond = gatherConditions(), hist = getRecentHistory(5), prompt = buildPrompt(cond, hist);
     const resp = await callGeminiAPI(prompt), plan = parseGeminiResponse(resp);
-    state.currentPlan = plan; renderPlan(plan);
+    state.currentPlan = plan;
+    saveCurrentPlan(); 
+    renderPlan(plan);
     $('#loading-area').classList.add('hidden'); $('#plan-area').classList.remove('hidden');
     if (tStatus) tStatus.textContent = 'メニュー生成完了！さあ、始めよう！';
   } catch (e) {
@@ -526,7 +551,9 @@ function completePlan() {
   if (state.trainingHistory[todayStr]) state.trainingHistory[todayStr].exercises.push(...exercises);
   else state.trainingHistory[todayStr] = { date: todayStr, exercises };
   saveHistory(); showCelebration(exercises);
-  state.currentPlan = null; $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); $('#training-status-text').textContent = 'さあ、筋肉との対話を始めよう！';
+  state.currentPlan = null;
+  saveCurrentPlan(); 
+  $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); $('#training-status-text').textContent = 'さあ、筋肉との対話を始めよう！';
 }
 
 function showCelebration(exercises) {
