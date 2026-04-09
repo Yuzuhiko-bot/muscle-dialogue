@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.2 (Plan-Persistence)';
+const APP_VERSION = 'v1.2.1 (Stoic-Select)';
 
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
@@ -535,25 +535,59 @@ function checkAllSetsCompleted() { const a = $$('.set-check'), btn = $('#btn-com
 
 function completePlan() {
   if (!state.currentPlan) return;
-  const todayStr = formatDate(new Date()), exercises = [];
+
   const allEx = [...(state.currentPlan.exercises || []), ...(state.currentPlan.cardio_exercises || []).map(c => ({ ...c, _isCardio: true }))];
+  const completedExercises = [];
+
   allEx.forEach((ex, idx) => {
-    const isCar = ex._isCardio || isCardio(ex.exercise_id);
-    if (isCar) {
-      const durIn = $(`.input-cardio-dur[data-ex="${idx}"]`);
-      exercises.push({ id: ex.exercise_id, name: ex.exercise_name, duration: durIn ? parseInt(durIn.value) || 0 : ex.duration_minutes || 0, sets: [], rpe: null });
-    } else {
-      const sets = []; $$(`.input-weight[data-ex="${idx}"]`).forEach((w, s) => { const ri = $(`.input-reps[data-ex="${idx}"][data-set="${s}"]`); sets.push({ weight: parseFloat(w.value) || 0, reps: parseInt(ri.value) || 0 }); });
-      const rsl = $(`.rpe-slider[data-ex="${idx}"]`);
-      exercises.push({ id: ex.exercise_id, name: ex.exercise_name, sets, rpe: rsl ? parseInt(rsl.value) : null });
+    // この種目のチェックボックスをすべて取得し、一つでもチェックがあるか確認
+    const checkboxes = $$(`.set-check[data-ex="${idx}"]`);
+    const isChecked = [...checkboxes].some(cb => cb.checked);
+
+    if (isChecked) {
+      const isCar = ex._isCardio || isCardio(ex.exercise_id);
+      if (isCar) {
+        const durIn = $(`.input-cardio-dur[data-ex="${idx}"]`);
+        completedExercises.push({ id: ex.exercise_id, name: ex.exercise_name, duration: durIn ? parseInt(durIn.value) || 0 : ex.duration_minutes || 0, sets: [], rpe: null });
+      } else {
+        const sets = []; 
+        $$(`.input-weight[data-ex="${idx}"]`).forEach((w, s) => { 
+          const ri = $(`.input-reps[data-ex="${idx}"][data-set="${s}"]`); 
+          sets.push({ weight: parseFloat(w.value) || 0, reps: parseInt(ri.value) || 0 }); 
+        });
+        const rsl = $(`.rpe-slider[data-ex="${idx}"]`);
+        completedExercises.push({ id: ex.exercise_id, name: ex.exercise_name, sets, rpe: rsl ? parseInt(rsl.value) : null });
+      }
     }
   });
-  if (state.trainingHistory[todayStr]) state.trainingHistory[todayStr].exercises.push(...exercises);
-  else state.trainingHistory[todayStr] = { date: todayStr, exercises };
-  saveHistory(); showCelebration(exercises);
-  state.currentPlan = null;
-  saveCurrentPlan(); 
-  $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); $('#training-status-text').textContent = 'さあ、筋肉との対話を始めよう！';
+
+  const finalizePlan = () => {
+    state.currentPlan = null;
+    saveCurrentPlan();
+    $('#plan-area').classList.add('hidden');
+    $('#no-plan').classList.remove('hidden');
+    $('#btn-complete').classList.add('hidden');
+    $('#training-status-text').textContent = 'さあ、筋肉との対話を始めよう！';
+    renderCalendar();
+  };
+
+  // 一つもチェックがない場合の確認フロー
+  if (completedExercises.length === 0) {
+    showConfirm('ひとつもチェックが入っていないぞ！このままプランを削除していいですか？', () => {
+      finalizePlan();
+      showToast('プランを削除したぞ。次はもっと追い込んでいこう！パワー！');
+    });
+    return;
+  }
+
+  const todayStr = formatDate(new Date());
+  if (state.trainingHistory[todayStr]) state.trainingHistory[todayStr].exercises.push(...completedExercises);
+  else state.trainingHistory[todayStr] = { date: todayStr, exercises: completedExercises };
+
+  saveHistory();
+  showCelebration(completedExercises);
+  finalizePlan();
+  showToast(`${completedExercises.length}種目やりきったな！履歴に保存したぞ！ヤー！`);
 }
 
 function showCelebration(exercises) {

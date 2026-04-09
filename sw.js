@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.2'; // Plan Persistence Update
+const CACHE_NAME = 'muscle-dialogue-v1.2.1'; // Stoic Select Update
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.2',
+    './app.js?v=1.2.1',
     './manifest.json',
     './sw.js',
     './biceps.png',
