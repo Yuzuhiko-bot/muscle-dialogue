@@ -833,9 +833,9 @@ function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).p
 
 function showToast(msg) {
   let t = $('#toast-notification');
-  if (!t) { t = document.createElement('div'); t.id = 'toast-notification'; t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:#D4001F;color:white;padding:1rem 2rem;border-radius:12px;font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:0.9rem;z-index:9999;box-shadow:0 4px 16px rgba(212,0,31,0.3);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-width:90%;text-align:center;'; document.body.appendChild(t); }
+  if (!t) { t = document.createElement('div'); t.id = 'toast-notification'; t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(300px);background:#D4001F;color:white;padding:1rem 2rem;border-radius:12px;font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:0.9rem;z-index:9999;box-shadow:0 4px 16px rgba(212,0,31,0.3);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-width:90%;text-align:center;'; document.body.appendChild(t); }
   t.textContent = msg; requestAnimationFrame(() => { t.style.transform = 'translateX(-50%) translateY(0)'; });
-  setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(100px)'; }, 3000);
+  setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(300px)'; }, 3000);
 }
 
 // ---------- CUSTOM CONFIRM MODAL ----------
