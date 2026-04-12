@@ -776,7 +776,9 @@ function initProfile() {
   form.addEventListener('submit', e => {
     e.preventDefault(); const fd = new FormData(form);
     state.userProfile = { ...state.userProfile, targetWeight: parseFloat(fd.get('p-targetWeight')) || null, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
-    saveProfile(); showToast('<span class="text-keep">プロフィール更新完了！</span><span class="text-keep">ヤー！！パワー！！</span>');
+    saveProfile(); 
+    populateProfileForm(); 
+    showToast('<span class="text-keep">プロフィール更新完了！</span><span class="text-keep">ヤー！！パワー！！</span>');
   });
 
   // モデル選択プルダウンのイベントリスナー
@@ -787,6 +789,7 @@ function initProfile() {
       showToast('AIモデルを変更したぞ！パワー！');
     });
   }
+  populateProfileForm();
 }
 
 function populateProfileForm() {
@@ -798,9 +801,12 @@ function populateProfileForm() {
   $$('input[name="p-pain"]').forEach(cb => { cb.checked = p.painAreas.includes(cb.value) || (p.painAreas.length === 0 && cb.value === 'なし'); });
   $$('input[name="p-priority"]').forEach(cb => { cb.checked = p.priorityMuscles.includes(cb.value); });
   const sl = $('#p-frequency'); sl.value = p.frequency; $('#p-frequency-value').textContent = p.frequency;
-  // Show masked API key
   const ak = getApiKey();
-  if (ak) $('#profile-api-key').value = ak.substring(0, 8) + '...' + ak.substring(ak.length - 4);
+  if (ak) {
+    $('#profile-api-key').value = '●●●●●●●●●●●●●●～';
+  } else {
+    $('#profile-api-key').value = '';
+  }
 
   // プルダウンに現在の設定を反映
   const ms = $('#profile-ai-model');
