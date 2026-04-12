@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v1.5.2'; // Toast Typography
+const CACHE_NAME = 'muscle-dialogue-v1.5.3'; // Toast Typography
 const ASSETS = [
     './',
     './index.html',

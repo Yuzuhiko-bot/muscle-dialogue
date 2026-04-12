@@ -87,7 +87,7 @@ const $$ = s => document.querySelectorAll(s);
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
-  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initBodyDashboard(); initExerciseMaster();
+  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 });
 
