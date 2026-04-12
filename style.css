@@ -2391,3 +2391,61 @@ body {
   padding-top: 0.2rem;
 }
 
+/* ============================================
+   カスタム種目マスタ（マッスル・マスター）
+   ============================================ */
+.ex-master-group {
+  margin-bottom: 1rem;
+}
+.ex-master-group-title {
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: var(--blue);
+  border-bottom: 2px solid var(--blue);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.2rem;
+}
+.ex-master-card {
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ex-master-info {
+  flex: 1;
+}
+.ex-master-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+  color: var(--text-primary);
+}
+.ex-master-meta {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+.ex-master-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+.ex-master-btn {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.7rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.ex-master-btn:active {
+  opacity: 0.7;
+}
+.ex-master-btn-edit { background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-light); }
+.ex-master-btn-del { background: var(--red-light); color: var(--red); }
+
+

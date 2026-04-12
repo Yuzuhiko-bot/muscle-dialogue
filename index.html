@@ -378,6 +378,16 @@
         </form>
       </div>
 
+      <div class="profile-section">
+        <h2 class="section-title">トレーニング種目カスタム</h2>
+        <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
+          自分だけのオリジナル種目やマシンを追加・編集できます。ここで設定したメニューからAIがあなただけのプログラムを生成します。
+        </p>
+        <button id="btn-open-exercise-master" class="btn-primary" style="width:100%; border-radius:var(--radius-lg); background:var(--sky); box-shadow:0 4px 0 var(--sky-dark);">
+          <span class="btn-text">🏋️ 種目マスタ管理</span>
+        </button>
+      </div>
+
       <div class="profile-section" style="background:var(--bg-input);">
         <h2 class="section-title" style="font-size:1rem; border:none; box-shadow:none; padding-left:0; background:transparent;">システム設定</h2>
         
@@ -571,7 +581,88 @@
     </div>
   </div>
 
-  <script src="app.js?v=1.4.3"></script>
+  <!-- ========== 種目マスタ一覧モーダル ========== -->
+  <div id="modal-exercise-master" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content" style="max-height:85vh; display:flex; flex-direction:column; padding-bottom:1rem;">
+      <div class="modal-header">
+        <h2><span class="text-keep">種目マスタ管理</span></h2>
+        <button class="modal-close" data-modal="modal-exercise-master">✕</button>
+      </div>
+      <div class="modal-body" style="flex:1; overflow-y:auto; padding:0.5rem;" id="exercise-master-list">
+        <!-- JSで一覧を描画 -->
+      </div>
+      <div class="modal-footer" style="display:flex; gap:0.5rem; flex-direction:column; padding-top:1rem; border-top:2px dashed var(--bg-input);">
+        <button id="btn-add-exercise-master" class="btn-primary btn-mega">
+          <span class="btn-text"><span class="text-keep">＋ 新規種目を</span><span class="text-keep">追加する</span></span>
+        </button>
+        <button id="btn-reset-exercise-master" class="btn-secondary" style="font-size:0.8rem;">
+          デフォルトリストに戻す
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 種目エディターモーダル ========== -->
+  <div id="modal-exercise-edit" class="modal hidden" style="z-index: 10001;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content" style="max-height:85vh; overflow-y:auto;">
+      <div class="modal-header" style="position:sticky; top:0; background:white; z-index:2;">
+        <h2><span class="text-keep" id="exercise-edit-title">新しい種目</span></h2>
+        <button class="modal-close" data-modal="modal-exercise-edit">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-master-id">
+        <div class="form-group">
+          <label class="form-label">🎯 種目名</label>
+          <input type="text" id="edit-master-name" class="input-muscle" placeholder="例: yuzuhiko流腹筋" style="text-align:left;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">💪 メイン部位 (Primary)</label>
+          <input type="text" id="edit-master-primary" class="input-muscle" placeholder="例: 大胸筋, 広背筋" style="text-align:left;" list="datalist-primary">
+          <datalist id="datalist-primary">
+            <option value="大胸筋">
+            <option value="広背筋">
+            <option value="大腿四頭筋">
+            <option value="ハムストリングス">
+            <option value="大臀筋">
+            <option value="三角筋前部">
+            <option value="上腕二頭筋">
+            <option value="上腕三頭筋">
+            <option value="腹直筋">
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label class="form-label">🤝 サブ部位 (カンマ区切りで複数可)</label>
+          <input type="text" id="edit-master-secondary" class="input-muscle" placeholder="例: 肩前部, 上腕三頭筋" style="text-align:left;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🛠️ 使用器具</label>
+          <input type="text" id="edit-master-equipment" class="input-muscle" placeholder="例: ダンベル, マシン, 自重" style="text-align:left;">
+        </div>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">⚖️ 重量刻み幅(kg)</label>
+            <input type="number" id="edit-master-step" class="input-muscle" step="0.5" placeholder="例: 2.5">
+            <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">自重や有酸素は 0</p>
+          </div>
+          <div class="form-group" style="flex:1; display:flex; align-items:flex-start; justify-content:center; padding-top:1.5rem;">
+            <label class="check-card" style="width:100%;">
+              <input type="checkbox" id="edit-master-cardio">
+              <span class="check-text" style="font-size:0.8rem;">🏃 有酸素運動</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="position:sticky; bottom:0; background:white; z-index:2;">
+        <button id="btn-save-exercise-master" class="btn-primary">
+          <span class="btn-text">保存する</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=1.5.0"></script>
 </body>
 
 </html>

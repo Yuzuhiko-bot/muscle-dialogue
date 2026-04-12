@@ -81,13 +81,13 @@ const LOADING_QUOTES = [
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
-let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
+let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
-  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initBodyDashboard();
+  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initBodyDashboard(); initExerciseMaster();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 });
 
@@ -97,15 +97,28 @@ function loadState() {
     const h = localStorage.getItem('muscleDialog_history');
     const b = localStorage.getItem('muscleDialog_bodyRecord');
     const cp = localStorage.getItem('muscleDialog_currentPlan');
+    const ce = localStorage.getItem('muscleDialog_customExercises');
     if (p) state.userProfile = JSON.parse(p);
     if (h) state.trainingHistory = JSON.parse(h);
     if (b) state.bodyRecord = JSON.parse(b);
     if (cp) state.currentPlan = JSON.parse(cp);
+    if (ce) state.customExercises = JSON.parse(ce);
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
 function saveHistory() { localStorage.setItem('muscleDialog_history', JSON.stringify(state.trainingHistory)); }
 function saveBodyRecord() { localStorage.setItem('muscleDialog_bodyRecord', JSON.stringify(state.bodyRecord)); }
+function saveCustomExercises() { 
+  if (state.customExercises) {
+    localStorage.setItem('muscleDialog_customExercises', JSON.stringify(state.customExercises)); 
+  } else {
+    localStorage.removeItem('muscleDialog_customExercises');
+  }
+}
+
+function getAvailableExercises() {
+  return state.customExercises || EXERCISE_MASTER;
+}
 function saveCurrentPlan() {
   if (state.currentPlan) {
     localStorage.setItem('muscleDialog_currentPlan', JSON.stringify(state.currentPlan));
@@ -367,7 +380,7 @@ function getRecentHistory(n) {
 
 function buildPrompt(cond, hist) {
   const p = state.userProfile;
-  const exData = EXERCISE_MASTER.map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}`).join('\n');
+  const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}`).join('\n');
   const histText = hist.length > 0 ? hist.map(h => {
     const ed = h.exercises.map(ex => {
       if (isCardio(ex.id)) return `  - ${ex.name}: ${ex.duration || 0}分`;
@@ -661,9 +674,21 @@ function openManualAddModal() {
 
 function addManualExerciseEntry() {
   const container = $('#manual-exercises'), entry = document.createElement('div'); entry.className = 'manual-exercise-entry';
-  const cats = { 胸: EXERCISE_MASTER.filter(e => e.id.startsWith('chest')), 背中: EXERCISE_MASTER.filter(e => e.id.startsWith('back')), 下半身: EXERCISE_MASTER.filter(e => e.id.startsWith('legs')), 肩: EXERCISE_MASTER.filter(e => e.id.startsWith('shoulders')), 腕: EXERCISE_MASTER.filter(e => e.id.startsWith('arms')), 腹: EXERCISE_MASTER.filter(e => e.id.startsWith('abs')), 有酸素: EXERCISE_MASTER.filter(e => e.id.startsWith('cardio')) };
+  const exs = getAvailableExercises();
+  const groups = {};
+  exs.forEach(ex => {
+    const pm = ex.primary_muscle || 'その他';
+    if (!groups[pm]) groups[pm] = [];
+    groups[pm].push(ex);
+  });
+  const order = ['大胸筋', '大胸筋上部', '広背筋', '脊柱起立筋', '大腿四頭筋', 'ハムストリングス', '大臀筋', '中臀筋', '内転筋', '三角筋前部', '三角筋中部', '三角筋後部', '上腕二頭筋', '上腕三頭筋', '前腕筋群', '腹直筋', '腹直筋下部', '心肺機能', 'その他'];
+  const sortedCats = Object.keys(groups).sort((a,b) => {
+    let ixA = order.indexOf(a); if(ixA === -1) ixA=999;
+    let ixB = order.indexOf(b); if(ixB === -1) ixB=999;
+    return ixA - ixB;
+  });
   let opts = '<option value="">種目を選択</option>';
-  Object.entries(cats).forEach(([c, exs]) => { opts += `<optgroup label="${c}">${exs.map(e => `<option value="${e.id}">${e.exercise_name}</option>`).join('')}</optgroup>`; });
+  sortedCats.forEach(c => { opts += `<optgroup label="${c}">${groups[c].map(e => `<option value="${e.id}">${e.exercise_name}</option>`).join('')}</optgroup>`; });
 
   entry.innerHTML = `<select class="manual-exercise-select">${opts}</select><div class="manual-inputs-area"></div><button class="btn-remove-exercise" type="button">✕ 削除</button>`;
   const select = entry.querySelector('.manual-exercise-select');
@@ -675,7 +700,7 @@ function addManualExerciseEntry() {
     if (isCardio(exId)) {
       inputsArea.innerHTML = `<div class="cardio-duration-row"><span class="cardio-duration-label">実施時間:</span><input type="number" class="input-muscle manual-duration" placeholder="分" min="1" value="20"><span class="cardio-duration-label">分</span></div>`;
     } else {
-      const master = EXERCISE_MASTER.find(m => m.id === exId);
+      const master = getAvailableExercises().find(m => m.id === exId);
       const step = master ? master.weight_step : 2.5;
       inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10"></div>`).join('')}`;
       
@@ -723,7 +748,7 @@ function saveManualTraining() {
   const exercises = [];
   $$('.manual-exercise-entry').forEach(entry => {
     const sel = entry.querySelector('.manual-exercise-select'); if (!sel.value) return;
-    const master = EXERCISE_MASTER.find(m => m.id === sel.value); if (!master) return;
+    const master = getAvailableExercises().find(m => m.id === sel.value); if (!master) return;
     if (isCardio(sel.value)) {
       const dur = entry.querySelector('.manual-duration');
       exercises.push({ id: master.id, name: master.exercise_name, duration: parseInt(dur?.value) || 0, sets: [], rpe: null });
@@ -816,7 +841,8 @@ function downloadBackup() {
     exportDate: new Date().toISOString(), 
     profile: state.userProfile, 
     history: state.trainingHistory,
-    body: state.bodyRecord 
+    body: state.bodyRecord,
+    customExercises: state.customExercises
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -840,6 +866,10 @@ function restoreBackup(e) {
       if (data.profile) state.userProfile = data.profile;
       if (data.history) state.trainingHistory = data.history;
       if (data.body) state.bodyRecord = data.body;
+      if (data.customExercises !== undefined) {
+        state.customExercises = data.customExercises;
+        saveCustomExercises();
+      }
       saveProfile(); saveHistory(); saveBodyRecord(); renderCalendar(); populateProfileForm();
       showToast('<span class="text-keep">復元完了！筋肉のデータが</span><span class="text-keep">蘇ったぞ！ヤー！！💪</span>');
     } catch (err) { showToast('ファイルが読み込めなかったぞ！😤'); }
@@ -1023,5 +1053,158 @@ function renderWeightChart() {
         }
       }
     }
+  });
+}
+
+// ---------- EXERCISE MASTER MANAGEMENT ----------
+function initExerciseMaster() {
+  const btnOpen = $('#btn-open-exercise-master');
+  if (btnOpen) {
+    btnOpen.addEventListener('click', () => {
+      renderExerciseMasterList();
+      openModal('modal-exercise-master');
+    });
+  }
+  
+  const btnAdd = $('#btn-add-exercise-master');
+  if (btnAdd) {
+    btnAdd.addEventListener('click', () => {
+      openExerciseMasterEdit(null);
+    });
+  }
+  
+  const btnReset = $('#btn-reset-exercise-master');
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      showConfirm('<span class="text-keep">すべてのカスタム種目を削除し、</span><span class="text-keep">デフォルトに戻しますか？</span>', () => {
+        state.customExercises = null;
+        saveCustomExercises();
+        renderExerciseMasterList();
+        showToast('<span class="text-keep">デフォルトリストに</span><span class="text-keep">リセットしたぞ！パワー！</span>');
+      });
+    });
+  }
+  
+  const btnSave = $('#btn-save-exercise-master');
+  if (btnSave) {
+    btnSave.addEventListener('click', saveExerciseMasterEntry);
+  }
+}
+
+function renderExerciseMasterList() {
+  const listContainer = $('#exercise-master-list');
+  if (!listContainer) return;
+  listContainer.innerHTML = '';
+  const exs = getAvailableExercises();
+  
+  // Group by primary_muscle
+  const groups = {};
+  exs.forEach(ex => {
+    const pm = ex.primary_muscle || 'その他';
+    if (!groups[pm]) groups[pm] = [];
+    groups[pm].push(ex);
+  });
+  
+  const order = ['大胸筋', '大胸筋上部', '広背筋', '脊柱起立筋', '大腿四頭筋', 'ハムストリングス', '大臀筋', '中臀筋', '内転筋', '三角筋前部', '三角筋中部', '三角筋後部', '上腕二頭筋', '上腕三頭筋', '前腕筋群', '腹直筋', '腹直筋下部', '心肺機能', 'その他'];
+  
+  const sortedKeys = Object.keys(groups).sort((a, b) => {
+    let ixA = order.indexOf(a); if (ixA === -1) ixA = 999;
+    let ixB = order.indexOf(b); if (ixB === -1) ixB = 999;
+    return ixA - ixB;
+  });
+  
+  sortedKeys.forEach(m => {
+    const divGroup = document.createElement('div');
+    divGroup.className = 'ex-master-group';
+    divGroup.innerHTML = `<div class="ex-master-group-title">${m}</div>`;
+    groups[m].forEach(ex => {
+      const card = document.createElement('div');
+      card.className = 'ex-master-card';
+      card.innerHTML = `
+        <div class="ex-master-info">
+          <div class="ex-master-name">${ex.exercise_name}${ex.is_cardio ? ' 🏃‍♂️' : ''}</div>
+          <div class="ex-master-meta">補助: ${ex.secondary_muscles && ex.secondary_muscles.length ? ex.secondary_muscles.join(', ') : 'なし'} | 器具: ${ex.equipment || 'なし'} | 刻み: ${ex.weight_step}kg</div>
+        </div>
+        <div class="ex-master-actions">
+          <button class="ex-master-btn ex-master-btn-edit" data-id="${ex.id}">編集</button>
+          <button class="ex-master-btn ex-master-btn-del" data-id="${ex.id}">削除</button>
+        </div>
+      `;
+      divGroup.appendChild(card);
+    });
+    listContainer.appendChild(divGroup);
+  });
+
+  listContainer.querySelectorAll('.ex-master-btn-edit').forEach(btn => {
+    btn.addEventListener('click', () => openExerciseMasterEdit(btn.dataset.id));
+  });
+  listContainer.querySelectorAll('.ex-master-btn-del').forEach(btn => {
+    btn.addEventListener('click', () => deleteExerciseMasterEntry(btn.dataset.id));
+  });
+}
+
+function openExerciseMasterEdit(id) {
+  const exs = getAvailableExercises();
+  let ex = null;
+  if (id) ex = exs.find(e => e.id === id);
+  
+  $('#exercise-edit-title').textContent = ex ? '種目の編集' : '新しい種目';
+  $('#edit-master-id').value = id || '';
+  $('#edit-master-name').value = ex ? ex.exercise_name : '';
+  $('#edit-master-primary').value = ex ? ex.primary_muscle : '';
+  $('#edit-master-secondary').value = ex ? (ex.secondary_muscles || []).join(', ') : '';
+  $('#edit-master-equipment').value = ex ? (ex.equipment || '') : '';
+  $('#edit-master-step').value = ex ? ex.weight_step : 2.5;
+  $('#edit-master-cardio').checked = ex ? !!ex.is_cardio : false;
+  
+  openModal('modal-exercise-edit');
+}
+
+function saveExerciseMasterEntry() {
+  const id = $('#edit-master-id').value;
+  const name = $('#edit-master-name').value.trim();
+  const primary = $('#edit-master-primary').value.trim();
+  const secondaryStrs = $('#edit-master-secondary').value.split(',').map(s => s.trim()).filter(s => s);
+  const equipment = $('#edit-master-equipment').value.trim();
+  const step = parseFloat($('#edit-master-step').value) || 0;
+  const isCardio = $('#edit-master-cardio').checked;
+
+  if (!name || !primary) {
+    showToast('<span class="text-keep">種目名とメイン部位は</span><span class="text-keep">必須だ！パワー！</span>');
+    return;
+  }
+
+  // Clone defaults if custom list is empty
+  if (!state.customExercises) {
+    state.customExercises = JSON.parse(JSON.stringify(EXERCISE_MASTER));
+  }
+
+  if (id) {
+    // Edit existing
+    const idx = state.customExercises.findIndex(e => e.id === id);
+    if (idx !== -1) {
+      state.customExercises[idx] = { ...state.customExercises[idx], exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio };
+    }
+  } else {
+    // Add new
+    const newId = 'custom_' + Date.now();
+    state.customExercises.push({ id: newId, exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio });
+  }
+
+  saveCustomExercises();
+  closeModal('modal-exercise-edit');
+  renderExerciseMasterList();
+  showToast('<span class="text-keep">種目を保存したぞ！</span><span class="text-keep">ヤー！💪</span>');
+}
+
+function deleteExerciseMasterEntry(id) {
+  showConfirm('<span class="text-keep">この種目を削除しますか？</span>', () => {
+    if (!state.customExercises) {
+      state.customExercises = JSON.parse(JSON.stringify(EXERCISE_MASTER));
+    }
+    state.customExercises = state.customExercises.filter(e => e.id !== id);
+    saveCustomExercises();
+    renderExerciseMasterList();
+    showToast('種目を削除したぞ！');
   });
 }
