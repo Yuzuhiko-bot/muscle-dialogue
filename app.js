@@ -1,4 +1,4 @@
-
+const APP_VERSION = 'v1.5.4 (Power-Chart-Restore)';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -86,9 +86,17 @@ const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
 // ---------- INIT ----------
+window.onerror = function(msg, url, line) {
+  const err = `❌ Error: ${msg} at ${line}`;
+  console.error(err);
+  if (typeof showToast === 'function') showToast(err);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.5.3 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
-  loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
+  console.log("%c💪 Muscle Dialogue v1.5.4 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  loadState();
+  initBodyDashboard(); // 優先的に初期化
+  initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 });
 
@@ -585,7 +593,7 @@ function checkAllSetsCompleted() { const a = $$('.set-check'), btn = $('#btn-com
 
 function completePlan() {
   if (!state.currentPlan) return;
-
+  
   const allEx = [...(state.currentPlan.exercises || []), ...(state.currentPlan.cardio_exercises || []).map(c => ({ ...c, _isCardio: true }))];
   const completedExercises = [];
 
@@ -810,7 +818,8 @@ function populateProfileForm() {
   setRadio('p-goal', p.goal); setRadio('p-experience', p.experience); setRadio('p-activity', p.activity);
   $$('input[name="p-pain"]').forEach(cb => { cb.checked = p.painAreas.includes(cb.value) || (p.painAreas.length === 0 && cb.value === 'なし'); });
   $$('input[name="p-priority"]').forEach(cb => { cb.checked = p.priorityMuscles.includes(cb.value); });
-  const sl = $('#p-frequency'); sl.value = p.frequency; $('#p-frequency-value').textContent = p.frequency;
+  const sl = $('#p-frequency'); if (sl) sl.value = p.frequency;
+  const fv = $('#p-frequency-value'); if (fv) fv.textContent = p.frequency;
 }
 
 // ---------- API KEY MANAGEMENT ----------
@@ -933,8 +942,22 @@ function showConfirm(message, onConfirm) {
 let weightChartInstance = null;
 
 function initBodyDashboard() {
-  $('#body-date').value = formatDate(new Date());
-  $('#btn-save-weight').addEventListener('click', saveWeight);
+  console.log("💪 initBodyDashboard start...");
+  const dateEl = $('#body-date');
+  if (dateEl) {
+    const today = formatDate(new Date());
+    dateEl.value = today;
+    console.log("💪 Date initialized to:", today);
+  } else {
+    console.error("❌ #body-date not found!");
+  }
+
+  const saveBtn = $('#btn-save-weight');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', saveWeight);
+  } else {
+    console.error("❌ #btn-save-weight not found!");
+  }
   
   // タブ切り替え時にグラフを描画
   $$('.tab-btn[data-tab="profile"]').forEach(btn => {
@@ -1061,6 +1084,8 @@ function renderWeightChart() {
     }
   });
 }
+
+function saveBodyRecord() { localStorage.setItem('muscleDialog_bodyRecord', JSON.stringify(state.bodyRecord)); }
 
 // ---------- EXERCISE MASTER MANAGEMENT ----------
 function initExerciseMaster() {

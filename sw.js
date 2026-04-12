@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.5.3'; // Toast Typography
+const CACHE_NAME = 'muscle-dialogue-v1.5.4'; // Power Chart Restore
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.5.3',
+    './app.js?v=1.5.4',
     './manifest.json',
     './sw.js',
     './biceps.png',
@@ -22,9 +22,12 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-        )
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.filter((key) => key !== CACHE_NAME)
+                    .map((key) => caches.delete(key))
+            );
+        })
     );
     self.clients.claim();
 });
