@@ -87,6 +87,7 @@ const $$ = s => document.querySelectorAll(s);
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("%c💪 Muscle Dialogue v1.5.3 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState(); initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
 });
