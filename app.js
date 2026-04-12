@@ -793,6 +793,15 @@ function initProfile() {
 }
 
 function populateProfileForm() {
+  const ak = getApiKey();
+  if (ak) {
+    $('#profile-api-key').value = '●●●●●●●●●●●●●●～';
+  } else {
+    $('#profile-api-key').value = '';
+  }
+  const ms = $('#profile-ai-model');
+  if (ms) ms.value = getSelectedModel();
+
   if (!state.userProfile) return;
   const p = state.userProfile;
   if (p.targetWeight) $('#p-targetWeight').value = p.targetWeight;
@@ -801,16 +810,6 @@ function populateProfileForm() {
   $$('input[name="p-pain"]').forEach(cb => { cb.checked = p.painAreas.includes(cb.value) || (p.painAreas.length === 0 && cb.value === 'なし'); });
   $$('input[name="p-priority"]').forEach(cb => { cb.checked = p.priorityMuscles.includes(cb.value); });
   const sl = $('#p-frequency'); sl.value = p.frequency; $('#p-frequency-value').textContent = p.frequency;
-  const ak = getApiKey();
-  if (ak) {
-    $('#profile-api-key').value = '●●●●●●●●●●●●●●～';
-  } else {
-    $('#profile-api-key').value = '';
-  }
-
-  // プルダウンに現在の設定を反映
-  const ms = $('#profile-ai-model');
-  if (ms) ms.value = getSelectedModel();
 }
 
 // ---------- API KEY MANAGEMENT ----------
