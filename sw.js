@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.6.0'; // AI-Coach-Evolution
+const CACHE_NAME = 'muscle-dialogue-v1.6.1'; // UI-Refinement
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.6.0',
+    './app.js?v=1.6.1',
     './manifest.json',
     './sw.js',
     './biceps.png',

@@ -28,7 +28,7 @@
   <!-- ========== スプラッシュ ========== -->
   <div id="splash-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-white p-6 transition-opacity duration-1000">
     <div class="splash-content">
-      <h1 class="splash-title-mega">マッスル<br>ダイアログ</h1>
+      <h1 class="splash-title-mega"><span class="text-keep">マッスル</span><br><span class="text-keep">ダイアログ</span></h1>
       <p class="splash-subtitle">〜 筋肉とのポップな対話 〜</p>
 
       <!-- 重複するイラストを削除：背景の巨大な筋肉を活かす！ -->
@@ -263,7 +263,7 @@
 
       <div id="no-plan" class="no-plan-area">
         <button id="btn-generate" class="btn-mega btn-kinnikun-style">
-          <span class="btn-text">AIメニューを生成する！</span>
+          <span class="btn-text"><span class="text-keep">AIメニューを</span><span class="text-keep">生成する！</span></span>
           <span class="btn-effect"></span>
         </button>
       </div>
@@ -279,7 +279,7 @@
       <div id="plan-area" class="plan-area hidden">
         <div id="plan-list" class="plan-list"></div>
         <button id="btn-complete" class="btn-primary btn-mega btn-complete hidden">
-          <span class="btn-text">完了！パワー！！</span>
+          <span class="btn-text"><span class="text-keep">完了！</span><span class="text-keep">パワー！！</span></span>
           <span class="btn-effect"></span>
         </button>
         <button id="btn-regenerate" class="btn-secondary btn-regen">
@@ -303,7 +303,7 @@
             <input type="number" id="body-weight" class="input-muscle" step="0.1" placeholder="体重(kg)" style="flex:1;">
           </div>
           <button id="btn-save-weight" class="btn-primary" style="width:100%; padding:0.8rem;">
-            <span class="btn-text">体重を記録する！パワー！</span>
+            <span class="btn-text"><span class="text-keep">体重を記録する！</span><span class="text-keep">パワー！</span></span>
           </button>
         </div>
         
@@ -373,7 +373,7 @@
             </div>
           </div>
           <button type="submit" class="btn-primary" style="width:100%;">
-            <span class="btn-text">プロフィール更新！パワー！！</span>
+            <span class="btn-text"><span class="text-keep">プロフィール更新！</span><span class="text-keep">パワー！！</span></span>
           </button>
         </form>
       </div>
@@ -671,7 +671,7 @@
   </div>
 
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.6.0 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.6.1 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
@@ -689,7 +689,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.6.0"></script>
+    <script src="app.js?v=1.6.1"></script>
 </body>
 
 </html>

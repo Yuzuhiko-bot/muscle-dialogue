@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.6.0 (AI-Coach-Evolution)';
+const APP_VERSION = 'v1.6.1 (UI-Refinement)';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -93,7 +93,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.6.0 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.6.1 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -334,6 +334,10 @@ function openEditExercise(date, idx) {
 
 // ---------- TRAINING ----------
 function initTraining() {
+  // 前回入力した自由要望を復元
+  const lastReq = localStorage.getItem('muscleDialog_lastFreeRequest');
+  if (lastReq) $('#free-request').value = lastReq;
+
   // 既に作成途中のプランがある場合、画面を復元して再描画
   if (state.currentPlan) {
     $('#no-plan').classList.add('hidden');
@@ -381,10 +385,12 @@ async function generatePlan() {
 }
 
 function gatherConditions() {
+  const req = $('#free-request').value.trim();
+  localStorage.setItem('muscleDialog_lastFreeRequest', req);
   return {
     time: state.selectedTime, fatigue: $('input[name="fatigue"]:checked')?.value || '普通',
     todayPain: [...$$('input[name="todayPain"]:checked')].map(c => c.value).filter(v => v !== 'なし'),
-    freeRequest: $('#free-request').value.trim()
+    freeRequest: req
   };
 }
 
