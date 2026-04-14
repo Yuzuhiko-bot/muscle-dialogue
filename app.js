@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.5.4 (Power-Chart-Restore)';
+const APP_VERSION = 'v1.5.5 (Confirm-Fix-Power)';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -93,7 +93,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.5.4 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.5.5 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -930,7 +930,7 @@ function showConfirm(message, onConfirm) {
     `;
     document.body.appendChild(overlay);
   }
-  $('#confirm-message').textContent = message;
+  $('#confirm-message').innerHTML = message;
   overlay.style.display = 'flex';
   
   $('#confirm-yes').onclick = () => { overlay.style.display = 'none'; onConfirm(); };
@@ -1236,6 +1236,6 @@ function deleteExerciseMasterEntry(id) {
     state.customExercises = state.customExercises.filter(e => e.id !== id);
     saveCustomExercises();
     renderExerciseMasterList();
-    showToast('種目を削除したぞ！');
+    showToast('<span class="text-keep">種目を削除したぞ！</span>');
   });
 }

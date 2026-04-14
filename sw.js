@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.5.4'; // Power Chart Restore
+const CACHE_NAME = 'muscle-dialogue-v1.5.5'; // Confirm-Fix-Power
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.5.4',
+    './app.js?v=1.5.5',
     './manifest.json',
     './sw.js',
     './biceps.png',
