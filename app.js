@@ -97,7 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
+  if ('serviceWorker' in navigator) {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      // ローカル開発時はService Workerを解除し、キャッシュの混乱を完全に防ぐ
+      navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+    } else {
+      navigator.serviceWorker.register('sw.js').catch(() => { });
+    }
+  }
 });
 
 function loadState() {

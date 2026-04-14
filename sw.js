@@ -33,6 +33,22 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+    const url = new URL(event.request.url);
+
+    // ローカル開発環境（localhost等）の場合はキャッシュを完全にバイパスする
+    if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+        event.respondWith(
+            fetch(event.request).catch(() => {
+                // サーバーが落ちている場合は古いキャッシュを返さず、エラーテキストを返す
+                return new Response("💪 [Muscle Dialogue] ローカル開発サーバーが起動していないか、アクセスできません。サーバーを起動してください！パワー！", {
+                    status: 503,
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+                });
+            })
+        );
+        return;
+    }
+
     // Gemini APIへのリクエストはキャッシュしない
     if (event.request.url.includes('generativelanguage.googleapis.com')) {
         event.respondWith(fetch(event.request));
