@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.5.5 (Confirm-Fix-Power)';
+const APP_VERSION = 'v1.6.0 (AI-Coach-Evolution)';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -93,7 +93,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.5.5 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.6.0 - Power!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -366,7 +366,7 @@ async function generatePlan() {
   const tStatus = $('#training-status-text');
   if (tStatus) tStatus.textContent = '筋肉ルーレット回転中...';
   try {
-    const cond = gatherConditions(), hist = getRecentHistory(5), prompt = buildPrompt(cond, hist);
+    const cond = gatherConditions(), hist = getRecentHistory(21), prompt = buildPrompt(cond, hist);
     const resp = await callGeminiAPI(prompt), plan = parseGeminiResponse(resp);
     state.currentPlan = plan;
     saveCurrentPlan(); 
@@ -435,18 +435,38 @@ ${exData}
    - 【筋力アップ】: 3〜6回 / 3〜5セット / 休憩180〜300秒
    - 【ダイエット】: 10〜15回 / 3セット / 休憩60〜90秒 ＋ 有酸素運動を必ず組み込む
    - 【健康維持】: 12〜15回 / 2〜3セット / 休憩90秒
-3. **重量設定と漸進性過負荷**: 重量は各種目のweight_step刻みで設定（0は自重）。前回の履歴のRPEが8以下なら重量をweight_step分増やすか、回数を増やす。RPEが9〜10なら前回と同じ重量を維持する。
-4. **分割法（スプリット）の自動推論**: ユーザーの「週の頻度」と「直近履歴」から本日のターゲット部位を決定すること。
+3. **重量設定と安全基準（厳守）**: 重量は必ず各種目のweight_step刻みで設定すること（0は自重）。前回の履歴のRPEが8以下なら重量か回数を増やす。
+   【超重要・絶対禁止事項】前回のRPEが9以上の場合は、限界に近い状態であるため、いかなる理由や他のルール（目的の回数指定など）と競合しても「絶対に」重量を増加させないこと。これはユーザーの怪我を防ぐための最優先の安全基準である。
+4. **中長期トレンドの分析とマンネリ打破**: 渡された直近3週間（最大21件）の履歴全体を分析すること。
+   - 同一の種目で数週間重量や回数が更新されていない（停滞期・プラトーの）兆候がある場合は、重量設定を軽くして回数を増やすか、類似の別種目（例：バーベルベンチプレスからダンベルプレスへ変更）を提案して筋肉に新しい刺激を与えること。
+   - 常に同じ種目構成にならないよう、履歴を考慮して種目のバリエーションに変化を持たせること。
+5. **分割法（スプリット）の自動推論**: ユーザーの「週の頻度」と「直近履歴」から本日のターゲット部位を決定すること。
    - 週1〜2回: 全身をバランスよく鍛えるメニュー（全身法）。
    - 週3〜4回: 上半身/下半身、またはプッシュ/プル/脚などで分割し、直近履歴で鍛えた部位と被らないようにする。
    - 週5回以上: 細かく部位を分割し、直近履歴から完全に回復している部位をターゲットにする。
-5. **怪我の配慮と自由要望**: ユーザーが指定した「今日痛みがある部位」に関連する種目は完全に除外すること。自由要望がある場合は、上記すべてのルールよりも自由要望を最優先すること。
+6. **怪我の配慮と自由要望**: ユーザーが指定した「今日痛みがある部位」に関連する種目は完全に除外すること。自由要望がある場合は、上記すべてのルールよりも自由要望を最優先すること。
+7. **経験レベルに応じた指導の質の分岐**: ユーザーの「経験」レベル（初心者/中級者/上級者）に応じて、各種目の \`note\`（アドバイス）と \`trainer_message\` の内容を明確に変化させること。
+   - 【初心者】: 怪我を防ぐための「正しいフォーム（胸を張る、背中を丸めない等）」を中心に、基礎を固めるための優しく励ますアドバイスをする。重量を追うことは推奨しない。
+   - 【中級者】: 「ネガティブ動作（下ろす時）をゆっくり」や「反動を使わない（ストリクト）」など、筋肉への負荷をより高めるための一歩進んだテクニックをアドバイスする。
+   - 【上級者】: フォームは完璧である前提で、「限界からのもう1レップ」や「徹底的な追い込み」を求める、精神的・肉体的な限界突破を促す熱く厳しいアドバイスをする。
+8. **体重推移に基づく総合的アドバイス**: ユーザーの「体重情報（目標と直近推移）」を分析すること。
+   - 【ダイエット目的】で体重が落ちていない停滞期の場合は、有酸素運動の追加提案や、食事（アンダーカロリー）を意識するようアドバイスすること。
+   - 【筋肥大目的】で体重が増えていない場合は、重いものを挙げるだけでなく、しっかり食べて休むこと（オーバーカロリーやタンパク質摂取）の重要性をアドバイスすること。
+   - 順調に目標体重に近づいている場合は、その成果を熱く称賛すること。
 
 ## JSON出力形式（必ずJSONのみを出力）:
 {"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"ウォームアップ内容","cooldown":"クールダウン内容","total_estimated_minutes":45,"trainer_message":"（名言を交えた、極めて短く自然なメッセージ）"}
 `;
 
+  // ★追加: 直近の体重記録（最大5件）と目標体重をテキスト化
+  const sortedBodyDates = Object.keys(state.bodyRecord || {}).sort();
+  const recentBodyRecords = sortedBodyDates.slice(-5).map(d => `${d.slice(5)}: ${state.bodyRecord[d]}kg`).join(', ');
+  const targetWeight = p.targetWeight ? `${p.targetWeight}kg` : '未設定';
+  const bodyText = recentBodyRecords ? `目標:${targetWeight} / 直近推移:[${recentBodyRecords}]` : `目標:${targetWeight} / 記録なし`;
+
+  // ★変更: usr変数の中に「## 体重情報」の行を追加
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
+## 体重情報: ${bodyText}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
 ## 直近履歴:\n${histText}
 最適メニューをJSON生成。重量はweight_step刻みで。`;

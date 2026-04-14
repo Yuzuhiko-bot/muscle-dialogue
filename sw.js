@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.5.5'; // Confirm-Fix-Power
+const CACHE_NAME = 'muscle-dialogue-v1.6.0'; // AI-Coach-Evolution
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.5.5',
+    './app.js?v=1.6.0',
     './manifest.json',
     './sw.js',
     './biceps.png',
