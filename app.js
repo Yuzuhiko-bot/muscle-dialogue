@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.6.1 (UI-Refinement)';
+const APP_VERSION = 'v1.7.0 (Body-Chart-Pro)';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -53,7 +53,7 @@ const EXERCISE_MASTER = [
   { id: "cardio_001", exercise_name: "有酸素運動（バイク）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "アップライトバイク", weight_step: 0, is_cardio: true },
   { id: "cardio_002", exercise_name: "有酸素運動（ランニング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "ランニングマシン", weight_step: 0, is_cardio: true },
   { id: "cardio_003", exercise_name: "有酸素運動（クロストレーナー）", primary_muscle: "心肺機能", secondary_muscles: ["全身"], equipment: "クロストレーナー", weight_step: 0, is_cardio: true },
-  { id: "cardio_004", exercise_name: "有酸素運動（ジョギング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "自重・屋外", weight_step: 0, is_cardio: true }
+  { id: "cardio_004", exercise_name: "有酸素運動（ウォーキング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "自重・屋外", weight_step: 0, is_cardio: true }
 ];
 
 // ---------- KINNIKUN QUOTES ----------
@@ -459,14 +459,23 @@ ${exData}
    - 【ダイエット目的】で体重が落ちていない停滞期の場合は、有酸素運動の追加提案や、食事（アンダーカロリー）を意識するようアドバイスすること。
    - 【筋肥大目的】で体重が増えていない場合は、重いものを挙げるだけでなく、しっかり食べて休むこと（オーバーカロリーやタンパク質摂取）の重要性をアドバイスすること。
    - 順調に目標体重に近づいている場合は、その成果を熱く称賛すること。
+9. **ウォームアップとクールダウンの情熱的指導**:
+   - \`warmup\`の欄は「今日のメニュー方針の発表とウォームアップ指示」とする。過去の履歴等の根拠から「なぜ今日この部位・種目を選んだのか」をアツく解説し、本日のターゲット部位に効かせるためどんな動的ストレッチをすべきか情熱的にアドバイスすること。
+   - \`cooldown\`の欄には、本日酷使した特定の筋肉を名指しして労い、どこを意識してどんな静的ストレッチをすべきか、「なかやまきんに君」特有の情熱的な口調で熱く具体的にアドバイスすること。
 
 ## JSON出力形式（必ずJSONのみを出力）:
-{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"ウォームアップ内容","cooldown":"クールダウン内容","total_estimated_minutes":45,"trainer_message":"（名言を交えた、極めて短く自然なメッセージ）"}
+{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"（今日のプランの根拠とウォームアップの情熱的アドバイス）","cooldown":"（労いと具体的ストレッチの情熱的アドバイス）","total_estimated_minutes":45,"trainer_message":"（名言を交えた、極めて短く自然なメッセージ）"}
 `;
 
   // ★追加: 直近の体重記録（最大5件）と目標体重をテキスト化
   const sortedBodyDates = Object.keys(state.bodyRecord || {}).sort();
-  const recentBodyRecords = sortedBodyDates.slice(-5).map(d => `${d.slice(5)}: ${state.bodyRecord[d]}kg`).join(', ');
+  const recentBodyRecords = sortedBodyDates.slice(-5).map(d => {
+    const e = getBodyEntry(d);
+    if (!e) return '';
+    let txt = `${d.slice(5)}: ${e.weight}kg`;
+    if (e.bodyFat != null) txt += `(${e.bodyFat}%)`;
+    return txt;
+  }).filter(s => s).join(', ');
   const targetWeight = p.targetWeight ? `${p.targetWeight}kg` : '未設定';
   const bodyText = recentBodyRecords ? `目標:${targetWeight} / 直近推移:[${recentBodyRecords}]` : `目標:${targetWeight} / 記録なし`;
 
@@ -561,12 +570,13 @@ function parseGeminiResponse(r) {
       throw new Error('No valid JSON block found');
     } catch (e2) {
       console.error('Final Parse Attempt Failed:', text);
-      throw new Error('<span class="text-keep">AIの筋肉（JSON）が</span><span class="text-keep">壊れているようだ！</span><br><span class="text-keep">もう一度ルーレットを回してくれ！</span><span class="text-keep">パワー！</span>');
+      throw new Error('AIの筋肉（JSON）が壊れているようだ！もう一度ルーレットを回してくれ！パワー！');
     }
   }
 }
 
 function renderPlan(plan) {
+  const nl2br = (s) => (s || '').replace(/\n/g, '<br>');
   const list = $('#plan-list'); list.innerHTML = '';
   if (plan.warmup) {
     const d = document.createElement('div');
@@ -579,7 +589,7 @@ function renderPlan(plan) {
       </div>
       <div style="display:flex; align-items:center; gap:1rem; margin-top:0.5rem;">
         <img src="bike.png" alt="バイク" style="width:80px; height:auto; filter:drop-shadow(2px 2px 0 rgba(0,0,0,0.2));" onerror="this.style.display='none';">
-        <div class="exercise-note" style="flex:1; font-weight:900;">${plan.warmup}</div>
+        <div class="exercise-note" style="flex:1; font-weight:900;">${nl2br(plan.warmup)}</div>
       </div>`;
     list.appendChild(d);
   }
@@ -610,15 +620,15 @@ function renderPlan(plan) {
       </div>`;
     }
 
-    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${ex.note ? `<div class="exercise-note">${ex.note}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
+    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
     }, 0);
   });
 
-  if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky)); color:var(--text-primary);">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${plan.cooldown}</div>`; list.appendChild(d); }
-  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);"><span class="text-keep">★ なかやまきんに君からの</span><span class="text-keep">ひとこと ★</span></div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">${plan.trainer_message}</div>`; list.appendChild(d); }
+  if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky)); color:var(--text-primary);">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${nl2br(plan.cooldown)}</div>`; list.appendChild(d); }
+  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);"><span class="text-keep">★ なかやまきんに君からの</span><span class="text-keep">ひとこと ★</span></div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">${nl2br(plan.trainer_message)}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
 }
 
@@ -658,7 +668,7 @@ function completePlan() {
     $('#plan-area').classList.add('hidden');
     $('#no-plan').classList.remove('hidden');
     $('#btn-complete').classList.add('hidden');
-    $('#training-status-text').textContent = 'さあ、筋肉との対話を始めよう！';
+    const tStatus = $('#training-status-text'); if (tStatus) tStatus.textContent = 'さあ、筋肉との対話を始めよう！';
     renderCalendar();
   };
 
@@ -717,13 +727,24 @@ function openManualAddModal() {
 function addManualExerciseEntry() {
   const container = $('#manual-exercises'), entry = document.createElement('div'); entry.className = 'manual-exercise-entry';
   const exs = getAvailableExercises();
+  const getBroadCategory = (m) => {
+    if (m.includes('胸')) return '胸';
+    if (m.includes('背') || m.includes('僧帽') || m.includes('脊柱') || m.includes('大円')) return '背中';
+    if (m.includes('腿') || m.includes('臀') || m.includes('内転') || m.includes('ハムストリングス')) return '下半身';
+    if (m.includes('三角筋') || m.includes('肩')) return '肩';
+    if (m.includes('腕')) return '腕';
+    if (m.includes('腹') || m.includes('腸腰筋')) return '腹';
+    if (m.includes('心肺') || m.includes('有酸素')) return '有酸素';
+    return 'その他';
+  };
   const groups = {};
   exs.forEach(ex => {
     const pm = ex.primary_muscle || 'その他';
-    if (!groups[pm]) groups[pm] = [];
-    groups[pm].push(ex);
+    const cat = getBroadCategory(pm);
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(ex);
   });
-  const order = ['大胸筋', '大胸筋上部', '広背筋', '脊柱起立筋', '大腿四頭筋', 'ハムストリングス', '大臀筋', '中臀筋', '内転筋', '三角筋前部', '三角筋中部', '三角筋後部', '上腕二頭筋', '上腕三頭筋', '前腕筋群', '腹直筋', '腹直筋下部', '心肺機能', 'その他'];
+  const order = ['胸', '背中', '下半身', '肩', '腕', '腹', '有酸素', 'その他'];
   const sortedCats = Object.keys(groups).sort((a,b) => {
     let ixA = order.indexOf(a); if(ixA === -1) ixA=999;
     let ixB = order.indexOf(b); if(ixB === -1) ixB=999;
@@ -1001,8 +1022,8 @@ function initBodyDashboard() {
 function saveWeight() {
   const ds = $('#body-date').value;
   const weightStr = $('#body-weight').value.trim();
+  const fatStr = $('#body-fat').value.trim();
   
-  // 日付の入力は必須
   if (!ds) { 
     showToast('日付を選択してくれ！パワー！'); 
     return; 
@@ -1011,18 +1032,18 @@ function saveWeight() {
   // ▼ 1. 体重が空欄の場合（削除処理）
   if (weightStr === '') {
     if (state.bodyRecord[ds]) {
-      delete state.bodyRecord[ds]; // データを削除
+      delete state.bodyRecord[ds];
       saveBodyRecord();
       renderWeightChart();
       showToast('記録を削除したぞ！ヤー！');
-      $('#body-feedback').classList.add('hidden'); // フィードバックを非表示に戻す
+      $('#body-feedback').classList.add('hidden');
     } else {
       showToast('その日にはまだ記録がないぞ！');
     }
     return;
   }
   
-  // ▼ 2. 体重が入力されている場合（新規追加 or 上書き処理）
+  // ▼ 2. 体重が入力されている場合
   const wt = parseFloat(weightStr);
   if (isNaN(wt)) {
     showToast('正しい数値を入力してくれ！パワー！');
@@ -1030,9 +1051,9 @@ function saveWeight() {
   }
   
   const prevWeight = getLatestWeightBefore(ds);
+  const bf = fatStr !== '' ? parseFloat(fatStr) : null;
   
-  // 同じ日付 ds が既に存在すれば、自動的にこの1行で上書きされます
-  state.bodyRecord[ds] = wt; 
+  state.bodyRecord[ds] = { weight: wt, bodyFat: (bf !== null && !isNaN(bf)) ? bf : null };
   
   saveBodyRecord();
   renderWeightChart();
@@ -1040,9 +1061,19 @@ function saveWeight() {
   showLocalFeedback(wt, prevWeight);
 }
 
+// 旧フォーマット互換: bodyRecord[date] が数値の場合も {weight} として読む
+function getBodyEntry(ds) {
+  const v = state.bodyRecord[ds];
+  if (v == null) return null;
+  if (typeof v === 'number') return { weight: v, bodyFat: null };
+  return v;
+}
+
 function getLatestWeightBefore(dateStr) {
   const dates = Object.keys(state.bodyRecord).filter(d => d < dateStr).sort();
-  return dates.length > 0 ? state.bodyRecord[dates[dates.length - 1]] : null;
+  if (dates.length === 0) return null;
+  const entry = getBodyEntry(dates[dates.length - 1]);
+  return entry ? entry.weight : null;
 }
 
 function showLocalFeedback(current, prev) {
@@ -1070,50 +1101,128 @@ function renderWeightChart() {
   const ctx = $('#weightChart');
   if (!ctx) return;
   
-  const sortedDates = Object.keys(state.bodyRecord).sort().slice(-14); // 直近14日分
-  const weights = sortedDates.map(d => state.bodyRecord[d]);
+  // 直近14日間のカレンダー日付を生成（記録の有無にかかわらず）
+  const today = new Date();
+  const labels = [];
+  const dateKeys = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = formatDate(d);
+    dateKeys.push(key);
+    labels.push(key.slice(5).replace('-','/'));
+  }
   
-  // 目標体重の配列作成（設定されていれば）
+  // 各日のデータを取得（ない日は null）
+  const weights = dateKeys.map(k => {
+    const e = getBodyEntry(k);
+    return e ? e.weight : null;
+  });
+  const bodyFats = dateKeys.map(k => {
+    const e = getBodyEntry(k);
+    return e ? e.bodyFat : null;
+  });
+  
+  const hasBodyFat = bodyFats.some(v => v !== null);
   const targetWt = state.userProfile?.targetWeight;
-  const targetData = targetWt ? sortedDates.map(() => targetWt) : [];
+  const targetData = targetWt ? dateKeys.map(() => targetWt) : [];
+
+  // 描画に使う実際の体重値だけ取得（min/max計算用）
+  const validWeights = weights.filter(w => w !== null);
+  const validFats = bodyFats.filter(f => f !== null);
 
   if (weightChartInstance) weightChartInstance.destroy();
 
+  const datasets = [
+    {
+      label: '体重 (kg)',
+      data: weights,
+      borderColor: '#D4001F',
+      backgroundColor: '#D4001F',
+      borderWidth: 3,
+      tension: 0,
+      pointRadius: 5,
+      spanGaps: true,
+      yAxisID: 'y',
+    },
+    ...(hasBodyFat ? [{
+      label: '体脂肪率 (%)',
+      data: bodyFats,
+      borderColor: '#F39B0C',
+      backgroundColor: '#F39B0C',
+      borderWidth: 2,
+      tension: 0,
+      pointRadius: 3,
+      spanGaps: true,
+      yAxisID: 'y2',
+    }] : []),
+    ...(targetWt ? [{
+      label: '目標体重',
+      data: targetData,
+      borderColor: '#1F7BCB',
+      borderWidth: 2,
+      borderDash: [5, 5],
+      pointRadius: 0,
+      pointStyle: 'line',
+      fill: false,
+      yAxisID: 'y',
+    }] : []),
+  ];
+
+  const scales = {
+    y: { 
+      position: 'left',
+      suggestedMin: validWeights.length ? Math.min(...validWeights, targetWt || Infinity) - 2 : 50,
+      suggestedMax: validWeights.length ? Math.max(...validWeights, targetWt || -Infinity) + 2 : 100,
+      ticks: { font: { weight: 'bold' } },
+    },
+    x: {
+      ticks: { maxRotation: 0, font: { size: 10 } },
+    }
+  };
+  
+  if (hasBodyFat) {
+    scales.y2 = {
+      position: 'right',
+      suggestedMin: validFats.length ? Math.min(...validFats) - 3 : 5,
+      suggestedMax: validFats.length ? Math.max(...validFats) + 3 : 35,
+      grid: { drawOnChartArea: false },
+      ticks: { color: '#F39B0C', font: { weight: 'bold' }, callback: v => v + '%' },
+    };
+  }
+
   weightChartInstance = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels: sortedDates.map(d => d.slice(5).replace('-','/')), // MM/DD
-      datasets: [
-        {
-          label: '体重 (kg)',
-          data: weights,
-          borderColor: '#D4001F',
-          backgroundColor: '#D4001F',
-          borderWidth: 3,
-          tension: 0.3,
-          pointRadius: 5,
-        },
-        ...(targetWt ? [{
-          label: '目標',
-          data: targetData,
-          borderColor: '#1F7BCB',
-          borderWidth: 2,
-          borderDash: [5, 5],
-          pointRadius: 0,
-          fill: false
-        }] : [])
-      ]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { 
-          suggestedMin: Math.min(...weights, targetWt || Infinity) - 2,
-          suggestedMax: Math.max(...weights, targetWt || -Infinity) + 2
+      plugins: { 
+        legend: { 
+          display: true, 
+          labels: { 
+            font: { size: 11, weight: 'bold' },
+            usePointStyle: true,
+            pointStyleWidth: 30,
+            generateLabels: function(chart) {
+              return chart.data.datasets.map((ds, i) => {
+                const meta = chart.getDatasetMeta(i);
+                return {
+                  text: ds.label,
+                  fillStyle: ds.borderDash ? 'transparent' : ds.backgroundColor,
+                  strokeStyle: ds.borderColor,
+                  lineDash: ds.borderDash || [],
+                  lineWidth: ds.borderWidth,
+                  pointStyle: ds.borderDash ? 'line' : 'rect',
+                  hidden: meta.hidden,
+                  datasetIndex: i,
+                };
+              });
+            }
+          } 
         }
-      }
+      },
+      scales
     }
   });
 }

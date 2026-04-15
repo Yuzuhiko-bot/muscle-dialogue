@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v1.6.1'; // UI-Refinement
+const CACHE_NAME = 'muscle-dialogue-v1.7.0'; // Body-Chart-Pro
 const ASSETS = [
     './',
     './index.html',
