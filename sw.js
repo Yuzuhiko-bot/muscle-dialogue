@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.7.0'; // Body-Chart-Pro
+const CACHE_NAME = 'muscle-dialogue-v1.7.1'; // Body-Chart-Pro
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.6.1',
+    './app.js?v=1.7.1',
     './manifest.json',
     './sw.js',
     './biceps.png',
