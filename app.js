@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.7.1 (AI-Volume-Fix)';
+const APP_VERSION = 'v1.7.2 (Revert-AI-Volume-Fix)';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -462,12 +462,9 @@ ${exData}
 9. **ウォームアップとクールダウンの情熱的指導**:
    - \`warmup\`の欄は「今日のメニュー方針の発表とウォームアップ指示」とする。過去の履歴等の根拠から「なぜ今日この部位・種目を選んだのか」をアツく解説し、本日のターゲット部位に効かせるためどんな動的ストレッチをすべきか情熱的にアドバイスすること。
    - \`cooldown\`の欄には、本日酷使した特定の筋肉を名指しして労い、どこを意識してどんな静的ストレッチをすべきか、「なかやまきんに君」特有の情熱的な口調で熱く具体的にアドバイスすること。
-10. **時間管理とボリュームの最適化（Liteモデル対応）**:
-    - プランの合計推定時間が、ユーザーの指定した時間（${cond.time}分）に対して **80%〜100%程度** になるよう、種目数やセット数を柔軟に調整して構成すること。
-    - 各パーツ（ウォームアップ、各トレーニング種目とセット間の休憩、有酸素）の所要時間を厳密に計算し、JSONの \`time_calculation_rationale\` フィールドにその内訳をステップバイステップで書き出すこと。これにより、内部的な思考プロセス（Chain of Thought）を強制し、時間の精度を高めること。
 
 ## JSON出力形式（必ずJSONのみを出力）:
-{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"（今日のプランの根拠とウォームアップの情熱的アドバイス）","cooldown":"（労いと具体的ストレッチの情熱的アドバイス）","total_estimated_minutes":45,"time_calculation_rationale":"（各パーツの所要時間の内訳。例: WU 5分 + 筋トレ3種目×10分 + 有酸素10分 = 45分）","trainer_message":"（名言を交えた、極めて短く自然なメッセージ）"}
+{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（アドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"（今日のプランの根拠とウォームアップの情熱的アドバイス）","cooldown":"（労いと具体的ストレッチの情熱的アドバイス）","total_estimated_minutes":45,"trainer_message":"（名言を交えた、極めて短く自然なメッセージ）"}
 `;
 
   // ★追加: 直近の体重記録（最大5件）と目標体重をテキスト化
