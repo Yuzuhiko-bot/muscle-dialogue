@@ -1899,11 +1899,38 @@ body {
 
 /* セット数のバッジ */
 .history-set-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  margin: 0.2rem;
   border: 2px solid var(--text-primary);
   background: var(--white);
   color: var(--text-primary);
   font-weight: 900;
+  font-size: 0.75rem;
   box-shadow: 1px 1px 0px var(--text-primary);
+  border-radius: var(--radius-sm);
+}
+
+/* 種目別目標用バッジ */
+.target-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  margin: 0.2rem;
+  border: 2px solid var(--blue);
+  background: var(--blue-light);
+  color: var(--blue);
+  font-weight: 900;
+  font-size: 0.75rem;
+  box-shadow: 1px 1px 0px var(--blue);
+  border-radius: var(--radius-sm);
+}
+
+.ex-master-target-info {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
 }
 
 /* 手動追加・全削除などのサブボタン */

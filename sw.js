@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.7.2'; // Revert-AI-Volume-Fix
+const CACHE_NAME = 'muscle-dialogue-v1.8.0';
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './app.js?v=1.7.2',
+    './app.js?v=1.8.0',
     './manifest.json',
     './sw.js',
     './biceps.png',

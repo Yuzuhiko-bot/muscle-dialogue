@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.7.2 (Revert-AI-Volume-Fix)';
+const APP_VERSION = 'v1.8.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -276,7 +276,14 @@ function showHistoryDetail(ds) {
         return `<span class="history-set-badge">Set${i + 1}: ${s.weight}kg × ${s.reps}回${rpeVal ? ' (RPE' + rpeVal + ')' : ''}</span>`;
       }).join('');
     }
-    div.innerHTML = `<div class="history-exercise-name">${ex.name}</div><div class="history-sets">${setsHtml}</div>
+    const masterEx = getAvailableExercises().find(m => m.id === ex.id);
+    const targetHtml = (masterEx && (masterEx.target_weight || masterEx.target_deadline)) ? `
+      <div style="margin-top:0.3rem;">
+        ${masterEx.target_weight ? `<span class="target-badge">当時の目標: ${masterEx.target_weight}kg</span>` : ''}
+        ${masterEx.target_deadline ? `<span class="target-badge">当時の期限: ${masterEx.target_deadline.replace(/-/g, '/')}</span>` : ''}
+      </div>` : '';
+
+    div.innerHTML = `<div class="history-exercise-name">${ex.name}</div>${targetHtml}<div class="history-sets">${setsHtml}</div>
       <div class="history-exercise-actions"><button class="btn-edit-ex" data-date="${ds}" data-idx="${idx}">編集</button><button class="btn-delete-ex" data-date="${ds}" data-idx="${idx}">削除</button></div>`;
     content.appendChild(div);
   });
@@ -402,7 +409,7 @@ function getRecentHistory(n) {
 
 function buildPrompt(cond, hist) {
   const p = state.userProfile;
-  const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}`).join('\n');
+  const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}${e.target_weight ? ` 【将来の目標:${e.target_weight}kg】` : ''}`).join('\n');
   const histText = hist.length > 0 ? hist.map(h => {
     const ed = h.exercises.map(ex => {
       if (isCardio(ex.id)) return `  - ${ex.name}: ${ex.duration || 0}分`;
@@ -443,6 +450,7 @@ ${exData}
    - 【健康維持】: 12〜15回 / 2〜3セット / 休憩90秒
 3. **重量設定と安全基準（厳守）**: 重量は必ず各種目のweight_step刻みで設定すること（0は自重）。前回の履歴のRPEが8以下なら重量か回数を増やす。
    【超重要・絶対禁止事項】前回のRPEが9以上の場合は、限界に近い状態であるため、いかなる理由や他のルール（目的の回数指定など）と競合しても「絶対に」重量を増加させないこと。これはユーザーの怪我を防ぐための最優先の安全基準である。
+    【目標設定への配慮】種目マスタに「将来の目標重量」が設定されている場合は、現在の実力と安全基準を最優先しつつ、無理のない範囲でその目標に近づけるような回数や重量設定を心がけること。
 4. **中長期トレンドの分析とマンネリ打破**: 渡された直近3週間（最大21件）の履歴全体を分析すること。
    - 同一の種目で数週間重量や回数が更新されていない（停滞期・プラトーの）兆候がある場合は、重量設定を軽くして回数を増やすか、類似の別種目（例：バーベルベンチプレスからダンベルプレスへ変更）を提案して筋肉に新しい刺激を与えること。
    - 常に同じ種目構成にならないよう、履歴を考慮して種目のバリエーションに変化を持たせること。
@@ -620,7 +628,13 @@ function renderPlan(plan) {
       </div>`;
     }
 
-    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
+    const targetHtml = (masterEx && (masterEx.target_weight || masterEx.target_deadline)) ? `
+      <div style="margin-top:0.3rem; margin-bottom:0.3rem;">
+        ${masterEx.target_weight ? `<span class="target-badge">目標: ${masterEx.target_weight}kg</span>` : ''}
+        ${masterEx.target_deadline ? `<span class="target-badge">期限: ${masterEx.target_deadline.replace(/-/g, '/')}</span>` : ''}
+      </div>` : '';
+
+    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${targetHtml}${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
@@ -1297,6 +1311,11 @@ function renderExerciseMasterList() {
         <div class="ex-master-info">
           <div class="ex-master-name">${ex.exercise_name}${ex.is_cardio ? ' 🏃‍♂️' : ''}</div>
           <div class="ex-master-meta">補助: ${ex.secondary_muscles && ex.secondary_muscles.length ? ex.secondary_muscles.join(', ') : 'なし'} | 器具: ${ex.equipment || 'なし'} | 刻み: ${ex.weight_step}kg</div>
+          ${(ex.target_weight || ex.target_deadline) ? `
+            <div class="ex-master-target-info">
+              ${ex.target_weight ? `<span class="target-badge">目標: ${ex.target_weight}kg</span>` : ''}
+              ${ex.target_deadline ? `<span class="target-badge">期限: ${ex.target_deadline.replace(/-/g, '/')}</span>` : ''}
+            </div>` : ''}
         </div>
         <div class="ex-master-actions">
           <button class="ex-master-btn ex-master-btn-edit" data-id="${ex.id}">編集</button>
@@ -1329,6 +1348,8 @@ function openExerciseMasterEdit(id) {
   $('#edit-master-equipment').value = ex ? (ex.equipment || '') : '';
   $('#edit-master-step').value = ex ? ex.weight_step : 2.5;
   $('#edit-master-cardio').checked = ex ? !!ex.is_cardio : false;
+  $('#edit-master-target-weight').value = ex ? (ex.target_weight || '') : '';
+  $('#edit-master-target-deadline').value = ex ? (ex.target_deadline || '') : '';
   
   openModal('modal-exercise-edit');
 }
@@ -1341,6 +1362,8 @@ function saveExerciseMasterEntry() {
   const equipment = $('#edit-master-equipment').value.trim();
   const step = parseFloat($('#edit-master-step').value) || 0;
   const isCardio = $('#edit-master-cardio').checked;
+  const targetWeight = parseFloat($('#edit-master-target-weight').value) || null;
+  const targetDeadline = $('#edit-master-target-deadline').value || null;
 
   if (!name || !primary) {
     showToast('<span class="text-keep">種目名とメイン部位は</span><span class="text-keep">必須だ！パワー！</span>');
@@ -1356,12 +1379,12 @@ function saveExerciseMasterEntry() {
     // Edit existing
     const idx = state.customExercises.findIndex(e => e.id === id);
     if (idx !== -1) {
-      state.customExercises[idx] = { ...state.customExercises[idx], exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio };
+      state.customExercises[idx] = { ...state.customExercises[idx], exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio, target_weight: targetWeight, target_deadline: targetDeadline };
     }
   } else {
     // Add new
     const newId = 'custom_' + Date.now();
-    state.customExercises.push({ id: newId, exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio });
+    state.customExercises.push({ id: newId, exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio, target_weight: targetWeight, target_deadline: targetDeadline });
   }
 
   saveCustomExercises();

@@ -651,6 +651,16 @@
         </div>
         <div style="display:flex; gap:1rem; margin-bottom:1rem;">
           <div class="form-group" style="flex:1;">
+            <label class="form-label">🎯 目標重量(kg)</label>
+            <input type="number" id="edit-master-target-weight" class="input-muscle" step="0.5" placeholder="例: 100">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">📅 目標期限</label>
+            <input type="date" id="edit-master-target-deadline" class="input-muscle">
+          </div>
+        </div>
+        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+          <div class="form-group" style="flex:1;">
             <label class="form-label">⚖️ 重量刻み幅(kg)</label>
             <input type="number" id="edit-master-step" class="input-muscle" step="0.5" placeholder="例: 2.5">
             <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">自重や有酸素は 0</p>
@@ -672,7 +682,7 @@
   </div>
 
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.7.2 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.8.0 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
@@ -690,7 +700,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.7.2"></script>
+    <script src="app.js?v=1.8.0"></script>
 </body>
 
 </html>
