@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.8.1';
+const APP_VERSION = 'v1.8.3';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -355,10 +355,14 @@ function showHistoryDetail(ds) {
       }).join('');
     }
     const masterEx = getAvailableExercises().find(m => m.id === ex.id);
-    const targetHtml = (masterEx && (masterEx.target_weight || masterEx.target_deadline)) ? `
+    // 記録時のスナップショットがあればそれを使用、なければマスタから（過去データ互換性）
+    const dispWeight = ex.target_weight !== undefined ? ex.target_weight : (masterEx ? masterEx.target_weight : null);
+    const dispDeadline = ex.target_deadline !== undefined ? ex.target_deadline : (masterEx ? masterEx.target_deadline : null);
+
+    const targetHtml = (dispWeight || dispDeadline) ? `
       <div style="margin-top:0.3rem;">
-        ${masterEx.target_weight ? `<span class="target-badge">当時の目標: ${masterEx.target_weight}kg</span>` : ''}
-        ${masterEx.target_deadline ? `<span class="target-badge">当時の期限: ${masterEx.target_deadline.replace(/-/g, '/')}</span>` : ''}
+        ${dispWeight ? `<span class="target-badge">当時の目標: ${dispWeight}kg</span>` : ''}
+        ${dispDeadline ? `<span class="target-badge">当時の期限: ${dispDeadline.replace(/-/g, '/')}</span>` : ''}
       </div>` : '';
 
     div.innerHTML = `<div class="history-exercise-name">${ex.name}</div>${targetHtml}<div class="history-sets">${setsHtml}</div>
@@ -429,10 +433,12 @@ function initTraining() {
     $('#plan-area').classList.remove('hidden');
     $('#btn-complete').classList.remove('hidden');
     renderPlan(state.currentPlan);
+    const hero = $('.training-hero-modern'); if (hero) hero.style.display = 'none';
   } else {
     $('#no-plan').classList.remove('hidden');
     $('#plan-area').classList.add('hidden');
     $('#btn-complete').classList.add('hidden');
+    const hero = $('.training-hero-modern'); if (hero) hero.style.display = 'block';
   }
 
   $('#btn-generate').addEventListener('click', () => openModal('modal-conditions'));
@@ -440,7 +446,9 @@ function initTraining() {
     showConfirm('貴重なAPIパワー（1日20回制限）を消費してメニューを作り直すかい！？', () => {
       state.currentPlan = null;
       saveCurrentPlan(); 
-      $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); openModal('modal-conditions'); 
+      $('#plan-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden'); $('#btn-complete').classList.add('hidden'); 
+      const hero = $('.training-hero-modern'); if (hero) hero.style.display = 'block';
+      openModal('modal-conditions'); 
     });
   });
   $$('.time-btn').forEach(b => b.addEventListener('click', () => { $$('.time-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.selectedTime = parseInt(b.dataset.time); }));
@@ -461,6 +469,7 @@ async function generatePlan() {
     saveCurrentPlan(); 
     renderPlan(plan);
     $('#loading-area').classList.add('hidden'); $('#plan-area').classList.remove('hidden');
+    const hero = $('.training-hero-modern'); if (hero) hero.style.display = 'none';
     if (tStatus) tStatus.textContent = 'メニュー生成完了！さあ、始めよう！';
   } catch (e) {
     console.error(e); $('#loading-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden');
@@ -533,7 +542,7 @@ ${selectedTheory}
 ${exData}
 
 ## JSON出力形式（必ずJSONのみを出力）:
-{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（理論を背景にしたアドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"（今日のプランの根拠とウォームアップのアドバイス）","cooldown":"（具体的ストレッチのアドバイス）","total_estimated_minutes":45,"trainer_message":"（名言を交えた、熱い総合メッセージ。最後に必ずパワー！！を付けること）"}`;
+{"exercises":[{"exercise_id":"chest_001","exercise_name":"バーベルベンチプレス","primary_muscle":"大胸筋","sets":3,"reps":10,"weight_kg":60,"rest_seconds":90,"note":"（理論を背景にしたアドバイス）"}],"cardio_exercises":[{"exercise_id":"cardio_001","exercise_name":"有酸素運動","duration_minutes":20,"note":"（アドバイス）"}],"warmup":"（ウォームアップに関する具体的なアドバイスのみ。理由などは含めない）","cooldown":"（具体的ストレッチのアドバイス）","total_estimated_minutes":45,"trainer_message":"（今日このトレーニングプランを組んだ具体的な理由と、名言を交えた熱い総合メッセージ。最後に必ずパワー！！を付けること）"}`;
 
   const sortedBodyDates = Object.keys(state.bodyRecord || {}).sort();
   const recentBodyRecords = sortedBodyDates.slice(-5).map(d => {
@@ -644,6 +653,24 @@ function parseGeminiResponse(r) {
 function renderPlan(plan) {
   const nl2br = (s) => (s || '').replace(/\n/g, '<br>');
   const list = $('#plan-list'); list.innerHTML = '';
+
+  // 1. なかやまきんに君からのひとこと (最上部へ移動)
+  if (plan.trainer_message) { 
+    const d = document.createElement('div'); 
+    d.className = 'plan-exercise'; 
+    d.style.textAlign = 'center'; 
+    d.style.borderLeft = 'none'; 
+    d.innerHTML = `
+      <div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);">
+        <span class="text-keep">★ なかやまきんに君からの</span><span class="text-keep">ひとこと ★</span>
+      </div>
+      <div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">
+        ${nl2br(plan.trainer_message)}
+      </div>`; 
+    list.appendChild(d); 
+  }
+
+  // 2. ウォームアップ
   if (plan.warmup) {
     const d = document.createElement('div');
     d.className = 'plan-exercise';
@@ -700,7 +727,6 @@ function renderPlan(plan) {
   });
 
   if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky)); color:var(--text-primary);">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${nl2br(plan.cooldown)}</div>`; list.appendChild(d); }
-  if (plan.trainer_message) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.textAlign = 'center'; d.style.borderLeft = 'none'; d.innerHTML = `<div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);"><span class="text-keep">★ なかやまきんに君からの</span><span class="text-keep">ひとこと ★</span></div><div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">${nl2br(plan.trainer_message)}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
 }
 
@@ -719,9 +745,22 @@ function completePlan() {
 
     if (isChecked) {
       const isCar = ex._isCardio || isCardio(ex.exercise_id);
+      const masterEx = getAvailableExercises().find(m => m.id === ex.exercise_id);
+      const snapshot = {
+        target_weight: masterEx ? masterEx.target_weight : null,
+        target_deadline: masterEx ? masterEx.target_deadline : null
+      };
+
       if (isCar) {
         const durIn = $(`.input-cardio-dur[data-ex="${idx}"]`);
-        completedExercises.push({ id: ex.exercise_id, name: ex.exercise_name, duration: durIn ? parseInt(durIn.value) || 0 : ex.duration_minutes || 0, sets: [], rpe: null });
+        completedExercises.push({ 
+          id: ex.exercise_id, 
+          name: ex.exercise_name, 
+          duration: durIn ? parseInt(durIn.value) || 0 : ex.duration_minutes || 0, 
+          sets: [], 
+          rpe: null,
+          ...snapshot
+        });
       } else {
         const sets = []; 
         $$(`.input-weight[data-ex="${idx}"]`).forEach((w, s) => { 
@@ -729,7 +768,13 @@ function completePlan() {
           sets.push({ weight: parseFloat(w.value) || 0, reps: parseInt(ri.value) || 0 }); 
         });
         const rsl = $(`.rpe-slider[data-ex="${idx}"]`);
-        completedExercises.push({ id: ex.exercise_id, name: ex.exercise_name, sets, rpe: rsl ? parseInt(rsl.value) : null });
+        completedExercises.push({ 
+          id: ex.exercise_id, 
+          name: ex.exercise_name, 
+          sets, 
+          rpe: rsl ? parseInt(rsl.value) : null,
+          ...snapshot
+        });
       }
     }
   });
@@ -740,6 +785,7 @@ function completePlan() {
     $('#plan-area').classList.add('hidden');
     $('#no-plan').classList.remove('hidden');
     $('#btn-complete').classList.add('hidden');
+    const hero = $('.training-hero-modern'); if (hero) hero.style.display = 'block';
     const tStatus = $('#training-status-text'); if (tStatus) tStatus.textContent = 'さあ、筋肉との対話を始めよう！';
     renderCalendar();
   };
@@ -884,9 +930,21 @@ function saveManualTraining() {
   $$('.manual-exercise-entry').forEach(entry => {
     const sel = entry.querySelector('.manual-exercise-select'); if (!sel.value) return;
     const master = getAvailableExercises().find(m => m.id === sel.value); if (!master) return;
+    const snapshot = {
+      target_weight: master.target_weight || null,
+      target_deadline: master.target_deadline || null
+    };
+
     if (isCardio(sel.value)) {
       const dur = entry.querySelector('.manual-duration');
-      exercises.push({ id: master.id, name: master.exercise_name, duration: parseInt(dur?.value) || 0, sets: [], rpe: null });
+      exercises.push({ 
+        id: master.id, 
+        name: master.exercise_name, 
+        duration: parseInt(dur?.value) || 0, 
+        sets: [], 
+        rpe: null,
+        ...snapshot
+      });
     } else {
       const ws = entry.querySelectorAll('.manual-weight'), rs = entry.querySelectorAll('.manual-reps'), sets = [];
       const rpes = entry.querySelectorAll('.manual-rpe');
@@ -894,7 +952,15 @@ function saveManualTraining() {
         const wt = parseFloat(w.value), rp = parseInt(rs[i].value), rpeVal = parseInt(rpes[i].value); 
         if (wt || rp) sets.push({ weight: wt || 0, reps: rp || 0, rpe: rpeVal || null }); 
       });
-      if (sets.length > 0) exercises.push({ id: master.id, name: master.exercise_name, sets, rpe: null });
+      if (sets.length > 0) {
+        exercises.push({ 
+          id: master.id, 
+          name: master.exercise_name, 
+          sets, 
+          rpe: null,
+          ...snapshot
+        });
+      }
     }
   });
   if (!exercises.length) { showToast('種目を1つ以上入力！パワー！'); return; }
