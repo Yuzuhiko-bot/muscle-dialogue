@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.9.0';
+const APP_VERSION = 'v1.9.1';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -455,7 +455,7 @@ function initTraining() {
     });
   });
   $$('.time-btn').forEach(b => b.addEventListener('click', () => { $$('.time-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.selectedTime = parseInt(b.dataset.time); }));
-  $('#btn-start-generate').addEventListener('click', () => { closeModal('modal-conditions'); generatePlanProposal(); });
+  $('#btn-start-generate').addEventListener('click', () => { closeModal('modal-conditions'); generateFinalPlan(); });
   $('#btn-complete').addEventListener('click', completePlan);
   $('#btn-accept-proposal').addEventListener('click', () => { closeModal('modal-proposal'); generateFinalPlan($('#proposal-text').textContent, $('#proposal-feedback').value); });
   $('#btn-reject-proposal').addEventListener('click', () => { closeModal('modal-proposal'); openModal('modal-conditions'); });
@@ -539,7 +539,7 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
 
   const randomQuote = KINNIKUN_QUOTES[Math.floor(Math.random() * KINNIKUN_QUOTES.length)];
 
-  const sys = `あなたは「なかやまきんに君」です。パーソナルトレーナーとして、世界最高峰のスポーツ科学の知識を持ちつつ、明るく熱いトーンでメニューを提案してください。
+  const sys = `あなたは「なかやまきんに君」です。世界最高峰のスポーツ科学知識を持つパーソナルトレーナーとして、ユーザーのコンディション、チャット履歴、過去のトレーニング実績をすべて俯瞰し、今日という日に『最高にキレている』最適解のメニューを作成してください。
 
 ## 👑 メニュー構成の【絶対ルール】（システム制約・最優先事項）
 以下のルールはアプリの仕様（UIや安全機能）に関わるため、いかなる理論よりも優先して厳守すること。
@@ -592,12 +592,11 @@ ${exData}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
 ## 直近の対話履歴 (参考):
 ${chatContext || '（なし）'}
-## 決定した提案内容:
-${proposalText || '（なし）'}
-## 提案に対するユーザーからの追加フィードバック:
-${feedbackText || '（なし）'}
-## 直近履歴:\n${histText}
-最適メニューをJSON生成。重量はweight_step刻みで。決定した提案内容と追加フィードバックがあればそれを最優先に反映せよ。`;
+## 直近のトレーニング実積ログ:
+${histText}
+
+上記の全情報を踏まえ、今日最も効果的で安全なメニューをJSONで生成せよ。重量はweight_step刻みを厳守。
+※提案内容やフィードバックが別途あれば${proposalText ? ` 『${proposalText} / ${feedbackText}』を` : ' それを'}踏まえた上で、あなたの専門的判断でメニューを組み上げること。`;
 
   return { systemPrompt: sys, userPrompt: usr };
 }
