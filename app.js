@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.8.3';
+const APP_VERSION = 'v1.8.4';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -159,7 +159,7 @@ const DIET_HEALTH_THEORY = `
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
-let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
+let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, chatHistory: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("%c💪 Muscle Dialogue v1.8.2 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
-  initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
+  initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
   if ('serviceWorker' in navigator) {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       // ローカル開発時はService Workerを解除し、キャッシュの混乱を完全に防ぐ
@@ -192,16 +192,19 @@ function loadState() {
     const b = localStorage.getItem('muscleDialog_bodyRecord');
     const cp = localStorage.getItem('muscleDialog_currentPlan');
     const ce = localStorage.getItem('muscleDialog_customExercises');
+    const ch = localStorage.getItem('muscleDialog_chatHistory');
     if (p) state.userProfile = JSON.parse(p);
     if (h) state.trainingHistory = JSON.parse(h);
     if (b) state.bodyRecord = JSON.parse(b);
     if (cp) state.currentPlan = JSON.parse(cp);
     if (ce) state.customExercises = JSON.parse(ce);
+    if (ch) state.chatHistory = JSON.parse(ch);
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
 function saveHistory() { localStorage.setItem('muscleDialog_history', JSON.stringify(state.trainingHistory)); }
 function saveBodyRecord() { localStorage.setItem('muscleDialog_bodyRecord', JSON.stringify(state.bodyRecord)); }
+function saveChatHistory() { localStorage.setItem('muscleDialog_chatHistory', JSON.stringify(state.chatHistory)); }
 function saveCustomExercises() { 
   if (state.customExercises) {
     localStorage.setItem('muscleDialog_customExercises', JSON.stringify(state.customExercises)); 
@@ -452,18 +455,45 @@ function initTraining() {
     });
   });
   $$('.time-btn').forEach(b => b.addEventListener('click', () => { $$('.time-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.selectedTime = parseInt(b.dataset.time); }));
-  $('#btn-start-generate').addEventListener('click', () => { closeModal('modal-conditions'); generatePlan(); });
+  $('#btn-start-generate').addEventListener('click', () => { closeModal('modal-conditions'); generatePlanProposal(); });
   $('#btn-complete').addEventListener('click', completePlan);
+  $('#btn-accept-proposal').addEventListener('click', () => { closeModal('modal-proposal'); generateFinalPlan($('#proposal-text').textContent, $('#proposal-feedback').value); });
+  $('#btn-reject-proposal').addEventListener('click', () => { closeModal('modal-proposal'); openModal('modal-conditions'); });
 }
 
-async function generatePlan() {
+async function generatePlanProposal() {
+  $('#no-plan').classList.add('hidden'); $('#plan-area').classList.add('hidden'); $('#loading-area').classList.remove('hidden');
+  const qEl = $('#loading-quote');
+  if (qEl) qEl.textContent = "事前提案を作成中だ！パワー！";
+  const tStatus = $('#training-status-text');
+  if (tStatus) tStatus.textContent = '筋肉ルーレット回転中...';
+  
+  try {
+    const cond = gatherConditions(), hist = getRecentHistory(21);
+    const { sys, usr } = buildProposalPrompt(cond, hist);
+    const resp = await callGeminiAPI({ systemPrompt: sys, userPrompt: usr, modelOverride: 'gemini-3.1-flash-lite-preview', mimeTypeOverride: 'text/plain' });
+    
+    // Parse response
+    const proposalText = resp.candidates[0].content.parts[0].text;
+    $('#proposal-text').textContent = proposalText;
+    $('#proposal-feedback').value = ''; // clear feedback
+    $('#loading-area').classList.add('hidden');
+    openModal('modal-proposal');
+  } catch (e) {
+    console.error(e); $('#loading-area').classList.add('hidden'); $('#no-plan').classList.remove('hidden');
+    if (tStatus) tStatus.textContent = 'さあ、筋肉との対話を始めよう！';
+    showToast('提案生成エラーだ！ ' + e.message);
+  }
+}
+
+async function generateFinalPlan(proposalText, feedbackText) {
   $('#no-plan').classList.add('hidden'); $('#plan-area').classList.add('hidden'); $('#loading-area').classList.remove('hidden');
   const qEl = $('#loading-quote');
   if (qEl) qEl.textContent = LOADING_QUOTES[Math.floor(Math.random() * LOADING_QUOTES.length)];
   const tStatus = $('#training-status-text');
-  if (tStatus) tStatus.textContent = '筋肉ルーレット回転中...';
+  if (tStatus) tStatus.textContent = '最終メニューを構築中...';
   try {
-    const cond = gatherConditions(), hist = getRecentHistory(21), prompt = buildPrompt(cond, hist);
+    const cond = gatherConditions(), hist = getRecentHistory(21), prompt = buildPrompt(cond, hist, proposalText, feedbackText);
     const resp = await callGeminiAPI(prompt), plan = parseGeminiResponse(resp);
     state.currentPlan = plan;
     saveCurrentPlan(); 
@@ -494,7 +524,7 @@ function getRecentHistory(n) {
   }));
 }
 
-function buildPrompt(cond, hist) {
+function buildPrompt(cond, hist, proposalText, feedbackText) {
   const p = state.userProfile;
   const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}${e.target_weight ? ` 【将来の目標:${e.target_weight}kg】` : ''}`).join('\n');
   const histText = hist.length > 0 ? hist.map(h => {
@@ -555,16 +585,24 @@ ${exData}
   const targetWeight = p.targetWeight ? `${p.targetWeight}kg` : '未設定';
   const bodyText = recentBodyRecords ? `目標:${targetWeight} / 直近推移:[${recentBodyRecords}]` : `目標:${targetWeight} / 記録なし`;
 
+  const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
+
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
 ## 体重情報: ${bodyText}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
+## 直近の対話履歴 (参考):
+${chatContext || '（なし）'}
+## 決定した提案内容:
+${proposalText || '（なし）'}
+## 提案に対するユーザーからの追加フィードバック:
+${feedbackText || '（なし）'}
 ## 直近履歴:\n${histText}
-最適メニューをJSON生成。重量はweight_step刻みで。`;
+最適メニューをJSON生成。重量はweight_step刻みで。決定した提案内容と追加フィードバックがあればそれを最優先に反映せよ。`;
 
   return { systemPrompt: sys, userPrompt: usr };
 }
 
-async function callGeminiAPI({ systemPrompt, userPrompt }) {
+async function callGeminiAPI({ systemPrompt, userPrompt, modelOverride, mimeTypeOverride }) {
   const apiKey = getApiKey();
   if (!apiKey) { 
     showApiKeyModal(); 
@@ -572,7 +610,7 @@ async function callGeminiAPI({ systemPrompt, userPrompt }) {
   }
 
   // ★変更: ループを廃止し、現在選択されているモデルのみを愚直に実行する
-  const selectedModel = getSelectedModel();
+  const selectedModel = modelOverride || getSelectedModel();
   const url = getApiUrl(selectedModel);
 
   try {
@@ -587,7 +625,7 @@ async function callGeminiAPI({ systemPrompt, userPrompt }) {
           temperature: 0.7, 
           topP: 0.9, 
           topK: 40, 
-          responseMimeType: "application/json" 
+          responseMimeType: mimeTypeOverride || "application/json" 
         } 
       }) 
     });
@@ -1049,7 +1087,8 @@ function downloadBackup() {
     profile: state.userProfile, 
     history: state.trainingHistory,
     body: state.bodyRecord,
-    customExercises: state.customExercises
+    customExercises: state.customExercises,
+    chatHistory: state.chatHistory
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1073,11 +1112,12 @@ function restoreBackup(e) {
       if (data.profile) state.userProfile = data.profile;
       if (data.history) state.trainingHistory = data.history;
       if (data.body) state.bodyRecord = data.body;
+      if (data.chatHistory) state.chatHistory = data.chatHistory;
       if (data.customExercises !== undefined) {
         state.customExercises = data.customExercises;
         saveCustomExercises();
       }
-      saveProfile(); saveHistory(); saveBodyRecord(); renderCalendar(); populateProfileForm();
+      saveProfile(); saveHistory(); saveBodyRecord(); saveChatHistory(); renderCalendar(); renderChatMessages(); populateProfileForm();
       showToast('<span class="text-keep">復元完了！筋肉のデータが</span><span class="text-keep">蘇ったぞ！ヤー！！💪</span>');
     } catch (err) { showToast('ファイルが読み込めなかったぞ！😤'); }
   };
@@ -1527,4 +1567,166 @@ function deleteExerciseMasterEntry(id) {
     renderExerciseMasterList();
     showToast('<span class="text-keep">種目を削除したぞ！</span>');
   });
+}
+
+// ---------- CHAT & PROPOSAL LOGIC ----------
+
+function buildProposalPrompt(cond, hist) {
+  const p = state.userProfile;
+  const targetWeight = p.targetWeight ? `${p.targetWeight}kg` : '未設定';
+  
+  const sortedBodyDates = Object.keys(state.bodyRecord || {}).sort();
+  const recentBodyRecords = sortedBodyDates.slice(-5).map(d => {
+    const e = getBodyEntry(d); return `${d.slice(5)}: ${e?.weight}kg`;
+  }).join(', ');
+  
+  const bodyText = recentBodyRecords ? `目標:${targetWeight} / 直近推移:[${recentBodyRecords}]` : `目標:${targetWeight} / 記録なし`;
+  const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
+  const histText = hist.length > 0 ? hist.map(h => `【${h.date}】\n` + h.exercises.map(ex => `  - ${ex.name}`).join('\n')).join('\n') : '（履歴なし）';
+  let selectedTheory = (p.goal === "ダイエット" || p.goal === "健康維持") ? DIET_HEALTH_THEORY : HYPERTROPHY_THEORY;
+
+  const sys = `あなたは「なかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ちつつ、明るく熱いトーンで本日のトレーニングメニューを提案するプレビューを作成してください。
+以下の思考土台（理論）を用いて、具体的かつ科学的根拠に基づいた短い提案をしてください。出力は200文字以内で、ユーザーへの熱いメッセージと、「こんな感じでどうだい！？」という提案で締めてください。必ずJSONではなくプレーンテキストで返答してください。
+
+=== 思考土台 ===
+${selectedTheory}
+`;
+
+  const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'}
+## 体重情報: ${bodyText}
+## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}
+## 直近の対話履歴 (最重要参考情報):
+${chatContext || '（なし）'}
+## 自由要望: ${cond.freeRequest || 'なし'}
+## 直近のトレーニング履歴:
+${histText}
+上記を踏まえ、本日のプランの方向性を提案せよ！`;
+
+  return { sys, usr };
+}
+
+function initChat() {
+  $('#chat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = $('#chat-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    
+    // Add user message to state
+    state.chatHistory.push({ role: 'user', text: msg });
+    saveChatHistory();
+    renderChatMessages();
+
+    // Show loading indicator
+    showChatThinking();
+
+    try {
+      const { sys, usr } = buildChatPrompt();
+      const resp = await callGeminiAPI({ 
+        systemPrompt: sys, 
+        userPrompt: usr, 
+        modelOverride: 'gemini-3.1-flash-lite-preview', 
+        mimeTypeOverride: 'text/plain' 
+      });
+      const aiReply = resp.candidates[0].content.parts[0].text;
+      
+      removeChatThinking();
+      state.chatHistory.push({ role: 'model', text: aiReply });
+      saveChatHistory();
+      renderChatMessages();
+    } catch(err) {
+      removeChatThinking();
+      showToast('返信の取得に失敗したぞ！もう一度送信してくれ！');
+    }
+  });
+
+  $('#btn-clear-chat').addEventListener('click', () => {
+    showConfirm('対話履歴をすべて消去するかい！？', () => {
+      state.chatHistory = [];
+      saveChatHistory();
+      renderChatMessages();
+      showToast('対話履歴を消去したぞ！ヤー！');
+    });
+  });
+
+  renderChatMessages();
+}
+
+function buildChatPrompt() {
+  const p = state.userProfile;
+  let selectedTheory = (p.goal === "ダイエット" || p.goal === "健康維持") ? DIET_HEALTH_THEORY : HYPERTROPHY_THEORY;
+
+  const sys = `あなたはパーソナルトレーナーの「なかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ち、明るく熱いトーンで真摯にユーザーの質問や悩みに寄り添ってください。
+礼儀正しく、かつテキスト内で絵文字は一切使用しないでください（絵文字の代わりに「パワー！」「ヤー！」「ハッ（笑顔）」などを適所に織り交ぜてください）。
+専門的な質問には、以下の理論やオンライン上の最新知識を総動員して論理的かつ分かりやすく答えてください。
+回答は簡潔にまとめ、不必要な箇条書きの羅列は避けて文章で会話してください。
+
+=== 思考の土台（バックグラウンド知識） ===
+${selectedTheory}
+`;
+
+  // 履歴を文字列化
+  const historyText = state.chatHistory.map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
+  const usr = `## ユーザープロフィール情報
+- 目的: ${p.goal} (経験: ${p.experience})
+- 痛みの部位: ${p.painAreas.length ? p.painAreas.join(',') : 'なし'}
+- 重点筋肉: ${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'}
+
+## 会話履歴
+${historyText}
+
+上記の会話履歴の最後のユーザーの言葉に対して、自然に返答してください。`;
+
+  return { sys, usr };
+}
+
+function renderChatMessages() {
+  const container = $('#chat-messages');
+  if(!container) return;
+  container.innerHTML = '';
+
+  if (state.chatHistory.length === 0) {
+    container.innerHTML = `<div style="text-align:center; color:var(--text-muted); margin-top:2rem; font-size:0.9rem;">
+      筋肉について何でも相談してくれ！<br>最新のスポーツ科学に基づいて答えるぞ！<br>ヤー！！
+    </div>`;
+    return;
+  }
+
+  state.chatHistory.forEach(msg => {
+    const wrap = document.createElement('div');
+    wrap.className = `chat-bubble-wrapper ${msg.role === 'user' ? 'user' : 'ai'}`;
+    const name = msg.role === 'user' ? 'あなた' : 'なかやまきんに君';
+    
+    wrap.innerHTML = `
+      <div class="chat-sender-name">${name}</div>
+      <div class="chat-bubble">${msg.text.replace(/\\n/g, '<br>')}</div>
+    `;
+    container.appendChild(wrap);
+  });
+  
+  container.scrollTop = container.scrollHeight;
+}
+
+function showChatThinking() {
+  const container = $('#chat-messages');
+  if(!container) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'chat-thinking-indicator';
+  wrap.className = 'chat-bubble-wrapper ai';
+  wrap.innerHTML = `
+    <div class="chat-sender-name">なかやまきんに君</div>
+    <div class="chat-bubble chat-thinking">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  `;
+  container.appendChild(wrap);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeChatThinking() {
+  const ind = $('#chat-thinking-indicator');
+  if(ind) ind.remove();
 }
