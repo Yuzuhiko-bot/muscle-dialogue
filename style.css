@@ -1387,9 +1387,17 @@ body {
    RESPONSIVE
    ============================================ */
 @media (max-width: 480px) {
-  .splash-title {
-    font-size: 2rem;
+  .training-hero-modern {
+    padding: 1rem;
+    flex-direction: row;
   }
+  .hero-title-mega {
+    font-size: 1.1rem;
+  }
+  .hero-kinnikun-img {
+    width: 140px; /* スマホでは少し控えめに */
+  }
+}
 
   .onboard-header h1 {
     font-size: 1.15rem;
@@ -2530,27 +2538,22 @@ body {
   border-radius: var(--radius-md);
   position: relative;
   word-break: break-word;
-  white-space: pre-wrap; /* 改行を反映 */
+  white-space: pre-wrap;
 }
 
 .chat-bubble-wrapper.user .chat-bubble {
-  padding: 0.8rem 1rem;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  border-radius: var(--radius-md);
-  position: relative;
-  word-break: break-word;
-  white-space: pre-wrap; /* 改行を反映 */
+  background: var(--text-primary);
+  color: var(--white);
+  border-bottom-right-radius: 0;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
 }
 
 .chat-bubble-wrapper.ai .chat-bubble {
-  padding: 0.8rem 1rem;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  border-radius: var(--radius-md);
-  position: relative;
-  word-break: break-word;
-  white-space: pre-wrap; /* 改行を反映 */
+  background: var(--white);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  border-bottom-left-radius: 0;
+  box-shadow: 4px 4px 0px var(--red-light);
 }
 
 /* AI提案中のインジケーター */
@@ -2631,6 +2634,13 @@ body {
     padding: 1rem;
     flex-direction: row;
   }
+  .hero-title-mega {
+    font-size: 1.1rem;
+  }
+  .hero-kinnikun-img {
+    width: 140px; /* スマホでは少し控えめに */
+  }
+}
   .hero-title-mega {
     font-size: 1.1rem;
   }
