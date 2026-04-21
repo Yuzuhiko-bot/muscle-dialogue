@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.8.8';
+const APP_VERSION = 'v1.8.9';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -1607,6 +1607,24 @@ ${histText}
 }
 
 function initChat() {
+  // Smart Scroll for Chat Input Area
+  let scrollTimeout;
+  const chatMessages = $('#chat-messages');
+  const chatInputArea = $('.chat-input-area');
+  
+  if (chatMessages && chatInputArea) {
+    chatMessages.addEventListener('scroll', () => {
+      // スクロール中は入力欄を隠す (画面外へ逃がす)
+      chatInputArea.classList.add('hide-on-scroll');
+      
+      clearTimeout(scrollTimeout);
+      // スクロールが停止したら400ms後に入力欄を戻す
+      scrollTimeout = setTimeout(() => {
+        chatInputArea.classList.remove('hide-on-scroll');
+      }, 400);
+    });
+  }
+
   $('#chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('#chat-input');
