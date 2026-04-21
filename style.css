@@ -2539,21 +2539,26 @@ body {
   position: relative;
   word-break: break-word;
   white-space: pre-wrap;
+  display: block; /* 強制的にブロック要素に */
 }
 
+/* ユーザー側の吹き出し */
 .chat-bubble-wrapper.user .chat-bubble {
-  background: var(--text-primary);
-  color: var(--white);
+  background: var(--text-primary) !important;
+  color: var(--white) !important;
   border-bottom-right-radius: 0;
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.2) !important;
+  margin-left: auto;
 }
 
+/* AI側の吹き出し */
 .chat-bubble-wrapper.ai .chat-bubble {
-  background: var(--white);
-  color: var(--text-primary);
-  border: 1px solid var(--border-light);
+  background: var(--white) !important;
+  color: var(--text-primary) !important;
+  border: 2px solid var(--text-primary) !important;
   border-bottom-left-radius: 0;
-  box-shadow: 4px 4px 0px var(--red-light);
+  box-shadow: 6px 6px 0px var(--yellow) !important;
+  margin-right: auto;
 }
 
 /* AI提案中のインジケーター */
