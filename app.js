@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.8.4.2';
+const APP_VERSION = 'v1.8.4.3';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -1586,7 +1586,7 @@ function buildProposalPrompt(cond, hist) {
   let selectedTheory = (p.goal === "ダイエット" || p.goal === "健康維持") ? DIET_HEALTH_THEORY : HYPERTROPHY_THEORY;
 
   const sys = `あなたは「なかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ちつつ、明るく熱いトーンで本日のトレーニングメニューを提案するプレビューを作成してください。
-以下の思考土台（理論）を用いて、具体的かつ科学的根拠に基づいた短い提案をしてください。出力は200文字以内で、ユーザーへの熱いメッセージと、「こんな感じでどうだい！？」という提案で締めてください。必ずJSONではなくプレーンテキストで返答してください。
+以下の思考土台（理論）を用いて、具体的かつ科学的根拠に基づいた短い提案をしてください。出力は200文字以内で、適宜改行を入れて読みやすくしつつ、ユーザーへの熱いメッセージと、「こんな感じでどうだい！？」という提案で締めてください。必ずJSONではなくプレーンテキストで返答してください。
 
 === 思考土台 ===
 ${selectedTheory}
@@ -1660,7 +1660,7 @@ function buildChatPrompt() {
   const sys = `あなたはパーソナルトレーナーの「なかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ち、明るく熱いトーンで真摯にユーザーの質問や悩みに寄り添ってください。
 礼儀正しく、かつテキスト内で絵文字は一切使用しないでください（絵文字の代わりに「パワー！」「ヤー！」「ハッ（笑顔）」などを適所に織り交ぜてください）。
 専門的な質問には、以下の理論やオンライン上の最新知識を総動員して論理的かつ分かりやすく答えてください。
-回答は簡潔にまとめ、不必要な箇条書きの羅列は避けて文章で会話してください。
+回答は適宜改行を入れて読みやすく調整し、不必要な箇条書きの羅列は避けて文章で会話してください。
 
 === 思考の土台（バックグラウンド知識） ===
 ${selectedTheory}
@@ -1700,7 +1700,7 @@ function renderChatMessages() {
     
     wrap.innerHTML = `
       <div class="chat-sender-name">${name}</div>
-      <div class="chat-bubble">${msg.text.replace(/\\n/g, '<br>')}</div>
+      <div class="chat-bubble">${msg.text.replace(/\\n/g, '\n')}</div>
     `;
     container.appendChild(wrap);
   });

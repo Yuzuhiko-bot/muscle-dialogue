@@ -2526,25 +2526,31 @@ body {
 .chat-bubble {
   padding: 0.8rem 1rem;
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.6;
   border-radius: var(--radius-md);
   position: relative;
   word-break: break-word;
+  white-space: pre-wrap; /* 改行を反映 */
 }
 
 .chat-bubble-wrapper.user .chat-bubble {
-  background: var(--text-primary);
-  color: var(--white);
-  border-bottom-right-radius: 0;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border-radius: var(--radius-md);
+  position: relative;
+  word-break: break-word;
+  white-space: pre-wrap; /* 改行を反映 */
 }
 
 .chat-bubble-wrapper.ai .chat-bubble {
-  background: var(--white);
-  color: var(--text-primary);
-  border: 1px solid var(--border-light);
-  border-bottom-left-radius: 0;
-  box-shadow: 2px 2px 0px var(--red-light);
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border-radius: var(--radius-md);
+  position: relative;
+  word-break: break-word;
+  white-space: pre-wrap; /* 改行を反映 */
 }
 
 /* AI提案中のインジケーター */
