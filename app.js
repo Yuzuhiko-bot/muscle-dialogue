@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.8.7';
+const APP_VERSION = 'v1.8.8';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -699,10 +699,11 @@ function renderPlan(plan) {
     d.style.textAlign = 'center'; 
     d.style.borderLeft = 'none'; 
     d.innerHTML = `
-      <div style="font-family:var(--font-title);color:var(--text-primary);font-weight:900;margin-bottom:0.8rem;font-size:1.1rem;text-shadow:1px 1px 0 var(--yellow);">
-        <span class="text-keep">★ なかやまきんに君からの</span><span class="text-keep">ひとこと ★</span>
+      <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; font-family:var(--font-title);color:var(--red);font-weight:900;margin-bottom:1rem;font-size:1.2rem;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--yellow)" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span><span class="text-keep">きんに君からの</span><span class="text-keep">アドバイス</span></span>
       </div>
-      <div style="font-family:var(--font-title);color:var(--red);font-weight:900;font-size:1.05rem;line-height:1.5;letter-spacing:0.5px;padding:0.5rem;background:var(--red-light);border-radius:var(--radius-sm);">
+      <div style="text-align:left; font-family:var(--font-body);color:var(--text-primary);font-weight:700;font-size:0.95rem;line-height:1.6;letter-spacing:0.5px;padding:1rem;background:var(--red-light);border:2px solid var(--red);border-radius:var(--radius-md);box-shadow: 4px 4px 0 var(--yellow);">
         ${nl2br(plan.trainer_message)}
       </div>`; 
     list.appendChild(d); 

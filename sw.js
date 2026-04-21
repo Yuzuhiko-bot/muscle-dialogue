@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.8.7';
+const CACHE_NAME = 'muscle-dialogue-v1.8.8';
 const ASSETS = [
     './',
     './index.html',
-    './style.css?v=1.8.7',
-    './app.js?v=1.8.7',
+    './style.css?v=1.8.8',
+    './app.js?v=1.8.8',
     './manifest.json',
     './sw.js',
     './biceps.png',
@@ -40,7 +40,7 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             fetch(event.request).catch(() => {
                 // サーバーが落ちている場合は古いキャッシュを返さず、エラーテキストを返す
-                return new Response("Muscle Dialogue v1.8.7 | Power!! 💪 ローカル開発サーバーが起動していないか、アクセスできません。サーバーを起動してください！パワー！", {
+                return new Response("Muscle Dialogue v1.8.8 | Power!! 💪 ローカル開発サーバーが起動していないか、アクセスできません。サーバーを起動してください！パワー！", {
                     status: 503,
                     headers: { 'Content-Type': 'text/plain; charset=utf-8' }
                 });

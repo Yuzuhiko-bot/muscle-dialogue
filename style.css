@@ -2596,7 +2596,7 @@ body {
    現代風トレーニング・ヒーローセクション
    ============================================ */
 .training-hero-modern {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   background: var(--white);
@@ -2605,10 +2605,15 @@ body {
   padding: 1.5rem;
   margin: 1rem;
   box-shadow: 8px 8px 0px var(--yellow);
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
 }
 
 .hero-text-area {
-  flex: 1;
+  width: 60%;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-title-mega {
@@ -2620,39 +2625,32 @@ body {
 }
 
 .hero-image-area {
-  flex-shrink: 0;
-  margin-left: 0.5rem;
+  position: absolute;
+  right: -0.5rem;
+  bottom: -0.5rem;
+  width: 45%;
+  max-width: 220px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: flex-end;
+  pointer-events: none;
 }
 
 .hero-kinnikun-img {
-  width: 240px; /* 大体2倍以上に */
+  width: 100%;
   height: auto;
-  filter: none; /* 影を削除 */
   display: block;
 }
 
 @media (max-width: 480px) {
   .training-hero-modern {
     padding: 1rem;
-    flex-direction: row;
+    min-height: 120px;
   }
   .hero-title-mega {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
-  .hero-kinnikun-img {
-    width: 140px; /* スマホでは少し控えめに */
+  .hero-image-area {
+    max-width: 180px;
   }
-}
-  .hero-title-mega {
-    font-size: 1.1rem;
-  }
-  .hero-kinnikun-img {
-  width: 240px; /* 大体2倍以上に */
-  height: auto;
-  filter: none; /* 影を削除 */
-  display: block;
-}
 }
