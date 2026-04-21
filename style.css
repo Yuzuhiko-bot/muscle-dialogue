@@ -472,6 +472,13 @@ body {
   display: block;
 }
 
+.tab-content.flex-tab.active {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px);
+  padding: 0; /* チャット画面の内部パディングは個別で持たせる */
+}
+
 /* ============================================
    CALENDAR
    ============================================ */
