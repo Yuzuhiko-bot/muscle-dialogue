@@ -2577,3 +2577,57 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ============================================
+   現代風トレーニング・ヒーローセクション
+   ============================================ */
+.training-hero-modern {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+  border: 3px solid var(--text-primary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin: 1rem;
+  box-shadow: 8px 8px 0px var(--yellow);
+}
+
+.hero-text-area {
+  flex: 1;
+}
+
+.hero-title-mega {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+.hero-image-area {
+  flex-shrink: 0;
+  margin-left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-kinnikun-img {
+  width: 110px;
+  height: auto;
+  filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1));
+}
+
+@media (max-width: 480px) {
+  .training-hero-modern {
+    padding: 1rem;
+    flex-direction: row;
+  }
+  .hero-title-mega {
+    font-size: 1.1rem;
+  }
+  .hero-kinnikun-img {
+    width: 80px;
+  }
+}
