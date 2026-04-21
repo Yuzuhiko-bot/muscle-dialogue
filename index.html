@@ -1,760 +1,557 @@
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>マッスル・ダイアログ - 筋肉対話</title>
-  <meta name="description" content="AIパEソナルトレーナEがあなただけE筋トレメニューを生成！筋肉との対話、始めよう。ヤーEEE>
-
-  <!-- PWA / iOS -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="マッスルダイアログ">
-  <link rel="apple-touch-icon" href="rpe_smile.png">
-  <meta name="theme-color" content="#D4001F">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1.9.3">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-
-<body>
-
-  <!-- ========== スプラチEュ ========== -->
-  <!-- ========== スプラチEュ ========== -->
-  <div id="splash-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-white p-6 transition-opacity duration-1000">
-    <div class="splash-content">
-      <h1 class="splash-title-mega"><span class="text-keep">マッスル</span><br><span class="text-keep">ダイアログ</span></h1>
-      <p class="splash-subtitle">、E筋肉とのポップな対話 、E/p>
-
-      <!-- 重褁Eるイラストを削除E背景の巨大な筋肉を活かすEE-->
-
-
-      <div class="loading-muscle">
-        <div class="w-6 h-6 bg-red-600 rounded-full animate-pulse"></div>
-        <div class="loading-text-muscle">筋肉パルス、計測中…</div>
-      </div>
-    </div>
-  </div>
-
-    <!-- ========== オンボEチEング (V184) ========== -->
-  <div id="onboarding-screen" class="screen">
-    <div class="onboard-container">
-      <div class="onboard-header">
-        <div class="onboard-logo">マッスル・ダイアログ</div>
-        <div class="onboard-message-box">
-          <h1 class="onboard-title-muscle">
-            <span class="text-keep">キミEこれから</span><br>
-            <span class="text-keep">マッチョになるEかいEEE/span><br>
-            <span class="text-keep">ならなぁEEかいEEE/span><br>
-            <span class="text-keep">どっちなんだぁEEE/span><br>
-            <span class="catchphrase-punch">……なーーーる！EE/span>
-          </h1>
-          <p class="onboard-sub-msg">まずEキミE筋肉の現状を教えてくれEEbr>最高Eメニューを絁EEぞ！パワーEEE/p>
-        </div>
-      </div>
-
-      <form id="onboarding-form" class="onboard-form">
-        <div class="form-group">
-          <label class="form-label">トレーニングの目皁EEなんだぁEEE/label>
-          <div class="radio-group" id="goal-group">
-            <!-- Build V170: Ultimate Muscle Icon (Requested Design with Impact Lines) -->
-            <label class="radio-card"><input type="radio" name="goal" value="筋肥大" checked>
-              <span class="radio-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));"><!-- Bicep Outline ONLY --><path d="M12.409 13.017A5 5 0 0 1 22 15c0 3.866-4 7-9 7c-4.077 0-8.153-.82-10.371-2.462c-.426-.316-.631-.832-.62-1.362C2.118 12.723 2.627 2 10 2a3 3 0 0 1 3 3a2 2 0 0 1-2 2c-1.105 0-1.64-.444-2-1" /><path d="M15 14a5 5 0 0 0-7.584 2" /><path d="M9.964 6.825C8.019 7.977 9.5 13 8 15" /></svg>
-              </span>
-              <span class="radio-text">筋肥大<br><small>チEくなりたぁEE/small></span></label>
-            <label class="radio-card"><input type="radio" name="goal" value="ダイエチE">
-              <span class="radio-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M7 6h10 M12 6v3" />
-                  <rect x="8" y="11" width="8" height="6" rx="1" />
-                </svg>
-              </span>
-              <span class="radio-text">ダイエチE<br><small>脂肪を燃めEEE/small></span></label>
-            <label class="radio-card"><input type="radio" name="goal" value="健康維持E>
-              <span class="radio-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
-                  <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
-                </svg>
-              </span>
-              <span class="radio-text">健康維持Ebr><small>允EでぁEぁEE/small></span></label>
-            <label class="radio-card"><input type="radio" name="goal" value="筋力アチEE">
-              <span class="radio-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" />
-                  <path d="m2.5 21.5 1.4-1.4" />
-                  <path d="m20.1 3.9 1.4-1.4" />
-                  <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.828z" />
-                  <path d="m9.6 14.4 4.8-4.8" />
-                </svg>
-              </span>
-              <span class="radio-text">筋力UP<br><small>パワー全開！E/small></span></label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">トレーニング経験EどぁEんだぁEEE/label>
-          <div class="radio-group" id="experience-group">
-            <label class="radio-card"><input type="radio" name="experience" value="初忁EE checked>
-              <span class="radio-visual">
-                <span class="beginner-emoji">🔰</span>
-              </span>
-              <span class="radio-text">初忁EEbr><small>、Eヶ朁E/small></span></label>
-            <label class="radio-card"><input type="radio" name="experience" value="中級老E>
-              <span class="radio-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
-                </svg>
-              </span>
-              <span class="radio-text">中級老Ebr><small>6ヶ月、E年</small></span></label>
-            <label class="radio-card"><input type="radio" name="experience" value="上級老E>
-              <span class="radio-visual">
-                <span class="gorilla-emoji shadow-muscle">🦁E/span>
-              </span>
-              <span class="radio-text">上級老Ebr><small>2年以丁E/small></span></label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">普段の生活活動量はEE/label>
-          <div class="radio-group" id="activity-group">
-            <label class="radio-card"><input type="radio" name="activity" value="チEクワーク" checked>
-              <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="4" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
-              <span class="radio-text">チEクワーク<br><small>座り仕事中忁E/small></span></label>
-            <label class="radio-card"><input type="radio" name="activity" value="普送E>
-              <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M7 21l3 -4" /><path d="M16 21l-2 -4l-3 -3l1 -6" /><path d="M6 12l2 -3l4 -1l3 3l3 1" /></svg></span>
-              <span class="radio-text">普送Ebr><small>適度に動く</small></span></label>
-            <label class="radio-card"><input type="radio" name="activity" value="力仕亁E>
-              <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg></span>
-              <span class="radio-text">力仕亁Ebr><small>体をよく使ぁE/small></span></label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">痛みのある部位EあるかいE（褁E選択OKEE/label>
-          <div class="checkbox-group" id="pain-group">
-            <label class="check-card"><input type="checkbox" name="pain" value="なぁE checked><span class="check-text">なぁE/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="肩"><span
-                class="check-text">肩</span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="腰"><span
-                class="check-text">腰</span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="膁E><span
-                class="check-text">膁E/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="肁E><span
-                class="check-text">肁E/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="手馁E><span
-                class="check-text">手馁E/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="馁E><span
-                class="check-text">馁E/span></label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">優先して鍛えたい部位EE（褁E選択OKEE/label>
-          <div class="checkbox-group" id="priority-group">
-            <label class="check-card"><input type="checkbox" name="priority" value="胸"><span class="check-text">胸</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="背中"><span class="check-text">背中</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="下半身"><span class="check-text">下半身</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="肩"><span class="check-text">肩</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="腁E><span class="check-text">腁E/span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="腹"><span class="check-text">腹</span></label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">週に何回トレーニングするんだぁEEE/label>
-          <div class="frequency-slider">
-            <div class="frequency-slider-wrapper">
-              <div class="frequency-track-bg">
-                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
-              </div>
-              <input type="range" id="frequency" name="frequency" min="1" max="7" value="3" class="slider-muscle">
-            </div>
-            <div class="frequency-display">
-              <span id="frequency-value" class="frequency-num">3</span>
-              <span class="frequency-unit">囁E週</span>
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">準備完亁EE/span><span class="text-keep">メニューを作Eする</span></span>
-          <span class="btn-effect"></span>
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- ========== メイン画面 ========== -->
-  <div id="main-screen" class="screen">
-    <!-- タブナビゲーション -->
-    <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="calendar">
-        <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="tab-label">カレンダー</span>
-      </button>
-      <button class="tab-btn" data-tab="chat">
-        <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        <span class="tab-label">対話</span>
-      </button>
-      <button class="tab-btn" data-tab="training">
-        <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6M6 14l6-6 6 6M6 19l6-6 6 6"/></svg>
-        <span class="tab-label">トレーニング</span>
-      </button>
-      <button class="tab-btn" data-tab="profile">
-        <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span class="tab-label">マイマッスル</span>
-      </button>
-    </nav>
-
-    <!-- タブA: カレンダー -->
-    <div id="tab-calendar" class="tab-content active">
-      <div class="calendar-header">
-        <button id="cal-prev" class="cal-nav-btn">
-          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <h2 id="cal-month-title" class="cal-title"></h2>
-        <button id="cal-next" class="cal-nav-btn">
-          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-      </div>
-      <div class="calendar-weekdays">
-        <span>日</span><span>朁E/span><span>火</span><span>水</span><span>木</span><span>釁E/span><span>圁E/span>
-      </div>
-      <div id="cal-grid" class="calendar-grid"></div>
-
-      <div class="calendar-actions">
-        <button id="btn-manual-add" class="btn-secondary">
-          <span>EE手動で記録を追加する</span>
-        </button>
-      </div>
-
-      <!-- 実績詳細 -->
-      <div id="history-detail" class="history-detail hidden">
-        <div class="history-detail-header">
-          <h3 id="history-date-title" class="history-title"></h3>
-          <button id="btn-delete-day" class="btn-danger-small" title="こE日の記録をEて削除">全削除</button>
-        </div>
-        <div id="history-content" class="history-content"></div>
-      </div>
-    </div>
-
-    <!-- タブB: 対話 (Chat) -->
-    <div id="tab-chat" class="tab-content flex-tab">
-      <div class="chat-header" style="padding:1rem; border-bottom:1px solid var(--border-color); background:var(--white); box-shadow:0 2px 5px rgba(0,0,0,0.05); z-index:10; display:flex; align-items:center; gap:0.5rem;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        <h2 style="font-size:1.1rem; color:var(--text-primary); font-weight:900;">AIトレーナE対話</h2>
-        <button id="btn-clear-chat" style="margin-left:auto; background:none; border:none; color:var(--text-muted); font-size:0.8rem; text-decoration:underline; padding:0.2rem; cursor:pointer;">履歴消去</button>
-      </div>
-      <div id="chat-messages" class="chat-messages" style="flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:1rem; background:var(--bg-main);">
-        <!-- JSでメチEージを描画 -->
-      </div>
-      <div class="chat-input-area">
-        <form id="chat-form" style="display:flex; gap:0.5rem;">
-          <input type="text" id="chat-input" class="input-muscle" placeholder="筋肉への思いを伝えめE.." style="flex:1; margin:0;" required>
-          <button type="submit" class="btn-primary" style="padding:0 1.2rem; min-width:60px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- タブC: トレーニング -->
-    <div id="tab-training" class="tab-content">
-      <div class="training-hero-modern">
-        <div class="hero-text-area">
-          <h2 class="hero-title-mega">
-            <span class="text-keep">おい、オレの筋肉EE/span><br>
-            <span class="text-keep">今日のメニューは</span><br>
-            <span class="text-keep">どぁEるんだぁEEE/span>
-          </h2>
-        </div>
-        <div class="hero-image-area">
-          <img src="biceps.png" alt="きんに吁E class="hero-kinnikun-img"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <div
-            style="display:none; width:100px; height:100px; background:#F1E00B; border-radius:10px; text-align:center; line-height:100px; font-weight:bold;">
-            画像エリア</div>
-        </div>
-      </div>
-
-      <div id="no-plan" class="no-plan-area">
-        <button id="btn-generate" class="btn-mega btn-kinnikun-style">
-          <span class="btn-text"><span class="text-keep">AIメニューめE/span><span class="text-keep">生EするEE/span></span>
-          <span class="btn-effect"></span>
-        </button>
-      </div>
-
-      <div id="loading-area" class="loading-area hidden">
-        <div class="loading-spinner" style="margin-bottom:1rem;">
-          <img src="kinnikun_spinner.png" class="kinnikun-spin-img" alt="筋肉ルーレチE" onerror="this.src='biceps.png'">
-        </div>
-        <p class="loading-text" style="color:var(--text-primary); font-size:1.4rem;">筋肉ルーレチE、スタート！…</p>
-        <p id="loading-quote" class="loading-subtext" style="font-size:1.1rem; color:var(--red); height:2rem; margin-top:1rem;"></p>
-      </div>
-
-      <div id="plan-area" class="plan-area hidden">
-        <div id="plan-list" class="plan-list"></div>
-        <button id="btn-complete" class="btn-primary btn-mega btn-complete hidden">
-          <span class="btn-text"><span class="text-keep">完亁EE/span><span class="text-keep">パワーEEE/span></span>
-          <span class="btn-effect"></span>
-        </button>
-        <button id="btn-regenerate" class="btn-secondary btn-regen">
-          <span>メニューを作り直ぁE/span>
-        </button>
-      </div>
-    </div>
-
-    <!-- タブD: マイマッスル (成長記録) -->
-    <div id="tab-profile" class="tab-content">
-      
-      <div class="profile-section">
-        <h2 class="section-title">ボディ・チャーチE/h2>
-        <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
-          <canvas id="weightChart"></canvas>
-        </div>
-        
-        <div class="weight-input-area">
-          <div style="display:flex; gap:0.5rem; margin-bottom: 0.5rem;">
-            <input type="date" id="body-date" class="input-muscle" style="flex:1;">
-            <input type="number" id="body-weight" class="input-muscle" step="0.1" placeholder="体重(kg)" style="flex:1;">
-            <input type="number" id="body-fat" class="input-muscle" step="0.1" placeholder="体脂肪(%)" style="flex:0.8;">
-          </div>
-          <button id="btn-save-weight" class="btn-primary" style="width:100%; padding:0.8rem;">
-            <span class="btn-text"><span class="text-keep">体重を記録するEE/span><span class="text-keep">パワーEE/span></span>
-          </button>
-        </div>
-        
-        <div id="body-feedback" class="muscle-feedback-box hidden">
-          <div class="feedback-icon">💪</div>
-          <p id="body-feedback-text" class="feedback-text"></p>
-        </div>
-      </div>
-
-      <div class="profile-section">
-        <h2 class="section-title">筋肉の基本プロフィール</h2>
-        <form id="profile-form" class="onboard-form">
-          <div class="form-group" style="margin-bottom:1rem;">
-            <label class="form-label">🎯 目標体重 (kg)</label>
-            <input type="number" name="p-targetWeight" id="p-targetWeight" class="input-muscle" step="0.1" placeholder="侁E 70.0">
-          </div>
-          
-          <div class="form-group"><label class="form-label">目皁E/label>
-            <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-goal" value="筋肥大"><span class="radio-text">筋肥大</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="ダイエチE"><span class="radio-text">ダイエチE</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="健康維持E><span class="radio-text">健康維持E/span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="筋力アチEE"><span class="radio-text">筋力UP</span></label>
-            </div>
-          </div>
-          <div class="form-group"><label class="form-label">経騁E/label>
-            <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-experience" value="初忁EE><span class="radio-text">初忁EE/span></label>
-              <label class="radio-card"><input type="radio" name="p-experience" value="中級老E><span class="radio-text">中級老E/span></label>
-              <label class="radio-card"><input type="radio" name="p-experience" value="上級老E><span class="radio-text">上級老E/span></label>
-            </div>
-          </div>
-          <div class="form-group"><label class="form-label">活動量</label>
-            <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-activity" value="チEクワーク"><span class="radio-text">チEク</span></label>
-              <label class="radio-card"><input type="radio" name="p-activity" value="普送E><span class="radio-text">普送E/span></label>
-              <label class="radio-card"><input type="radio" name="p-activity" value="力仕亁E><span class="radio-text">力仕亁E/span></label>
-            </div>
-          </div>
-          <div class="form-group"><label class="form-label">痛みのある部佁E/label>
-            <div class="checkbox-group" id="p-pain-group">
-              <label class="check-card"><input type="checkbox" name="p-pain" value="なぁE><span class="check-text">なぁE/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="肩"><span class="check-text">肩</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="腰"><span class="check-text">腰</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="膁E><span class="check-text">膁E/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="肁E><span class="check-text">肁E/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="手馁E><span class="check-text">手馁E/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="馁E><span class="check-text">馁E/span></label>
-            </div>
-          </div>
-          <div class="form-group"><label class="form-label">優先部佁E/label>
-            <div class="checkbox-group" id="p-priority-group">
-              <label class="check-card"><input type="checkbox" name="p-priority" value="胸"><span class="check-text">胸</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="背中"><span class="check-text">背中</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="下半身"><span class="check-text">下半身</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="肩"><span class="check-text">肩</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="腁E><span class="check-text">腁E/span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="腹"><span class="check-text">腹</span></label>
-            </div>
-          </div>
-          <div class="form-group"><label class="form-label">週の頻度</label>
-            <div class="frequency-slider">
-              <div class="frequency-slider-wrapper">
-                <div class="frequency-track-bg"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
-                <input type="range" id="p-frequency" name="p-frequency" min="1" max="7" value="3" class="slider-muscle">
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn-primary" style="width:100%;">
-            <span class="btn-text"><span class="text-keep">プロフィール更新EE/span><span class="text-keep">パワーEEE/span></span>
-          </button>
-        </form>
-      </div>
-
-      <div class="profile-section">
-        <h2 class="section-title">トレーニング種目カスタム</h2>
-        <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.5;">
-          <span class="text-keep">オイ、そこE君！E/span>
-          <span class="text-keep">君だけEオリジナル種目めEEシンめE/span>
-          <span class="text-keep">自由に追加・編雁Eきるぞ！E/span><br>
-          <span class="text-keep">ここで鍛え上げたリストを使って、E/span>
-          <span class="text-keep">筋肉コンピューターEEIEが</span>
-          <span class="text-keep">自刁EけE最強プログラムめE/span>
-          <span class="text-keep">生EするんだEE/span><br>
-          <span class="text-keep" style="font-weight:700; color:var(--text-primary);">さあ、理想の筋肉を創り上げようEヤーEE💪✨</span>
-        </p>
-        <button id="btn-open-exercise-master" class="btn-primary" style="width:100%; margin-top:0.5rem; padding:1.2rem;">
-          <span class="btn-text" style="font-size:1.05rem;"><span class="text-keep">🏋EE種目リストを</span><span class="text-keep">編雁Eる！パワーEE/span></span>
-          <span class="btn-effect"></span>
-        </button>
-      </div>
-
-      <div class="profile-section" style="background:var(--bg-input);">
-        <h2 class="section-title" style="font-size:1rem; border:none; box-shadow:none; padding-left:0; background:transparent;">シスチE設宁E/h2>
-        
-        <label class="form-label">🤁EAIモチE選抁E(チEト用)</label>
-        <div style="margin-bottom:1.5rem;">
-          <select id="profile-ai-model" class="input-muscle" style="text-align: left; padding: 0.6rem;">
-            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite (推奨/スタミナ最強)</option>
-            <option value="gemini-3-flash-preview">Gemini 3 Flash (一番賢ぁE1日20囁E</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (一世代剁E1日20囁E</option>
-          </select>
-        </div>
-        <label class="form-label">Gemini APIキー</label>
-        <div style="display:flex;gap:0.5rem;align-items:center; margin-bottom:1.5rem;">
-          <input type="password" id="profile-api-key" class="input-muscle" placeholder="AIzaSy..." style="flex:1;text-align:left;">
-          <button id="btn-save-apikey" class="btn-primary" style="padding:0.5rem 1rem;">保孁E/button>
-        </div>
-
-        <label class="form-label">チEEタバックアチEE</label>
-        <div class="backup-buttons">
-          <button id="btn-backup" class="btn-secondary btn-backup"><span>エクスポEト（保存！E/span></button>
-          <label class="btn-secondary btn-backup btn-restore-label">
-            <span>インポEト（復允EE/span><input type="file" id="file-restore" accept=".json" style="display:none">
-          </label>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ========== 条件設定モーダル ========== -->
-  <div id="modal-conditions" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><span class="text-keep">今日のコンチEションめE/span><span class="text-keep">教えてくれEE/span></h2>
-        <button class="modal-close" data-modal="modal-conditions">✁E/button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">今回の予定時閁E/label>
-          <div class="time-selector">
-            <button class="time-btn" data-time="30">30刁E/button>
-            <button class="time-btn active" data-time="45">45刁E/button>
-            <button class="time-btn" data-time="60">60刁E/button>
-            <button class="time-btn" data-time="90">90刁E/button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">今E疲労度はどぁEんだぁEE/label>
-          <div class="fatigue-selector">
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="允EE checked>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><polyline points="17 11 12 4 7 11"/><polyline points="17 19 12 12 7 19"/></svg>
-              <span>絶好調EE/span></label>
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="普送E>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
-              <span>普送E/span></label>
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="少し疲めE>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><line x1="6" y1="6" x2="18" y2="18"/><polyline points="18 10 18 18 10 18"/></svg>
-              <span>少し疲めE/span></label>
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="疲労困憁E>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><polyline points="7 13 12 20 17 13"/><polyline points="7 5 12 12 17 5"/></svg>
-              <span>疲労困憁E/span></label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">今日、痛みがある部位EEE/label>
-          <div class="checkbox-group compact" id="today-pain-group">
-            <label class="check-card"><input type="checkbox" name="todayPain" value="なぁE checked><span
-                class="check-text">なぁE/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="肩"><span
-                class="check-text">肩</span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="腰"><span
-                class="check-text">腰</span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="膁E><span
-                class="check-text">膁E/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="肁E><span
-                class="check-text">肁E/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="手馁E><span
-                class="check-text">手馁E/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="馁E><span
-                class="check-text">馁E/span></label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">自由要望EフリーチEスト！E/label>
-          <p class="form-hint">例：「有酸素30刁Eめて」「Eだけで絁Eで、E/p>
-          <textarea id="free-request" class="textarea-muscle" rows="3" placeholder="筋肉への想ぁEなんでも書ぁEくれEE></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button id="btn-start-generate" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">筋肉ルーレチE、E/span><span class="text-keep">スタート！E/span></span>
-          <span class="btn-effect"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== 手動追加モーダル ========== -->
-  <div id="modal-manual" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><span class="text-keep">手動でトレーニングめE/span><span class="text-keep">記録EE/span></h2>
-        <button class="modal-close" data-modal="modal-manual">✁E/button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label class="form-label">日仁E/label>
-          <input type="date" id="manual-date" class="input-muscle">
-        </div>
-        <div id="manual-exercises" class="manual-exercises"></div>
-        <button id="btn-add-exercise" class="btn-secondary btn-small" type="button">EE種目を追加</button>
-      </div>
-      <div class="modal-footer">
-        <button id="btn-save-manual" class="btn-primary">
-          <span class="btn-text"><span class="text-keep">記録完亁EE/span><span class="text-keep">パワーEE/span></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== 実績編雁Eーダル ========== -->
-  <div id="modal-edit-exercise" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><span class="text-keep">トレーニング記録めE/span><span class="text-keep">編雁E/span></h2>
-        <button class="modal-close" data-modal="modal-edit-exercise">✁E/button>
-      </div>
-      <div class="modal-body" id="edit-exercise-body"></div>
-      <div class="modal-footer">
-        <button id="btn-save-edit" class="btn-primary">
-          <span class="btn-text"><span class="text-keep">更新完亁EE/span><span class="text-keep">パワーEE/span></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== 完亁EEチEEアチEE ========== -->
-  <div id="modal-complete" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content modal-celebration">
-      <div class="onboard-title-muscle">
-        <span class="phrase">今日のトレーニング、E/span>
-        <span class="phrase">お疲れ様だEE/span>
-        <span class="catchphrase-punch">ナイスバルクEE/span>
-      </div>
-      <div style="background:var(--yellow-light); border:3px solid var(--text-primary); border-radius:var(--radius-sm); padding:1rem; margin-bottom:1.5rem; position:relative;">
-        <svg style="position:absolute; top:-15px; left:10px; width:30px; height:30px; fill:var(--white); stroke:var(--text-primary); stroke-width:2;" viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zM15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
-        <p id="celebration-quote-text" style="font-family:var(--font-title); font-weight:900; font-size:0.95rem; line-height:1.6; color:var(--text-primary);"></p>
-      </div>
-      <div id="celebration-stats" class="celebration-stats"></div>
-      <button id="btn-close-complete" class="btn-primary btn-mega">
-        <span class="btn-text"><span class="text-keep">完亁EめE/span></span>
-        <span class="btn-effect"></span>
-      </button>
-      <div class="confetti-container" id="confetti"></div>
-    </div>
-  </div>
-
-  <!-- ========== APIキー入力モーダル ========== -->
-  <div id="modal-apikey" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><span class="text-keep">Gemini APIキーめE/span><span class="text-keep">入力してくれEE/span></h2>
-        <button class="modal-close" data-modal="modal-apikey">✁E/button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6;">
-          AIメニュー生EにはGoogle GeminiのAPIキーが忁EだEEbr>
-          <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue);font-weight:700;">Google
-            AI Studio</a> で無料取得できるぞ！E
-        </p>
-        <div class="form-group">
-          <label class="form-label">APIキー</label>
-          <input type="password" id="apikey-input" class="input-muscle" placeholder="AIzaSy..."
-            style="text-align:left;">
-        </div>
-        <p style="font-size:0.7rem;color:var(--text-muted);line-height:1.5;">
-          キーはこEチEイスのLocalStorageにのみ保存されます、Ebr>サーバEめE三老Eは一刁E信されません、E
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button id="btn-save-apikey-modal" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">保存して筋肉との</span><span class="text-keep">対話を始める！E/span></span>
-          <span class="btn-effect"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== 種目マスタ一覧モーダル ========== -->
-  <div id="modal-exercise-master" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content" style="max-height:85vh; display:flex; flex-direction:column; padding-bottom:1rem;">
-      <div class="modal-header">
-        <h2><span class="text-keep">種目マスタ管琁E/span></h2>
-        <button class="modal-close" data-modal="modal-exercise-master">✁E/button>
-      </div>
-      <div class="modal-body" style="flex:1; overflow-y:auto; padding:0.5rem;" id="exercise-master-list">
-        <!-- JSで一覧を描画 -->
-      </div>
-      <div class="modal-footer" style="display:flex; gap:0.5rem; flex-direction:column; padding-top:1rem; border-top:2px dashed var(--bg-input);">
-        <button id="btn-add-exercise-master" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">EE新規種目めE/span><span class="text-keep">追加する</span></span>
-        </button>
-        <button id="btn-reset-exercise-master" class="btn-secondary" style="font-size:0.8rem;">
-          チEォルトリストに戻ぁE
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== 種目エチEターモーダル ========== -->
-  <div id="modal-exercise-edit" class="modal hidden" style="z-index: 10001;">
-    <div class="modal-overlay"></div>
-    <div class="modal-content" style="max-height:85vh; overflow-y:auto;">
-      <div class="modal-header" style="position:sticky; top:0; background:white; z-index:2;">
-        <h2><span class="text-keep" id="exercise-edit-title">新しい種目</span></h2>
-        <button class="modal-close" data-modal="modal-exercise-edit">✁E/button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="edit-master-id">
-        <div class="form-group">
-          <label class="form-label">🎯 種目吁E/label>
-          <input type="text" id="edit-master-name" class="input-muscle" placeholder="侁E yuzuhiko流E筁E style="text-align:left;">
-        </div>
-        <div class="form-group">
-          <label class="form-label">💪 メイン部佁E(Primary)</label>
-          <input type="text" id="edit-master-primary" class="input-muscle" placeholder="侁E 大胸筁E 庁E筁E style="text-align:left;" list="datalist-primary">
-          <datalist id="datalist-primary">
-            <option value="大胸筁E>
-            <option value="庁E筁E>
-            <option value="大腿四頭筁E>
-            <option value="ハムストリングス">
-            <option value="大臀筁E>
-            <option value="三角筋前部">
-            <option value="上E二頭筁E>
-            <option value="上E三頭筁E>
-            <option value="腹直筁E>
-          </datalist>
-        </div>
-        <div class="form-group">
-          <label class="form-label">🤁Eサブ部佁E(カンマ区刁Eで褁E可)</label>
-          <input type="text" id="edit-master-secondary" class="input-muscle" placeholder="侁E 肩前部, 上E三頭筁E style="text-align:left;">
-        </div>
-        <div class="form-group">
-          <label class="form-label">🛠EE使用器具</label>
-          <input type="text" id="edit-master-equipment" class="input-muscle" placeholder="侁E ダンベル, マシン, 自釁E style="text-align:left;">
-        </div>
-        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">🎯 目標重釁Ekg)</label>
-            <input type="number" id="edit-master-target-weight" class="input-muscle" step="0.5" placeholder="侁E 100">
-          </div>
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">📅 目標期陁E/label>
-            <input type="date" id="edit-master-target-deadline" class="input-muscle">
-          </div>
-        </div>
-        <div style="display:flex; gap:1rem; margin-bottom:1rem;">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">⚖︁E重量刻み幁Ekg)</label>
-            <input type="number" id="edit-master-step" class="input-muscle" step="0.5" placeholder="侁E 2.5">
-            <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">自重や有E素は 0</p>
-          </div>
-          <div class="form-group" style="flex:1; display:flex; align-items:flex-start; justify-content:center; padding-top:1.5rem;">
-            <label class="check-card" style="width:100%;">
-              <input type="checkbox" id="edit-master-cardio">
-              <span class="check-text" style="font-size:0.8rem;">🏃 有E素運動</span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer" style="position:sticky; bottom:0; background:white; z-index:2;">
-        <button id="btn-save-exercise-master" class="btn-primary">
-          <span class="btn-text">保存すめE/span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========== メニュー事前提案モーダル ========== -->
-  <div id="modal-proposal" class="modal hidden">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header" style="border-bottom:none;">
-        <h2><span class="text-keep" style="color:var(--red);">AIトレーナEからの提桁E/span></h2>
-        <button class="modal-close" data-modal="modal-proposal">✁E/button>
-      </div>
-      <div class="modal-body" style="padding-top:0;">
-        <div id="proposal-text" style="font-size:0.95rem; line-height:1.6; color:var(--text-primary); background:var(--bg-input); padding:1rem; border-radius:var(--radius-sm); border-left:4px solid var(--red); margin-bottom:1rem; font-family:var(--font-main); white-space:pre-wrap;">
-          <!-- 提案テキストがここに入りまぁE-->
-        </div>
-        <div class="form-group">
-          <label class="form-label">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> 
-            提案に追加の要望があれE入劁E
-          </label>
-          <textarea id="proposal-feedback" class="textarea-muscle" rows="2" placeholder="もう少し追ぁEみたい、E筋も入れてみるかぁEEE></textarea>
-        </div>
-      </div>
-      <div class="modal-footer" style="display:flex; flex-direction:column; gap:0.5rem;">
-        <button id="btn-accept-proposal" class="btn-primary btn-mega">
-          <span class="btn-text">こE提案でメニューを絁EEEE/span>
-        </button>
-        <button id="btn-reject-proposal" class="btn-secondary" style="font-size:0.9rem;">
-          要望を追加して老E直ぁE
-        </button>
-      </div>
-    </div>
-  </div>
-    <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.9.4 | Power!! 💪</div>
-      <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
-        筋肉を最新に更新するEキャチEュクリアEE
-      </button>
-    </div>
-    <script>
-      async function clearMuscleCache() {
-        if ('serviceWorker' in navigator) {
-          const registrations = await navigator.serviceWorker.getRegistrations();
-          for (let registration of registrations) { await registration.unregister(); }
-          if (window.caches) {
-            const keys = await caches.keys();
-            for (let key of keys) { await caches.delete(key); }
-          }
-          window.location.reload(true);
-        } else { window.location.reload(true); }
-      }
-    </script>
-    <script src="app_v194.js"></script>
-</body>
-
-</html>
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>マッスル・ダイアログ - 筋肉対話</title>
+  <meta name="description" content="AIパーソナルトレーナーがあなただけの筋トレメニューを生成！筋肉との対話、始めよう。ヤー！！">
+
+  <!-- PWA / iOS -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="マッスルダイアログ">
+  <link rel="apple-touch-icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>M</text></svg>">
+  <meta name="theme-color" content="#D4001F">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1.9.4">
+</head>
+
+<body>
+
+  <!-- ========== スプラッシュ ========== -->
+  <div id="splash-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-white p-6 transition-opacity duration-1000">
+    <div class="splash-content">
+      <h1 class="splash-title-mega">マッスル<br>ダイアログ</h1>
+      <p class="splash-subtitle">〜 筋肉とのポップな対話 〜</p>
+
+      <img src="biceps.png" alt="きんに君" class="splash-kinnikun-img" onerror="this.style.display='none';">
+
+      <div class="loading-muscle">
+        <div class="w-6 h-6 bg-red-600 rounded-full animate-pulse"></div>
+        <div class="loading-text-muscle">筋肉パルス、計測中…ヤー！</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== オンボーディング ========== -->
+  <div id="onboarding-screen" class="screen">
+    <div class="onboard-container">
+      <div class="onboard-header">
+        <div class="onboard-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 8h1a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-1M5 8h1a1 1 0 0 0 1 1v6a1 1 0 0 0-1 1H5M2 12h20M7 5v14M17 5v14"/></svg>
+        </div>
+        <h1>はじめまして！<br>まずはキミの筋肉について<br>教えてくれないかい！？</h1>
+        <p class="onboard-sub">ヤー！！ ここで入力した情報をもとに、最高のメニューを組むぞ！パワー！！</p>
+      </div>
+
+      <form id="onboarding-form" class="onboard-form">
+        <div class="form-group">
+          <label class="form-label">トレーニングの目的はなんだい！？</label>
+          <div class="radio-group" id="goal-group">
+            <label class="radio-card"><input type="radio" name="goal" value="筋肥大" checked>
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.8 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.8 1.2 1.5 1.5 2.5"/></svg></span>
+              <span class="radio-text">筋肥大<br><small>デカくなりたい！</small></span></label>
+            <label class="radio-card"><input type="radio" name="goal" value="ダイエット">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3 0-1.38 1.5-3.5 3-3.5 1 0 2 1.38 2 3.5 0 2.21-1.79 4-4 4zM9 18.12A7 7 0 1 1 15 18.12V15l-3-3-3 3v3.12z"/></svg></span>
+              <span class="radio-text">ダイエット<br><small>脂肪を燃やす！</small></span></label>
+            <label class="radio-card"><input type="radio" name="goal" value="健康維持">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+              <span class="radio-text">健康維持<br><small>元気でいたい！</small></span></label>
+            <label class="radio-card"><input type="radio" name="goal" value="筋力アップ">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg></span>
+              <span class="radio-text">筋力UP<br><small>パワー全開！</small></span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">トレーニング経験はどうなんだい！？</label>
+          <div class="radio-group" id="experience-group">
+            <label class="radio-card"><input type="radio" name="experience" value="初心者" checked>
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M2 22s6-12 15-12a5 5 0 0 1 5 5s-6 10-15 10c0-6 1-13 1-13"/></svg></span>
+              <span class="radio-text">初心者<br><small>〜6ヶ月</small></span></label>
+            <label class="radio-card"><input type="radio" name="experience" value="中級者">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M12 22s5-15 10-15c0 4-2 8-5 10-3 2-5 5-5 5Z"/><path d="M12 22s-5-15-10-15c0 4 2 8 5 10 3 2 5 5 5 5Z"/></svg></span>
+              <span class="radio-text">中級者<br><small>6ヶ月〜2年</small></span></label>
+            <label class="radio-card"><input type="radio" name="experience" value="上級者">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><circle cx="12" cy="19" r="2"/><path d="M12 17v-4M10 13c0-4 1-8 6-8s6 4 6 8M2 13c0-4 1-8 6-8"/></svg></span>
+              <span class="radio-text">上級者<br><small>2年以上</small></span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">普段の生活活動量は？</label>
+          <div class="radio-group" id="activity-group">
+            <label class="radio-card"><input type="radio" name="activity" value="デスクワーク" checked>
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+              <span class="radio-text">デスクワーク<br><small>座り仕事中心</small></span></label>
+            <label class="radio-card"><input type="radio" name="activity" value="普通">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="M13 20v-5l1-1 3 1M8 20v-5l2-2 3-3M15 10l-4-1"/></svg></span>
+              <span class="radio-text">普通<br><small>適度に動く</small></span></label>
+            <label class="radio-card"><input type="radio" name="activity" value="力仕事">
+              <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="m15 5 4 4M20.5 8a2.12 2.12 0 0 1 0 3l-2.7 2.7L8 18.5l-4.5 4.5L1 23l.5-2.5 4.5-4.5L15.3 6.7l2.7-2.7a2.12 2.12 0 0 1 3 0Z"/></svg></span>
+              <span class="radio-text">力仕事<br><small>体をよく使う</small></span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">痛みのある部位はあるかい？（複数選択OK）</label>
+          <div class="checkbox-group" id="pain-group">
+            <label class="check-card"><input type="checkbox" name="pain" value="なし" checked><span class="check-text">なし</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="肩"><span
+                class="check-text">肩</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="腰"><span
+                class="check-text">腰</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="膝"><span
+                class="check-text">膝</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="肘"><span
+                class="check-text">肘</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="手首"><span
+                class="check-text">手首</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="首"><span
+                class="check-text">首</span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">優先して鍛えたい部位は？（複数選択OK）</label>
+          <div class="checkbox-group" id="priority-group">
+            <label class="check-card"><input type="checkbox" name="priority" value="胸"><span class="check-text">胸</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="背中"><span class="check-text">背中</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="下半身"><span class="check-text">下半身</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="肩"><span class="check-text">肩</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="腕"><span class="check-text">腕</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="腹"><span class="check-text">腹</span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">週に何回トレーニングするんだい！？</label>
+          <div class="frequency-slider">
+            <div class="frequency-slider-wrapper">
+              <div class="frequency-track-bg">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+              </div>
+              <input type="range" id="frequency" name="frequency" min="1" max="7" value="3" class="slider-muscle">
+            </div>
+            <div class="frequency-display">
+              <span id="frequency-value" class="frequency-num">3</span>
+              <span class="frequency-unit">回/週</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary btn-mega">
+          <span class="btn-text">おい、オレの筋肉！準備完了だ！ヤー！！</span>
+          <span class="btn-effect"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== メイン画面 ========== -->
+  <div id="main-screen" class="screen">
+    <!-- タブナビゲーション -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="calendar">
+        <img src="icon_calendar.svg" alt="カレンダー" class="tab-icon-img">
+        <span class="tab-label">カレンダー</span>
+      </button>
+      <button class="tab-btn" data-tab="training">
+        <img src="icon_training.svg" alt="トレーニング" class="tab-icon-img">
+        <span class="tab-label">トレーニング</span>
+      </button>
+      <button class="tab-btn" data-tab="profile">
+        <img src="icon_profile.svg" alt="プロフィール" class="tab-icon-img">
+        <span class="tab-label">プロフィール</span>
+      </button>
+    </nav>
+
+    <!-- タブA: カレンダー -->
+    <div id="tab-calendar" class="tab-content active">
+      <div class="calendar-header">
+        <button id="cal-prev" class="cal-nav-btn">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <h2 id="cal-month-title" class="cal-title"></h2>
+        <button id="cal-next" class="cal-nav-btn">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
+      </div>
+      <div id="cal-grid" class="calendar-grid"></div>
+
+      <div class="calendar-actions">
+        <button id="btn-manual-add" class="btn-secondary">
+          <span>＋ 手動で記録を追加する</span>
+        </button>
+        <button id="btn-force-update" class="btn-danger-small" style="margin-top:2rem; opacity:0.6;">筋肉を最新に更新する（キャッシュクリア）</button>
+      </div>
+
+      <!-- 実績詳細 -->
+      <div id="history-detail" class="history-detail hidden">
+        <div class="history-detail-header">
+          <h3 id="history-date-title" class="history-title"></h3>
+          <button id="btn-delete-day" class="btn-danger-small" title="この日の記録を全て削除">全削除</button>
+        </div>
+        <div id="history-content" class="history-content"></div>
+      </div>
+    </div>
+
+    <!-- タブB: トレーニング -->
+    <div id="tab-training" class="tab-content">
+      <div class="training-hero-modern">
+        <div class="hero-text-area">
+          <h2 class="hero-title-mega">オレの筋肉！<br>今日のメニューは<br>どうするんだい！？</h2>
+        </div>
+        <div class="hero-image-area">
+          <img src="biceps.png" alt="きんに君" class="hero-kinnikun-img"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div
+            style="display:none; width:100px; height:100px; background:#F1E00B; border-radius:10px; text-align:center; line-height:100px; font-weight:bold;">
+            画像エリア</div>
+        </div>
+      </div>
+
+      <div id="no-plan" class="no-plan-area">
+        <button id="btn-generate" class="btn-mega btn-kinnikun-style">
+          <span class="btn-text">メニューを作成する！パワー！</span>
+          <span class="btn-effect"></span>
+        </button>
+      </div>
+
+      <div id="loading-area" class="loading-area hidden">
+        <div class="loading-spinner">
+          <div class="dumbbell-spin">
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M18 8h1a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-1M5 8h1a1 1 0 0 0 1 1v6a1 1 0 0 0-1 1H5M2 12h20M7 5v14M17 5v14"/></svg>
+          </div>
+        </div>
+        <p class="loading-text">筋肉ルーレット、スタート！…</p>
+        <p class="loading-subtext">ヤー！！</p>
+      </div>
+
+      <div id="plan-area" class="plan-area hidden">
+        <div id="plan-list" class="plan-list"></div>
+        <button id="btn-complete" class="btn-primary btn-mega btn-complete hidden">
+          <span class="btn-text">完了！パワー！！</span>
+          <span class="btn-effect"></span>
+        </button>
+        <button id="btn-regenerate" class="btn-secondary btn-regen">
+          <span>メニューを作り直す</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- タブC: プロフィール -->
+    <div id="tab-profile" class="tab-content">
+      <div class="profile-section">
+        <h2 class="section-title">プロフィール設定</h2>
+        <p class="section-sub">いつでも変更できるぞ！筋肉は日々進化するからな！ヤー！！</p>
+
+        <form id="profile-form" class="onboard-form">
+          <div class="form-group">
+            <label class="form-label">目的</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="p-goal" value="筋肥大">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.8 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.8 1.2 1.5 1.5 2.5"/></svg></span>
+                <span class="radio-text">筋肥大</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="ダイエット">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3 0-1.38 1.5-3.5 3-3.5 1 0 2 1.38 2 3.5 0 2.21-1.79 4-4 4zM9 18.12A7 7 0 1 1 15 18.12V15l-3-3-3 3v3.12z"/></svg></span>
+                <span class="radio-text">ダイエット</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="健康維持">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+                <span class="radio-text">健康維持</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="筋力アップ">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg></span>
+                <span class="radio-text">筋力UP</span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">経験</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="p-experience" value="初心者">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M2 22s6-12 15-12a5 5 0 0 1 5 5s-6 10-15 10c0-6 1-13 1-13"/></svg></span>
+                <span class="radio-text">初心者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="中級者">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="M12 22s5-15 10-15c0 4-2 8-5 10-3 2-5 5-5 5Z"/><path d="M12 22s-5-15-10-15c0 4 2 8 5 10 3 2 5 5 5 5Z"/></svg></span>
+                <span class="radio-text">中級者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="上級者">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><circle cx="12" cy="19" r="2"/><path d="M12 17v-4M10 13c0-4 1-8 6-8s6 4 6 8M2 13c0-4 1-8 6-8"/></svg></span>
+                <span class="radio-text">上級者</span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">活動量</label>
+            <div class="radio-group">
+              <label class="radio-card"><input type="radio" name="p-activity" value="デスクワーク">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+                <span class="radio-text">デスクワーク</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="普通">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="M13 20v-5l1-1 3 1M8 20v-5l2-2 3-3M15 10l-4-1"/></svg></span>
+                <span class="radio-text">普通</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="力仕事">
+                <span class="radio-visual"><svg viewBox="0 0 24 24"><path d="m15 5 4 4M20.5 8a2.12 2.12 0 0 1 0 3l-2.7 2.7L8 18.5l-4.5 4.5L1 23l.5-2.5 4.5-4.5L15.3 6.7l2.7-2.7a2.12 2.12 0 0 1 3 0Z"/></svg></span>
+                <span class="radio-text">力仕事</span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">痛みのある部位</label>
+            <div class="checkbox-group" id="p-pain-group">
+              <label class="check-card"><input type="checkbox" name="p-pain" value="なし"><span class="check-text">なし</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="肩"><span
+                  class="check-text">肩</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="腰"><span
+                  class="check-text">腰</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="膝"><span
+                  class="check-text">膝</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="肘"><span
+                  class="check-text">肘</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="手首"><span
+                  class="check-text">手首</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="首"><span
+                  class="check-text">首</span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">優先部位</label>
+            <div class="checkbox-group" id="p-priority-group">
+              <label class="check-card"><input type="checkbox" name="p-priority" value="胸"><span class="check-text">胸</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="背中"><span class="check-text">背中</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="下半身"><span
+                  class="check-text">下半身</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="肩"><span class="check-text">肩</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="腕"><span class="check-text">腕</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="腹"><span class="check-text">腹</span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">週の頻度</label>
+            <div class="frequency-slider">
+              <div class="frequency-slider-wrapper">
+                <div class="frequency-track-bg">
+                  <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+                </div>
+                <input type="range" id="p-frequency" name="p-frequency" min="1" max="7" value="3" class="slider-muscle">
+              </div>
+              <div class="frequency-display">
+                <span id="p-frequency-value" class="frequency-num">3</span>
+                <span class="frequency-unit">回/週</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary btn-mega">
+            <span class="btn-text">プロフィール更新！パワー！！</span>
+            <span class="btn-effect"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- APIキー設定 -->
+      <div class="profile-section">
+        <h2 class="section-title">Gemini APIキー</h2>
+        <p class="section-sub">AIメニュー生成に必要だ！キーはこの端末だけに保存され、外部には送信されないぞ！</p>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <input type="password" id="profile-api-key" class="input-muscle" placeholder="AIzaSy..."
+            style="flex:1;text-align:left;">
+          <button id="btn-save-apikey" class="btn-primary" style="padding:0.5rem 1rem;white-space:nowrap;">
+            <span class="btn-text">保存</span>
+          </button>
+        </div>
+        <p style="font-size:0.7rem;color:var(--text-muted);margin-top:0.5rem;">🛡️
+          キーはこのデバイスのLocalStorageにのみ保存されます。サーバーには一切送信されません。</p>
+      </div>
+
+      <!-- バックアップ & リストア -->
+      <div class="profile-section">
+        <h2 class="section-title">データバックアップ</h2>
+        <p class="section-sub">トレーニング記録を守れ！筋肉は失っても取り戻せるが、データは…！</p>
+        <div class="backup-buttons">
+          <button id="btn-backup" class="btn-secondary btn-backup">
+            <span>バックアップをダウンロード</span>
+          </button>
+          <label class="btn-secondary btn-backup btn-restore-label">
+            <span>バックアップから復元</span>
+            <input type="file" id="file-restore" accept=".json" style="display:none">
+          </label>
+        </div>
+        <p class="backup-hint">「ホーム画面に追加」でアプリ化するとデータが消えにくくなるぞ！</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 条件設定モーダル ========== -->
+  <div id="modal-conditions" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>今日のコンディションを教えてくれ！</h2>
+        <button class="modal-close" data-modal="modal-conditions">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">今回の予定時間</label>
+          <div class="time-selector">
+            <button class="time-btn" data-time="30">30分</button>
+            <button class="time-btn active" data-time="45">45分</button>
+            <button class="time-btn" data-time="60">60分</button>
+            <button class="time-btn" data-time="90">90分</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">今の疲労度はどうなんだい？</label>
+          <div class="fatigue-selector">
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="元気" checked>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+              <span>絶好調！</span></label>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="普通">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 15h8M9 9h.01M15 9h.01"/></svg>
+              <span>普通</span></label>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="少し疲れ">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 1 4 1 4-1 4-1M9 9h.01M15 9h.01"/></svg>
+              <span>少し疲れ</span></label>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="疲労困憊">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/></svg>
+              <span>疲労困憊</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">今日、痛みがある部位は？</label>
+          <div class="checkbox-group compact" id="today-pain-group">
+            <label class="check-card"><input type="checkbox" name="todayPain" value="なし" checked><span
+                class="check-text">なし</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="肩"><span
+                class="check-text">肩</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="腰"><span
+                class="check-text">腰</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="膝"><span
+                class="check-text">膝</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="肘"><span
+                class="check-text">肘</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="手首"><span
+                class="check-text">手首</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">自由要望（フリーテキスト）</label>
+          <p class="form-hint">例：「有酸素30分含めて」「腕だけで組んで」</p>
+          <textarea id="free-request" class="textarea-muscle" rows="3" placeholder="筋肉への想い、なんでも書いてくれ！"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-start-generate" class="btn-primary btn-mega">
+          <span class="btn-text">筋肉ルーレット、スタート！ヤー！！</span>
+          <span class="btn-effect"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 手動追加モーダル ========== -->
+  <div id="modal-manual" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>手動でトレーニングを記録！</h2>
+        <button class="modal-close" data-modal="modal-manual">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">日付</label>
+          <input type="date" id="manual-date" class="input-muscle">
+        </div>
+        <div id="manual-exercises" class="manual-exercises"></div>
+        <button id="btn-add-exercise" class="btn-secondary btn-small" type="button">＋ 種目を追加</button>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-manual" class="btn-primary">
+          <span class="btn-text">記録完了！パワー！</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 実績編集モーダル ========== -->
+  <div id="modal-edit-exercise" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>トレーニング記録を編集</h2>
+        <button class="modal-close" data-modal="modal-edit-exercise">✕</button>
+      </div>
+      <div class="modal-body" id="edit-exercise-body"></div>
+      <div class="modal-footer">
+        <button id="btn-save-edit" class="btn-primary">
+          <span class="btn-text">更新完了！パワー！</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 完了ポップアップ ========== -->
+  <div id="modal-complete" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-celebration">
+      <div class="celebration-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      </div>
+      <h2 class="celebration-title">素晴らしい<br>バルクアップ！</h2>
+      <p class="celebration-text">おい、オレの筋肉！<br>喜んでるぞ！</p>
+      <p class="celebration-yell">ヤー！！パワー！！</p>
+      <div id="celebration-stats" class="celebration-stats"></div>
+      <button id="btn-close-complete" class="btn-primary">
+        <span class="btn-text">また明日も対話しよう！</span>
+      </button>
+      <div class="confetti-container" id="confetti"></div>
+    </div>
+  </div>
+
+  <!-- ========== APIキー入力モーダル ========== -->
+  <div id="modal-apikey" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Gemini APIキーを入力してくれ！</h2>
+        <button class="modal-close" data-modal="modal-apikey">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6;">
+          AIメニュー生成にはGoogle GeminiのAPIキーが必要だ！<br>
+          <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue);font-weight:700;">Google
+            AI Studio</a> で無料取得できるぞ！
+        </p>
+        <div class="form-group">
+          <label class="form-label">APIキー</label>
+          <input type="password" id="apikey-input" class="input-muscle" placeholder="AIzaSy..."
+            style="text-align:left;">
+        </div>
+        <p style="font-size:0.7rem;color:var(--text-muted);line-height:1.5;">
+          キーはこのデバイスのLocalStorageにのみ保存されます。<br>サーバーや第三者には一切送信されません。
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-apikey-modal" class="btn-primary btn-mega">
+          <span class="btn-text">保存して筋肉との対話を始める！</span>
+          <span class="btn-effect"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="md_final_v194.js"></script>
+</body>
+
+</html>
