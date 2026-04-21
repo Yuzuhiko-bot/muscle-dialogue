@@ -1494,18 +1494,18 @@ body {
 }
 
 .hero-image-area {
-  width: 140px;
   flex-shrink: 0;
-  z-index: 2;
   margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-kinnikun-img {
-  width: 100%;
+  width: 240px; /* 大体2倍以上に */
   height: auto;
+  filter: none; /* 影を削除 */
   display: block;
-  mix-blend-mode: multiply;
-  margin-bottom: -1rem;
 }
 
 /* ★新デザイン：きんに君風ポップボタン */
@@ -2613,16 +2613,17 @@ body {
 
 .hero-image-area {
   flex-shrink: 0;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .hero-kinnikun-img {
-  width: 110px;
+  width: 240px; /* 大体2倍以上に */
   height: auto;
-  filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1));
+  filter: none; /* 影を削除 */
+  display: block;
 }
 
 @media (max-width: 480px) {
@@ -2634,6 +2635,9 @@ body {
     font-size: 1.1rem;
   }
   .hero-kinnikun-img {
-    width: 80px;
-  }
+  width: 240px; /* 大体2倍以上に */
+  height: auto;
+  filter: none; /* 影を削除 */
+  display: block;
+}
 }
