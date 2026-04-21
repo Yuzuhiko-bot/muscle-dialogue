@@ -565,7 +565,8 @@ function getMuscleRotationStatus(hist) {
     return `- ${cat}: ${diffDays}日前${status}`;
   }).join('\n');
 
-  return `## 部位別ローテーション状況 (直近21日間分析):\n${summary}`;
+  return `## 部位別ローテーション状況 (直近21日間分析):
+${summary}`;
 }
 
 function buildPrompt(cond, hist, proposalText, feedbackText) {
@@ -586,7 +587,8 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
   const sys = `あなたは「なかやまきんに君」です。世界最高峰のスポーツ科学知識を持つパーソナルトレーナーとして、ユーザーのコンディション、チャット履歴、過去のトレーニング実績をすべて俯瞰し、今日という日に『最高にキレている』最適解のメニューを作成してください。
 
 ## 👑 メニュー構成の【絶対ルール】（システム制約・最優先事項）
-以下のルールはアプリの仕様（UIや安全機能）に関わるため、いかなる理論よりも優先して厳守すること。\n0. **週単位のローテーション管理（【最重要】）**: 部位別ローテーション状況を確認し、特定の主要部位が「7日以上」放置されないよう、バランスよくメニューを構成せよ。4〜5日空いている部位は積極的に組み込むこと。
+以下のルールはアプリの仕様（UIや安全機能）に関わるため、いかなる理論よりも優先して厳守すること。
+0. **週単位のローテーション管理（【最重要】）**: 部位別ローテーション状況を確認し、特定の主要部位が「7日以上」放置されないよう、バランスよくメニューを構成せよ。4〜5日空いている部位は積極的に組み込むこと。
 1. **種目の順序（必須）**: 必ず「コンパウンド種目（多関節）」を先に、「アイソレーション種目（単関節）」を後半に配置すること。
 2. **目的別の配布基準（ベースライン）**: 
    - 【筋肥大】: 8〜12回 / 3〜4セット / 休憩90〜120秒
@@ -631,7 +633,9 @@ ${exData}
 
   const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
 
-  const rotationStatus = getMuscleRotationStatus(hist);\n  const usr = `${rotationStatus}\n## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
+  const rotationStatus = getMuscleRotationStatus(hist);
+  const usr = `${rotationStatus}
+## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
 ## 体重情報: ${bodyText}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
 ## 直近の対話履歴 (参考):
@@ -732,7 +736,8 @@ function parseGeminiResponse(r) {
 }
 
 function renderPlan(plan) {
-  const nl2br = (s) => (s || '').replace(/\n/g, '<br>');
+  const nl2br = (s) => (s || '').replace(/
+/g, '<br>');
   const list = $('#plan-list'); list.innerHTML = '';
 
   // 1. なかやまきんに君からのひとこと (最上部へ移動)
@@ -1636,7 +1641,9 @@ function buildProposalPrompt(cond, hist) {
 ${selectedTheory}
 `;
 
-  const rotationStatus = getMuscleRotationStatus(hist);\n  const usr = `${rotationStatus}\n## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'}
+  const rotationStatus = getMuscleRotationStatus(hist);
+  const usr = `${rotationStatus}
+## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'}
 ## 体重情報: ${bodyText}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}
 ## 直近の対話履歴 (最重要参考情報):
@@ -1762,7 +1769,9 @@ function renderChatMessages() {
     
     wrap.innerHTML = `
       <div class="chat-sender-name">${name}</div>
-      <div class="chat-bubble">${msg.text.replace(/\\n/g, '\n')}</div>
+      <div class="chat-bubble">${msg.text.replace(/\
+/g, '
+')}</div>
     `;
     container.appendChild(wrap);
   });
