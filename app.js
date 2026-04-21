@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.9.2';
+const APP_VERSION = 'v1.9.3';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
