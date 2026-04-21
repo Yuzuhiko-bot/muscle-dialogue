@@ -2607,11 +2607,11 @@ body {
   box-shadow: 8px 8px 0px var(--yellow);
   position: relative;
   overflow: hidden;
-  min-height: 140px;
+  min-height: 170px; /* 少し高さを出して枠内の画像を大きく */
 }
 
 .hero-text-area {
-  width: 60%;
+  width: 55%;
   position: relative;
   z-index: 2;
 }
@@ -2626,32 +2626,36 @@ body {
 
 .hero-image-area {
   position: absolute;
-  right: -0.5rem;
-  bottom: -0.5rem;
+  right: 0;
+  bottom: 0;
+  height: 100%;
   width: 45%;
-  max-width: 220px;
+  max-width: 200px;
   display: flex;
-  justify-content: flex-end;
   align-items: flex-end;
+  justify-content: flex-end;
   pointer-events: none;
 }
 
 .hero-kinnikun-img {
-  width: 100%;
-  height: auto;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: right bottom;
   display: block;
 }
 
 @media (max-width: 480px) {
   .training-hero-modern {
     padding: 1rem;
-    min-height: 120px;
+    min-height: 130px;
   }
   .hero-title-mega {
     font-size: 1.15rem;
   }
-  .hero-image-area {
-    max-width: 180px;
+  .hero-text-area {
+    width: 60%;
   }
 }
 
