@@ -328,7 +328,7 @@
             <!-- 背景画像 -->
             <img id="cold-map-image" src="images/hm_front.png" alt="Body Map" onerror="this.alt='画像がありません'">
             <!-- フロント面 SVG -->
-            <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="800 0 800 1067">
+            <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="842 57 800 1067">
               <!-- 胸 -->
               <path id="cmap-chest" d="M 1105.448 313.944 C 1130.08 316.295 1155.517 330.442 1168.573 327.523 C 1180.08 324.857 1202.6543 303.8183 1221.826 277.394 C 1224.285 278.9587 1228.714 281.903 1229.203 282.088 C 1235.74 290.332 1239.03 309.2 1241.863 317.828 C 1243.737 324.097 1250.07 325.843 1258.209 332.22 C 1268.676 360.078 1276.849 388.784 1287.886 416.11 C 1253.138 448.896 1223.4357 436.1143 1195.22 445.544 C 1162.648 453.954 1146.172 446.576 1132.676 424.27 C 1124.497 409.17 1124.39 395.016 1120.422 373.678 C 1113.258 365.023 1105.011 358.228 1096.904 348.528 C 1105.964 335.875 1106.948 329.127 1105.823 316.662 Z" fill="gray" />
               <!-- 前脚(左) -->
@@ -359,39 +359,7 @@
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#fbbf24; border-radius:3px;"></span>イエロー</div>
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#3b82f6; border-radius:3px;"></span>冷え</div>
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#9ca3af; border-radius:3px;"></span>痛み/除外</div>
-          </div>
-          <!-- DEBUG: フロントSVG位置調整パネル（本番で削除） -->
-          <div id="svg-debug-front" style="margin-top:1rem; padding:1rem; background:#f0f0f0; border-radius:8px; font-size:0.8rem; text-align:left;">
-            <div style="font-weight:bold; margin-bottom:0.5rem; color:#D4001F;">🔧 フロントSVG位置調整</div>
-            <label>ViewBox X: <span id="dbgf-vx-val">800</span></label><br>
-            <input type="range" id="dbgf-vx" min="600" max="1000" value="800" style="width:100%"><br>
-            <label>ViewBox Y: <span id="dbgf-vy-val">0</span></label><br>
-            <input type="range" id="dbgf-vy" min="-200" max="200" value="0" style="width:100%"><br>
-            <label>ViewBox W: <span id="dbgf-vw-val">800</span></label><br>
-            <input type="range" id="dbgf-vw" min="600" max="1200" value="800" style="width:100%"><br>
-            <label>ViewBox H: <span id="dbgf-vh-val">1067</span></label><br>
-            <input type="range" id="dbgf-vh" min="800" max="1400" value="1067" style="width:100%"><br>
-            <div id="dbgf-result" style="margin-top:0.5rem; padding:0.5rem; background:#fff; border:1px solid #ccc; border-radius:4px; font-family:monospace; font-size:0.7rem;">viewBox: 800 0 800 1067</div>
-            <script>
-              (function(){
-                const svgFront = document.getElementById('cold-map-overlay-front');
-                ['vx','vy','vw','vh'].forEach(k => {
-                  document.getElementById('dbgf-'+k).addEventListener('input', () => {
-                    const vx = +document.getElementById('dbgf-vx').value;
-                    const vy = +document.getElementById('dbgf-vy').value;
-                    const vw = +document.getElementById('dbgf-vw').value;
-                    const vh = +document.getElementById('dbgf-vh').value;
-                    document.getElementById('dbgf-vx-val').textContent = vx;
-                    document.getElementById('dbgf-vy-val').textContent = vy;
-                    document.getElementById('dbgf-vw-val').textContent = vw;
-                    document.getElementById('dbgf-vh-val').textContent = vh;
-                    if(svgFront) svgFront.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
-                    document.getElementById('dbgf-result').textContent = `viewBox: ${vx} ${vy} ${vw} ${vh}`;
-                  });
-                });
-              })();
-            </script>
-          </div>
+        </div>
 
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="weightChart"></canvas>
