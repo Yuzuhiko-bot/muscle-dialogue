@@ -628,7 +628,7 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
 
   const randomQuote = KINNIKUN_QUOTES[Math.floor(Math.random() * KINNIKUN_QUOTES.length)];
 
-  const sys = `あなたは「なかやまきんに君」です。世界最高峰のスポーツ科学知識を持つパーソナルトレーナーとして、ユーザーのコンディション、チャット履歴、過去のトレーニング実績をすべて俯瞰し、今日という日に『最高にキレている』最適解のメニューを作成してください。
+  const sys = `あなたは「AIなかやまきんに君」です。世界最高峰のスポーツ科学知識を持つパーソナルトレーナーとして、ユーザーのコンディション、チャット履歴、過去のトレーニング実績をすべて俯瞰し、今日という日に『最高にキレている』最適解のメニューを作成してください。
 
 ## 👑 メニュー構成の【絶対ルール】（システム制約・最優先事項）
 以下のルールはアプリの仕様（UIや安全機能）に関わるため、いかなる理論よりも優先して厳守すること。
@@ -674,7 +674,7 @@ ${exData}
   const targetWeight = p.targetWeight ? `${p.targetWeight}kg` : '未設定';
   const bodyText = recentBodyRecords ? `目標:${targetWeight} / 直近推移:[${recentBodyRecords}]` : `目標:${targetWeight} / 記録なし`;
 
-  const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
+  const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'AIなかやまきんに君'}: ${c.text}`).join('\n');
 
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
 ${rotationAlert}
@@ -790,7 +790,7 @@ function renderPlan(plan) {
     d.innerHTML = `
       <div style="display:flex; align-items:center; justify-content:center; gap:0.5rem; font-family:var(--font-title);color:var(--red);font-weight:900;margin-bottom:1rem;font-size:1.2rem;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--yellow)" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        <span><span class="text-keep">きんに君からの</span><span class="text-keep">アドバイス</span></span>
+        <span><span class="text-keep">AIなかやまきんに君からの</span><span class="text-keep">アドバイス</span></span>
       </div>
       <div style="text-align:left; font-family:var(--font-body);color:var(--text-primary);font-weight:700;font-size:0.95rem;line-height:1.6;letter-spacing:0.5px;padding:1rem;background:var(--red-light);border:2px solid var(--red);border-radius:var(--radius-md);box-shadow: 4px 4px 0 var(--yellow);">
         ${nl2br(plan.trainer_message)}
@@ -1671,11 +1671,11 @@ function buildProposalPrompt(cond, hist) {
   }).join(', ');
   
   const bodyText = recentBodyRecords ? `目標:${targetWeight} / 直近推移:[${recentBodyRecords}]` : `目標:${targetWeight} / 記録なし`;
-  const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
+  const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'AIなかやまきんに君'}: ${c.text}`).join('\n');
   const histText = hist.length > 0 ? hist.map(h => `【${h.date}】\n` + h.exercises.map(ex => `  - ${ex.name}`).join('\n')).join('\n') : '（履歴なし）';
   let selectedTheory = (p.goal === "ダイエット" || p.goal === "健康維持") ? DIET_HEALTH_THEORY : HYPERTROPHY_THEORY;
 
-  const sys = `あなたは「なかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ちつつ、明るく熱いトーンで本日のトレーニングメニューを提案するプレビューを作成してください。
+  const sys = `あなたは「AIなかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ちつつ、明るく熱いトーンで本日のトレーニングメニューを提案するプレビューを作成してください。
 以下の思考土台（理論）を用いて、具体的かつ科学的根拠に基づいた短い提案をしてください。出力は200文字以内で、適宜改行を入れて読みやすくしつつ、ユーザーへの熱いメッセージと、「こんな感じでどうだい！？」という提案で締めてください。必ずJSONではなくプレーンテキストで返答してください。
 
 === 思考土台 ===
@@ -1768,7 +1768,7 @@ function buildChatPrompt() {
   const p = state.userProfile;
   let selectedTheory = (p.goal === "ダイエット" || p.goal === "健康維持") ? DIET_HEALTH_THEORY : HYPERTROPHY_THEORY;
 
-  const sys = `あなたはパーソナルトレーナーの「なかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ち、明るく熱いトーンで真摯にユーザーの質問や悩みに寄り添ってください。
+  const sys = `あなたはパーソナルトレーナーの「AIなかやまきんに君」です。世界最高峰のスポーツ科学の知識を持ち、明るく熱いトーンで真摯にユーザーの質問や悩みに寄り添ってください。
 礼儀正しく、かつテキスト内で絵文字は一切使用しないでください（絵文字の代わりに「パワー！」「ヤー！」「ハッ（笑顔）」などを適所に織り交ぜてください）。
 専門的な質問には、以下の理論やオンライン上の最新知識を総動員して論理的かつ分かりやすく答えてください。
 回答は適宜改行を入れて読みやすく調整し、不必要な箇条書きの羅列は避けて文章で会話してください。
@@ -1778,7 +1778,7 @@ ${selectedTheory}
 `;
 
   // 履歴を文字列化
-  const historyText = state.chatHistory.map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
+  const historyText = state.chatHistory.map(c => `${c.role === 'user' ? 'ユーザー' : 'AIなかやまきんに君'}: ${c.text}`).join('\n');
   const usr = `## ユーザープロフィール情報
 - 目的: ${p.goal} (経験: ${p.experience})
 - 痛みの部位: ${p.painAreas.length ? p.painAreas.join(',') : 'なし'}
@@ -1807,7 +1807,7 @@ function renderChatMessages() {
   state.chatHistory.forEach(msg => {
     const wrap = document.createElement('div');
     wrap.className = `chat-bubble-wrapper ${msg.role === 'user' ? 'user' : 'ai'}`;
-    const name = msg.role === 'user' ? 'あなた' : 'なかやまきんに君';
+    const name = msg.role === 'user' ? 'あなた' : 'AIなかやまきんに君';
     
     wrap.innerHTML = `
       <div class="chat-sender-name">${name}</div>
@@ -1826,7 +1826,7 @@ function showChatThinking() {
   wrap.id = 'chat-thinking-indicator';
   wrap.className = 'chat-bubble-wrapper ai';
   wrap.innerHTML = `
-    <div class="chat-sender-name">なかやまきんに君</div>
+    <div class="chat-sender-name">AIなかやまきんに君</div>
     <div class="chat-bubble chat-thinking">
       <div class="dot"></div>
       <div class="dot"></div>
