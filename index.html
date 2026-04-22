@@ -328,12 +328,21 @@
             <!-- 背景画像 -->
             <img id="cold-map-image" src="images/hm_front.png" alt="Body Map" onerror="this.alt='画像がありません'">
             <!-- フロント面 SVG -->
-            <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="0 0 800 1067">
-              <rect id="cmap-chest" x="20" y="20" width="60" height="20" fill="gray" rx="2" opacity="0" />
-              <rect id="cmap-abs" x="30" y="45" width="40" height="25" fill="gray" rx="2" opacity="0" />
-              <rect id="cmap-shoulders" x="10" y="15" width="80" height="15" fill="gray" rx="2" opacity="0"/>
-              <rect id="cmap-arms" x="5" y="30" width="90" height="25" fill="gray" rx="2" opacity="0"/>
-              <rect id="cmap-legs" x="20" y="75" width="60" height="25" fill="gray" rx="2" opacity="0"/>
+            <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="800 0 800 1067">
+              <!-- 胸 -->
+              <path id="cmap-chest" d="M 1105.448 313.944 C 1130.08 316.295 1155.517 330.442 1168.573 327.523 C 1180.08 324.857 1202.6543 303.8183 1221.826 277.394 C 1224.285 278.9587 1228.714 281.903 1229.203 282.088 C 1235.74 290.332 1239.03 309.2 1241.863 317.828 C 1243.737 324.097 1250.07 325.843 1258.209 332.22 C 1268.676 360.078 1276.849 388.784 1287.886 416.11 C 1253.138 448.896 1223.4357 436.1143 1195.22 445.544 C 1162.648 453.954 1146.172 446.576 1132.676 424.27 C 1124.497 409.17 1124.39 395.016 1120.422 373.678 C 1113.258 365.023 1105.011 358.228 1096.904 348.528 C 1105.964 335.875 1106.948 329.127 1105.823 316.662 Z" fill="gray" />
+              <!-- 前脚(左) -->
+              <path id="cmap-legs-l" d="M 1253.835 478.118 C 1253.9687 485.6077 1265.932 489.498 1254.236 500.587 C 1257.221 506.531 1232.21 540.849 1214.114 589.658 C 1215.733 607.742 1226.784 625.386 1230.965 650.243 C 1229.506 672.308 1233.384 675.41 1228.959 703.204 C 1234.175 706.6813 1239.391 710.1587 1244.607 713.636 C 1258.382 687.044 1310.344 626.745 1339.295 570.801 C 1326.962 543.377 1315.135 520.693 1308.712 491.029 C 1277.884 491.804 1269.547 485.794 1253.433 477.717 Z" fill="gray" />
+              <!-- 前脚(右) -->
+              <path id="cmap-legs-r" d="M 1355.199 478.112 C 1392.713 460.364 1397.13 435.826 1396.414 425.266 C 1396.884 411.043 1394.073 397.382 1383.013 388.096 C 1420.414 396.105 1442.605 409.835 1459.88 433.61 C 1472.516 455.336 1475.709 471.62 1478.586 495.815 C 1477.541 539.472 1469.837 581.78 1436.07 693.226 C 1435.4973 686.8463 1435.618 682.677 1433.064 673.098 C 1419.8747 656.992 1408.318 637.816 1390.92 622.802 C 1386.589 598.541 1381.31 608.916 1368.858 532.445 C 1365.505 512.809 1362.631 497.962 1355.34 478.764 Z" fill="gray" />
+              <!-- 前肩(左) -->
+              <path id="cmap-shoulders-l" d="M 1183.597 242.252 C 1239.3 252.041 1262.686 241.647 1277.345 248.004 C 1301.664 261.569 1312.058 295.927 1312.058 304.3 C 1313.79 333.461 1313.213 347.031 1305.995 352.517 C 1297.91 355.404 1263.3497 337.3417 1244.208 322.201 C 1238.145 313.828 1239.011 296.505 1229.608 282.512 C 1212.737 271.963 1198.301 258.971 1183.614 242.236 Z" fill="gray" />
+              <!-- 前肩(右) -->
+              <path id="cmap-shoulders-r" d="M 1107.527 278.91 C 1093.7343 289.7923 1068.104 297.798 1066.149 311.557 C 1062.429 333.482 1074.367 351.799 1084.75 369.259 C 1090.666 355.341 1101.304 344.824 1105.204 332.771 C 1108.631 316.701 1101.269 309.497 1107.148 279.289 Z" fill="gray" />
+              <!-- 前腕(左) -->
+              <path id="cmap-arms-l" d="M 1258.501 332.475 C 1280.065 397.232 1287.999 416.275 1304.64 458.688 C 1315.176 448.808 1327.475 445.436 1337.01 433.791 C 1329.062 392.273 1320.397 348.456 1312.163 305.47 C 1312.503 321.654 1315.683 348.245 1305.033 352.871 C 1291.824 353.767 1269.919 338.418 1258.552 332.446 Z" fill="gray" />
+              <!-- 前腕(右) -->
+              <path id="cmap-arms-r" d="M 1084.702 369.072 C 1104.308 400.675 1122.199 434.892 1137.311 465.766 C 1150.155 459.717 1163.126 458.151 1175.417 457.322 C 1174.664 454.476 1174.113 451.3923 1172.998 448.666 C 1158.759 449.872 1140.643 442.619 1129.351 417.797 C 1123.76 402.927 1124.096 389.398 1120.388 373.81 C 1113.333 364.578 1104.287 358.092 1096.859 348.338 C 1092.8003 355.2887 1088.869 360.218 1084.683 369.19 Z" fill="gray" />
             </svg>
             <!-- バック面 SVG -->
             <svg id="cold-map-overlay-back" class="cold-map-svg hidden" viewBox="0 0 800 1067">
@@ -351,7 +360,38 @@
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#3b82f6; border-radius:3px;"></span>冷え</div>
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#9ca3af; border-radius:3px;"></span>痛み/除外</div>
           </div>
-        </div>
+          <!-- DEBUG: フロントSVG位置調整パネル（本番で削除） -->
+          <div id="svg-debug-front" style="margin-top:1rem; padding:1rem; background:#f0f0f0; border-radius:8px; font-size:0.8rem; text-align:left;">
+            <div style="font-weight:bold; margin-bottom:0.5rem; color:#D4001F;">🔧 フロントSVG位置調整</div>
+            <label>ViewBox X: <span id="dbgf-vx-val">800</span></label><br>
+            <input type="range" id="dbgf-vx" min="600" max="1000" value="800" style="width:100%"><br>
+            <label>ViewBox Y: <span id="dbgf-vy-val">0</span></label><br>
+            <input type="range" id="dbgf-vy" min="-200" max="200" value="0" style="width:100%"><br>
+            <label>ViewBox W: <span id="dbgf-vw-val">800</span></label><br>
+            <input type="range" id="dbgf-vw" min="600" max="1200" value="800" style="width:100%"><br>
+            <label>ViewBox H: <span id="dbgf-vh-val">1067</span></label><br>
+            <input type="range" id="dbgf-vh" min="800" max="1400" value="1067" style="width:100%"><br>
+            <div id="dbgf-result" style="margin-top:0.5rem; padding:0.5rem; background:#fff; border:1px solid #ccc; border-radius:4px; font-family:monospace; font-size:0.7rem;">viewBox: 800 0 800 1067</div>
+            <script>
+              (function(){
+                const svgFront = document.getElementById('cold-map-overlay-front');
+                ['vx','vy','vw','vh'].forEach(k => {
+                  document.getElementById('dbgf-'+k).addEventListener('input', () => {
+                    const vx = +document.getElementById('dbgf-vx').value;
+                    const vy = +document.getElementById('dbgf-vy').value;
+                    const vw = +document.getElementById('dbgf-vw').value;
+                    const vh = +document.getElementById('dbgf-vh').value;
+                    document.getElementById('dbgf-vx-val').textContent = vx;
+                    document.getElementById('dbgf-vy-val').textContent = vy;
+                    document.getElementById('dbgf-vw-val').textContent = vw;
+                    document.getElementById('dbgf-vh-val').textContent = vh;
+                    if(svgFront) svgFront.setAttribute('viewBox', `${vx} ${vy} ${vw} ${vh}`);
+                    document.getElementById('dbgf-result').textContent = `viewBox: ${vx} ${vy} ${vw} ${vh}`;
+                  });
+                });
+              })();
+            </script>
+          </div>
 
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="weightChart"></canvas>

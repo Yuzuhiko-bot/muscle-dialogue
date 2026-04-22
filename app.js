@@ -694,15 +694,12 @@ function renderColdMap() {
   
   Object.keys(data).forEach(id => {
     const fill = data[id].color;
-    const pathFront = document.getElementById(`cmap-${id}`);
-    if (pathFront) pathFront.style.fill = fill;
-    const pathBack = document.getElementById(`cmap-${id}-back`);
-    if (pathBack) pathBack.style.fill = fill;
-    // 肩は左右に分かれているケース
-    const pathBackL = document.getElementById(`cmap-${id}-back-l`);
-    if (pathBackL) pathBackL.style.fill = fill;
-    const pathBackR = document.getElementById(`cmap-${id}-back-r`);
-    if (pathBackR) pathBackR.style.fill = fill;
+    // 全パターンの ID を走査して色を適用
+    const suffixes = ['', '-l', '-r', '-back', '-back-l', '-back-r'];
+    suffixes.forEach(suffix => {
+      const el = document.getElementById(`cmap-${id}${suffix}`);
+      if (el) el.style.fill = fill;
+    });
   });
 }
 
