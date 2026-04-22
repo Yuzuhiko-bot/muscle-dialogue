@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.9.1';
+const APP_VERSION = 'v1.9.2';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -55,6 +55,16 @@ const EXERCISE_MASTER = [
   { id: "cardio_003", exercise_name: "有酸素運動（クロストレーナー）", primary_muscle: "心肺機能", secondary_muscles: ["全身"], equipment: "クロストレーナー", weight_step: 0, is_cardio: true },
   { id: "cardio_004", exercise_name: "有酸素運動（ウォーキング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "自重・屋外", weight_step: 0, is_cardio: true }
 ];
+
+// ---------- MUSCLE CATEGORY MAPPING (For Rotation Logic) ----------
+const MUSCLE_CATEGORIES = {
+  "胸": { size: "big", matches: ["大胸筋", "大胸筋上部", "大胸筋下部"] },
+  "背中": { size: "big", matches: ["広背筋", "僧帽筋", "脊柱起立筋", "大円筋"] },
+  "脚": { size: "big", matches: ["大腿四頭筋", "ハムストリングス", "大臀筋", "中臀筋", "内転筋"] },
+  "肩": { size: "small", matches: ["三角筋前部", "三角筋中部", "三角筋後部"] },
+  "腕": { size: "small", matches: ["上腕二頭筋", "上腕三頭筋", "前腕筋群"] },
+  "腹": { size: "small", matches: ["腹直筋", "腹直筋下部", "腸腰筋"] }
+};
 
 // ---------- KINNIKUN QUOTES ----------
 const KINNIKUN_QUOTES = [
@@ -524,8 +534,87 @@ function getRecentHistory(n) {
   }));
 }
 
+// ---------- ROTATION LOGIC (v1.9.2) ----------
+/**
+ * 過去の履歴を解析し、部位ごとのローテーション状況を判定する
+ * @param {Array} hist - 直近21日分の履歴データ
+ * @param {Object} cond - 今日のコンディション（痛み部位など）
+ * @returns {String} AIプロンプト用の警告テキスト
+ */
+function getMuscleRotationStatus(hist, cond) {
+  const p = state.userProfile;
+  if (!p || p.frequency <= 2) return ""; // 低頻度は判定スキップ
+
+  const today = new Date();
+  const lastPerformed = {};
+  Object.keys(MUSCLE_CATEGORIES).forEach(cat => lastPerformed[cat] = null);
+
+  // 1. 履歴スキャン（主働筋判定限定）
+  hist.forEach(day => {
+    const dayDate = new Date(day.date);
+    day.exercises.forEach(ex => {
+      const master = getAvailableExercises().find(m => m.id === ex.id);
+      if (!master) return;
+      
+      // 主働筋(Primary)がどのカテゴリーに属するか特定
+      Object.entries(MUSCLE_CATEGORIES).forEach(([cat, data]) => {
+        if (data.matches.includes(master.primary_muscle)) {
+          if (!lastPerformed[cat] || dayDate > lastPerformed[cat]) {
+            lastPerformed[cat] = dayDate;
+          }
+        }
+      });
+    });
+  });
+
+  // 2. 判定と分類
+  const redCards = [];
+  const yellowCards = [];
+  const freq = p.frequency;
+  const allPainAreas = [...(p.painAreas || []), ...(cond.todayPain || [])];
+
+  Object.entries(MUSCLE_CATEGORIES).forEach(([cat, data]) => {
+    // 痛み部位はミュート
+    if (allPainAreas.includes(cat)) return;
+
+    const lastDate = lastPerformed[cat];
+    const diffDays = lastDate ? Math.floor((today - lastDate) / (1000 * 60 * 60 * 24)) : 21; // 記録なしは21日経過とみなす
+    
+    // 動的しきい値の設定
+    let yellowThreshold, redThreshold;
+    if (freq >= 5) {
+      yellowThreshold = (data.size === "small") ? 3 : 4;
+      redThreshold = (data.size === "small") ? 5 : 7;
+    } else {
+      yellowThreshold = (data.size === "small") ? 5 : 7;
+      redThreshold = (data.size === "small") ? 8 : 10;
+    }
+
+    if (diffDays >= redThreshold) {
+      redCards.push(`${cat}(${diffDays}日未実施)`);
+    } else if (diffDays >= yellowThreshold) {
+      yellowCards.push(`${cat}(${diffDays}日経過)`);
+    }
+  });
+
+  // 3. プロンプト用テキスト生成
+  if (redCards.length === 0 && yellowCards.length === 0) return "";
+
+  let alertText = "\n### 🔴 ローテーション警告（最優先事項）\n";
+  if (redCards.length > 0) {
+    alertText += `【レッドカード（本日必須）】: ${redCards.join(", ")}\n`;
+    alertText += "※これらの部位は放置日数が限界を超えています。本日の分割法の推論結果に関わらず、必ずメインターゲットとしてメニューに組み込んでください。\n";
+  }
+  if (yellowCards.length > 0) {
+    alertText += `【イエローカード（注意）】: ${yellowCards.join(", ")}\n`;
+    alertText += "※そろそろ実施すべき部位です。余裕があればサブターゲットとして組み込むことを検討してください。\n";
+  }
+  return alertText;
+}
+
 function buildPrompt(cond, hist, proposalText, feedbackText) {
   const p = state.userProfile;
+  const rotationAlert = getMuscleRotationStatus(hist, cond);
   const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}${e.target_weight ? ` 【将来の目標:${e.target_weight}kg】` : ''}`).join('\n');
   const histText = hist.length > 0 ? hist.map(h => {
     const ed = h.exercises.map(ex => {
@@ -588,6 +677,7 @@ ${exData}
   const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'なかやまきんに君'}: ${c.text}`).join('\n');
 
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
+${rotationAlert}
 ## 体重情報: ${bodyText}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
 ## 直近の対話履歴 (参考):
@@ -1592,7 +1682,10 @@ function buildProposalPrompt(cond, hist) {
 ${selectedTheory}
 `;
 
+  const rotationAlert = getMuscleRotationStatus(hist, cond);
+
   const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'}
+${rotationAlert}
 ## 体重情報: ${bodyText}
 ## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}
 ## 直近の対話履歴 (最重要参考情報):
