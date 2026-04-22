@@ -326,8 +326,8 @@
           </div>
           <div id="cold-map-container" class="front-view">
             <!-- ダミー画像（背景）-->
-            <div id="cold-map-bg" style="width: 100%; height: 100%; background: #e5e7eb; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: #9ca3af; font-weight: bold;">
-              ボディイラスト配置位置
+            <div id="cold-map-bg" style="width: 100%; height: 100%; background: #fff; border-radius: var(--radius-md); overflow: hidden;">
+              <img id="cold-map-image" src="images/hm_front.png" style="width: 100%; height: 100%; object-fit: contain;" alt="Body Map" onerror="this.src='', this.alt='画像がありません'">
             </div>
             <!-- フロント面 SVG -->
             <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -338,11 +338,8 @@
               <rect id="cmap-legs" x="20" y="75" width="60" height="25" fill="gray" rx="2" />
             </svg>
             <!-- バック面 SVG -->
-            <svg id="cold-map-overlay-back" class="cold-map-svg hidden" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <rect id="cmap-back" x="20" y="20" width="60" height="50" fill="gray" rx="2" />
-              <rect id="cmap-legs-back" x="20" y="75" width="60" height="25" fill="gray" rx="2" />
-              <rect id="cmap-arms-back" x="5" y="30" width="90" height="25" fill="gray" rx="2" opacity="0.6"/>
-              <rect id="cmap-shoulders-back" x="10" y="15" width="80" height="15" fill="gray" rx="2" opacity="0.8"/>
+            <svg id="cold-map-overlay-back" class="cold-map-svg hidden" viewBox="0 0 800 1000" preserveAspectRatio="none">
+              <path id="cmap-back" d="M 444.388 448.414 C 446.338 430.17 444.2307 417.9667 444.152 402.743 S 437.052 368.925 436.543 365.786 S 445.643 353.84 455.022 347.308 S 473.422 337.173 485.457 334.264 S 518.053 336.437 523.5 337.525 S 538.982 365.881 543.797 382.363 S 549.352 405.882 549.587 416.873 S 548.984 457.734 544.152 472.308 S 557.879 528.852 555.471 533.482 S 543.618 553.668 541.951 562.187 S 531.989 576.563 528.935 585.351 S 508.455 620.441 505.022 624.482 S 493.495 634.802 486.543 645.134 S 468.367 659.532 458.283 673.395 S 448.624 713.186 444.152 715.786 S 383.6 716.177 378.935 712.525 S 372.829 683.467 372.413 667.96 S 374.226 618.044 377.848 599.482 S 388.186 539.061 393.065 527.743 S 426.681 505.153 431.109 500.569 S 442.438 466.658 444.388 448.414" fill="gray" />
             </svg>
           </div>
           <div id="cold-map-legend" style="display:flex; justify-content:center; gap:10px; font-size:0.75rem; margin-top:0.8rem; flex-wrap:wrap;">
