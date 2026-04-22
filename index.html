@@ -347,7 +347,45 @@
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#3b82f6; border-radius:3px;"></span>冷え</div>
             <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#9ca3af; border-radius:3px;"></span>痛み/除外</div>
           </div>
-        </div>
+          <!-- DEBUG: SVG位置調整パネル（本番で削除） -->
+          <div id="svg-debug-panel" style="margin-top:1rem; padding:1rem; background:#f0f0f0; border-radius:8px; font-size:0.8rem; text-align:left;">
+            <div style="font-weight:bold; margin-bottom:0.5rem; color:#D4001F;">🔧 SVG位置調整（デバッグ用）</div>
+            <label>X オフセット: <span id="dbg-x-val">0</span>px</label><br>
+            <input type="range" id="dbg-x" min="-200" max="200" value="0" style="width:100%"><br>
+            <label>Y オフセット: <span id="dbg-y-val">0</span>px</label><br>
+            <input type="range" id="dbg-y" min="-200" max="200" value="0" style="width:100%"><br>
+            <label>スケール: <span id="dbg-s-val">1.00</span></label><br>
+            <input type="range" id="dbg-s" min="50" max="150" value="100" style="width:100%"><br>
+            <label>ViewBox W: <span id="dbg-vw-val">800</span></label><br>
+            <input type="range" id="dbg-vw" min="600" max="1000" value="800" style="width:100%"><br>
+            <label>ViewBox H: <span id="dbg-vh-val">1067</span></label><br>
+            <input type="range" id="dbg-vh" min="800" max="1200" value="1067" style="width:100%"><br>
+            <div id="dbg-result" style="margin-top:0.5rem; padding:0.5rem; background:#fff; border:1px solid #ccc; border-radius:4px; font-family:monospace; font-size:0.7rem; word-break:break-all;">viewBox: 0 0 800 1067 | transform: translate(0,0) scale(1)</div>
+            <script>
+              (function(){
+                const path = document.getElementById('cmap-back');
+                const svgBack = document.getElementById('cold-map-overlay-back');
+                ['x','y','s','vw','vh'].forEach(k => {
+                  const sl = document.getElementById('dbg-'+k);
+                  sl.addEventListener('input', () => {
+                    const x = +document.getElementById('dbg-x').value;
+                    const y = +document.getElementById('dbg-y').value;
+                    const s = +document.getElementById('dbg-s').value / 100;
+                    const vw = +document.getElementById('dbg-vw').value;
+                    const vh = +document.getElementById('dbg-vh').value;
+                    document.getElementById('dbg-x-val').textContent = x;
+                    document.getElementById('dbg-y-val').textContent = y;
+                    document.getElementById('dbg-s-val').textContent = s.toFixed(2);
+                    document.getElementById('dbg-vw-val').textContent = vw;
+                    document.getElementById('dbg-vh-val').textContent = vh;
+                    if(path) path.setAttribute('transform', `translate(${x},${y}) scale(${s})`);
+                    if(svgBack) svgBack.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+                    document.getElementById('dbg-result').textContent = `viewBox: 0 0 ${vw} ${vh} | transform: translate(${x},${y}) scale(${s})`;
+                  });
+                });
+              })();
+            </script>
+          </div>
 
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="weightChart"></canvas>
