@@ -317,6 +317,43 @@
       
       <div class="profile-section">
         <h2 class="section-title">ボディ・チャート</h2>
+        
+        <!-- コールドマップ・ウィジェット -->
+        <div class="cold-map-wrapper" style="margin-bottom: 1.5rem; text-align: center;">
+          <div class="cold-map-controls" style="margin-bottom: 0.5rem;">
+            <button id="btn-coldmap-front" class="btn-secondary btn-small active" style="margin-right: 0.5rem; border-color:var(--red); color:var(--red); background:var(--red-light);">フロント（表）</button>
+            <button id="btn-coldmap-back" class="btn-secondary btn-small">バック（裏）</button>
+          </div>
+          <div id="cold-map-container" class="front-view">
+            <!-- ダミー画像（背景）-->
+            <div id="cold-map-bg" style="width: 100%; height: 100%; background: #e5e7eb; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: #9ca3af; font-weight: bold;">
+              ボディイラスト配置位置
+            </div>
+            <!-- フロント面 SVG -->
+            <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <rect id="cmap-chest" x="20" y="20" width="60" height="20" fill="gray" rx="2" />
+              <rect id="cmap-abs" x="30" y="45" width="40" height="25" fill="gray" rx="2" />
+              <rect id="cmap-shoulders" x="10" y="15" width="80" height="15" fill="gray" rx="2" opacity="0.8"/>
+              <rect id="cmap-arms" x="5" y="30" width="90" height="25" fill="gray" rx="2" opacity="0.6"/>
+              <rect id="cmap-legs" x="20" y="75" width="60" height="25" fill="gray" rx="2" />
+            </svg>
+            <!-- バック面 SVG -->
+            <svg id="cold-map-overlay-back" class="cold-map-svg hidden" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <rect id="cmap-back" x="20" y="20" width="60" height="50" fill="gray" rx="2" />
+              <rect id="cmap-legs-back" x="20" y="75" width="60" height="25" fill="gray" rx="2" />
+              <rect id="cmap-arms-back" x="5" y="30" width="90" height="25" fill="gray" rx="2" opacity="0.6"/>
+              <rect id="cmap-shoulders-back" x="10" y="15" width="80" height="15" fill="gray" rx="2" opacity="0.8"/>
+            </svg>
+          </div>
+          <div id="cold-map-legend" style="display:flex; justify-content:center; gap:10px; font-size:0.75rem; margin-top:0.8rem; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#ff4d4d; border-radius:3px;"></span>直近/回復中</div>
+            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#4ade80; border-radius:3px;"></span>回復完了</div>
+            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#fbbf24; border-radius:3px;"></span>イエロー</div>
+            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#3b82f6; border-radius:3px;"></span>冷え</div>
+            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#9ca3af; border-radius:3px;"></span>痛み/除外</div>
+          </div>
+        </div>
+
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="weightChart"></canvas>
         </div>

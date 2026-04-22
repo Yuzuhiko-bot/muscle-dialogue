@@ -286,7 +286,7 @@ function initTabs() {
     btn.classList.add('active');
     $(`#tab-${btn.dataset.tab}`).classList.add('active');
     if (btn.dataset.tab === 'calendar') renderCalendar();
-    if (btn.dataset.tab === 'profile') populateProfileForm();
+    if (btn.dataset.tab === 'profile') { populateProfileForm(); renderColdMap(); }
   }));
 }
 
@@ -610,6 +610,95 @@ function getMuscleRotationStatus(hist, cond) {
     alertText += "※そろそろ実施すべき部位です。余裕があればサブターゲットとして組み込むことを検討してください。\n";
   }
   return alertText;
+}
+
+/**
+ * コールドマップ用の各筋肉のステータスデータを取得する
+ */
+function getMuscleColdMapData() {
+  const p = state.userProfile;
+  if (!p) return null;
+
+  const today = new Date();
+  const lastPerformed = {};
+  Object.keys(MUSCLE_CATEGORIES).forEach(cat => lastPerformed[cat] = null);
+
+  const hist = getRecentHistory(21);
+  hist.forEach(day => {
+    const dayDate = new Date(day.date);
+    day.exercises.forEach(ex => {
+      const master = getAvailableExercises().find(m => m.id === ex.id);
+      if (!master) return;
+      Object.entries(MUSCLE_CATEGORIES).forEach(([cat, data]) => {
+        if (data.matches.includes(master.primary_muscle)) {
+          if (!lastPerformed[cat] || dayDate > lastPerformed[cat]) {
+            lastPerformed[cat] = dayDate;
+          }
+        }
+      });
+    });
+  });
+
+  const freq = p.frequency || 3;
+  const painAreas = p.painAreas || [];
+  const mapData = {};
+
+  const idMap = {
+    "胸": "chest",
+    "背中": "back",
+    "脚": "legs",
+    "肩": "shoulders",
+    "腕": "arms",
+    "腹": "abs"
+  };
+
+  Object.entries(MUSCLE_CATEGORIES).forEach(([cat, data]) => {
+    const id = idMap[cat];
+    if (painAreas.includes(cat)) {
+      mapData[id] = { days: -1, status: 'pain', color: '#9ca3af' }; // gray
+      return;
+    }
+
+    const lastDate = lastPerformed[cat];
+    const diffDays = lastDate ? Math.floor((today - lastDate) / (1000 * 60 * 60 * 24)) : 21;
+    
+    let yellowThreshold, redThreshold;
+    if (freq >= 5) {
+      yellowThreshold = (data.size === "small") ? 3 : 4;
+      redThreshold = (data.size === "small") ? 5 : 7;
+    } else {
+      yellowThreshold = (data.size === "small") ? 5 : 7;
+      redThreshold = (data.size === "small") ? 8 : 10;
+    }
+
+    if (diffDays >= redThreshold) {
+      mapData[id] = { days: diffDays, status: 'red-card', color: '#3b82f6' }; // blue (cold)
+    } else if (diffDays >= yellowThreshold) {
+      mapData[id] = { days: diffDays, status: 'yellow-card', color: '#fbbf24' }; // yellow
+    } else if (diffDays >= 2) {
+      mapData[id] = { days: diffDays, status: 'recovered', color: '#4ade80' }; // green
+    } else {
+      mapData[id] = { days: diffDays, status: 'hot', color: '#ff4d4d' }; // red
+    }
+  });
+
+  return mapData;
+}
+
+/**
+ * コールドマップのSVGを描画する
+ */
+function renderColdMap() {
+  const data = getMuscleColdMapData();
+  if (!data) return;
+  
+  Object.keys(data).forEach(id => {
+    const fill = data[id].color;
+    const pathFront = document.getElementById(`cmap-${id}`);
+    if (pathFront) pathFront.style.fill = fill;
+    const pathBack = document.getElementById(`cmap-${id}-back`);
+    if (pathBack) pathBack.style.fill = fill;
+  });
 }
 
 function buildPrompt(cond, hist, proposalText, feedbackText) {
@@ -1274,6 +1363,24 @@ function initBodyDashboard() {
     console.error("❌ #body-date not found!");
   }
 
+  // コールドマップのフロント/バック切り替えイベント
+  const btnFront = $('#btn-coldmap-front');
+  const btnBack = $('#btn-coldmap-back');
+  if (btnFront && btnBack) {
+    btnFront.addEventListener('click', () => {
+      btnFront.classList.add('active'); btnFront.style.borderColor = 'var(--red)'; btnFront.style.color = 'var(--red)'; btnFront.style.background = 'var(--red-light)';
+      btnBack.classList.remove('active'); btnBack.style.borderColor = ''; btnBack.style.color = ''; btnBack.style.background = '';
+      $('#cold-map-overlay-front').classList.remove('hidden');
+      $('#cold-map-overlay-back').classList.add('hidden');
+    });
+    btnBack.addEventListener('click', () => {
+      btnBack.classList.add('active'); btnBack.style.borderColor = 'var(--red)'; btnBack.style.color = 'var(--red)'; btnBack.style.background = 'var(--red-light)';
+      btnFront.classList.remove('active'); btnFront.style.borderColor = ''; btnFront.style.color = ''; btnFront.style.background = '';
+      $('#cold-map-overlay-back').classList.remove('hidden');
+      $('#cold-map-overlay-front').classList.add('hidden');
+    });
+  }
+
   const saveBtn = $('#btn-save-weight');
   if (saveBtn) {
     saveBtn.addEventListener('click', saveWeight);
@@ -1327,6 +1434,7 @@ function saveWeight() {
   renderWeightChart();
   showToast('ボディ記録完了！ヤー！');
   showLocalFeedback(wt, prevWeight);
+  renderColdMap();
 }
 
 // 旧フォーマット互換: bodyRecord[date] が数値の場合も {weight} として読む
