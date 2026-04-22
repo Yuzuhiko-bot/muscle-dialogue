@@ -698,6 +698,11 @@ function renderColdMap() {
     if (pathFront) pathFront.style.fill = fill;
     const pathBack = document.getElementById(`cmap-${id}-back`);
     if (pathBack) pathBack.style.fill = fill;
+    // 肩は左右に分かれているケース
+    const pathBackL = document.getElementById(`cmap-${id}-back-l`);
+    if (pathBackL) pathBackL.style.fill = fill;
+    const pathBackR = document.getElementById(`cmap-${id}-back-r`);
+    if (pathBackR) pathBackR.style.fill = fill;
   });
 }
 
