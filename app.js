@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.10.2';
+const APP_VERSION = 'v1.10.3';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -181,7 +181,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.10.2 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.10.3 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -1330,7 +1330,6 @@ function showToast(msg) {
   if (!t) { 
     t = document.createElement('div'); 
     t.id = 'toast-notification'; 
-    // ★ width:max-content と word-break:keep-all を追加して箱のサイズと改行位置を最適化
     t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(300px);background:#D4001F;color:white;padding:1rem 2rem;border-radius:12px;font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:0.9rem;z-index:9999;box-shadow:0 4px 16px rgba(212,0,31,0.3);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);width:max-content;max-width:90%;word-break:keep-all;text-align:center;'; 
     document.body.appendChild(t); 
   }

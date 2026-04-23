@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1.10.2">
+  <link rel="stylesheet" href="style.css?v=1.10.3">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -320,10 +320,20 @@
         
         <!-- コールドマップ・ウィジェット -->
         <div class="cold-map-wrapper" style="margin-bottom: 1.5rem; text-align: center;">
-          <div class="cold-map-controls" style="margin-bottom: 0.5rem;">
+          <div class="cold-map-controls" style="margin-bottom: 0.8rem;">
             <button id="btn-coldmap-front" class="btn-secondary btn-small active" style="margin-right: 0.5rem; border-color:var(--red); color:var(--red); background:var(--red-light);">フロント（表）</button>
             <button id="btn-coldmap-back" class="btn-secondary btn-small">バック（裏）</button>
           </div>
+          
+          <!-- 凡例（イラストの上側に移動） -->
+          <div id="cold-map-legend" class="cold-map-legend">
+            <div class="legend-item"><span class="legend-color" style="background:#ff4d4d;"></span>直近/回復中</div>
+            <div class="legend-item"><span class="legend-color" style="background:#4ade80;"></span>回復完了</div>
+            <div class="legend-item"><span class="legend-color" style="background:#fbbf24;"></span>イエロー</div>
+            <div class="legend-item"><span class="legend-color" style="background:#3b82f6;"></span>冷え</div>
+            <div class="legend-item"><span class="legend-color" style="background:#9ca3af;"></span>痛み/除外</div>
+          </div>
+
           <div id="cold-map-container">
             <!-- 背景画像 -->
             <img id="cold-map-image" src="images/hm_front.png" alt="Body Map" onerror="this.alt='画像がありません'">
@@ -355,13 +365,6 @@
               <path id="cmap-shoulders-back-r" transform="translate(-6,-54)" d="M 525.901 337.688 C 537.4037 350.4087 544.844 364.489 560.409 375.85 C 577.038 382.02 589.628 375.327 602.631 384.376 C 608.594 388.873 621.822 403.536 611.157 433.093 C 606.226 443.175 599.648 457.097 589.234 468.007 C 587.3393 450.55 592.457 435.373 583.55 415.636 C 571.345 399.114 556.352 391.924 541.328 372.196 C 534.168 361.02 531.314 349.4613 526.307 338.094 Z" fill="gray" />
             </svg>
           </div>
-          <div id="cold-map-legend" style="display:flex; justify-content:center; gap:10px; font-size:0.75rem; margin-top:0.8rem; flex-wrap:wrap;">
-            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#ff4d4d; border-radius:3px;"></span>直近/回復中</div>
-            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#4ade80; border-radius:3px;"></span>回復完了</div>
-            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#fbbf24; border-radius:3px;"></span>イエロー</div>
-            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#3b82f6; border-radius:3px;"></span>冷え</div>
-            <div style="display:flex; align-items:center; gap:3px;"><span style="display:inline-block; width:12px; height:12px; background:#9ca3af; border-radius:3px;"></span>痛み/除外</div>
-        </div>
 
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="weightChart"></canvas>
@@ -782,7 +785,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.10.2 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.10.3 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
@@ -800,7 +803,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.10.2"></script>
+    <script src="app.js?v=1.10.3"></script>
 </body>
 
 </html>
