@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.10.4';
+const APP_VERSION = 'v1.10.5';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -169,7 +169,7 @@ const DIET_HEALTH_THEORY = `
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
-let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, chatHistory: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 45 };
+let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, chatHistory: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 60 };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
@@ -181,7 +181,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.10.4 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.10.5 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -464,7 +464,19 @@ function initTraining() {
       openModal('modal-conditions'); 
     });
   });
-  $$('.time-btn').forEach(b => b.addEventListener('click', () => { $$('.time-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.selectedTime = parseInt(b.dataset.time); }));
+  $$('.time-btn').forEach(b => b.addEventListener('click', () => { 
+    $$('.time-btn').forEach(x => x.classList.remove('active')); 
+    b.classList.add('active'); 
+    state.selectedTime = parseInt(b.dataset.time); 
+    $('#custom-time-input').value = ''; // ボタンが押されたら手入力欄をクリア
+  }));
+  $('#custom-time-input').addEventListener('input', (e) => {
+    const val = parseInt(e.target.value);
+    if (!isNaN(val)) {
+      $$('.time-btn').forEach(x => x.classList.remove('active'));
+      state.selectedTime = val;
+    }
+  });
   $('#btn-start-generate').addEventListener('click', () => { closeModal('modal-conditions'); generateFinalPlan(); });
   $('#btn-complete').addEventListener('click', completePlan);
   $('#btn-accept-proposal').addEventListener('click', () => { closeModal('modal-proposal'); generateFinalPlan($('#proposal-text').textContent, $('#proposal-feedback').value); });
@@ -521,8 +533,10 @@ async function generateFinalPlan(proposalText, feedbackText) {
 function gatherConditions() {
   const req = $('#free-request').value.trim();
   localStorage.setItem('muscleDialog_lastFreeRequest', req);
+  const custTime = parseInt($('#custom-time-input').value);
+  const finalTime = !isNaN(custTime) ? custTime : state.selectedTime;
   return {
-    time: state.selectedTime, fatigue: $('input[name="fatigue"]:checked')?.value || '普通',
+    time: finalTime, fatigue: $('input[name="fatigue"]:checked')?.value || '普通',
     todayPain: [...$$('input[name="todayPain"]:checked')].map(c => c.value).filter(v => v !== 'なし'),
     freeRequest: req
   };
