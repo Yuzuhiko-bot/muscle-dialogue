@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.10.0';
+const APP_VERSION = 'v1.10.1';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -580,6 +580,13 @@ function getMuscleRotationStatus(hist, cond) {
     const lastDate = lastPerformed[cat];
     const diffDays = lastDate ? Math.floor((today - lastDate) / (1000 * 60 * 60 * 24)) : 21; // 記録なしは21日経過とみなす
     
+    // 3. 疲労判定（ブラックリスト） (v1.10.1)
+    if (lastDate) {
+      if ((data.size === "big" && diffDays <= 2) || (data.size === "small" && diffDays <= 1)) {
+        redCards.push(`【疲労中】${cat}(${diffDays}日前)`); // Special marker for exhaustion
+      }
+    }
+    
     // 動的しきい値の設定
     let yellowThreshold, redThreshold;
     if (freq >= 5) {
@@ -598,18 +605,27 @@ function getMuscleRotationStatus(hist, cond) {
   });
 
   // 3. プロンプト用テキスト生成
-  if (redCards.length === 0 && yellowCards.length === 0) return "";
+  const fatigueList = redCards.filter(c => c.includes('【疲労中】')).map(c => c.replace('【疲労中】', ''));
+  const neglectList = redCards.filter(c => !c.includes('【疲労中】'));
 
-  let alertText = "\n### 🔴 ローテーション警告（最優先事項）\n";
-  if (redCards.length > 0) {
-    alertText += `【レッドカード（本日必須）】: ${redCards.join(", ")}\n`;
-    alertText += "※これらの部位は放置日数が限界を超えています。本日の分割法の推論結果に関わらず、必ずメインターゲットとしてメニューに組み込んでください。\n";
+  let alertText = "\n### 🔴 トレーニング状況アラート\n";
+
+  if (fatigueList.length > 0) {
+    alertText += `【🔴 疲労蓄積・絶対除外リスト】: ${fatigueList.join(", ")}\n`;
+    alertText += "※これらの部位は直近でトレーニングされており、現在超回復の真っ最中（レッドゾーン）です。オーバートレーニングを防ぐため、本日の分割法の推論結果に関わらず、いかなる種目（メイン・サブ問わず）も「絶対に」メニューに組み込まないでください。\n\n";
   }
+
+  if (neglectList.length > 0) {
+    alertText += `【超放置・最優先部位】: ${neglectList.join(", ")}\n`;
+    alertText += "※これらの部位は放置日数が限界を超えています。疲労リストに含まれていない限り、必ず優先してメニューに組み込んでください。\n";
+  }
+
   if (yellowCards.length > 0) {
     alertText += `【イエローカード（注意）】: ${yellowCards.join(", ")}\n`;
-    alertText += "※そろそろ実施すべき部位です。余裕があればサブターゲットとして組み込むことを検討してください。\n";
+    alertText += "※そろそろ実施すべき部位です。余裕があれば組み込むことを検討してください。\n";
   }
-  return alertText;
+
+  return (fatigueList.length || neglectList.length || yellowCards.length) ? alertText : "";
 }
 
 /**
@@ -737,6 +753,7 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
    - 週5回以上: 1回のトレーニングでターゲットにする部位を「厳密に1〜2部位」に絞り込む（ブロスプリット）。3部位以上を絶対に混ぜないこと。
 6. **怪我の配慮と自由要望**: 指定された痛み部位の種目は完全除外。自由要望がある場合は全てのルールより最優先する。
 7. **トーン＆マナー**: 「礼儀正しく、シンプルで熱いトーン」。長々とした解説は避け、テンポ良くまとめること。最後のメッセージには必ず以下の名言を組み込むこと。
+8. **絶対除外リストの遵守（最優先）**: ユーザー情報の「絶対除外リスト」に掲載されている部位は、他のいかなる理論（「腹筋は毎日やっていい」等の独自解釈を含む）よりも優先して、本日のメニューから「完全除外」すること。
    【本日の名言】：${randomQuote}
 
 ## 🧠 専門的バックグラウンド理論（脳内の知識ベース）
