@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.10.1';
+const APP_VERSION = 'v1.10.2';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -181,7 +181,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.10.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.10.2 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -917,7 +917,7 @@ function renderPlan(plan) {
         <div class="exercise-name" style="font-size:1.2rem;">ウォームアップ</div>
       </div>
       <div style="display:flex; align-items:center; gap:1rem; margin-top:0.5rem;">
-        <img src="bike.png" alt="バイク" style="width:80px; height:auto; filter:drop-shadow(2px 2px 0 rgba(0,0,0,0.2));" onerror="this.style.display='none';">
+        <img src="bike.png" alt="バイク" style="width:120px; max-width:35%; height:auto; filter:drop-shadow(2px 2px 0 rgba(0,0,0,0.2));" onerror="this.style.display='none';">
         <div class="exercise-note" style="flex:1; font-weight:900;">${nl2br(plan.warmup)}</div>
       </div>`;
     list.appendChild(d);

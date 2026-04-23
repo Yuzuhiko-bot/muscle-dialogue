@@ -2694,8 +2694,9 @@ body {
 #cold-map-container {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 500px; /* 300pxから拡大 */
   margin: 0 auto;
+  padding: 0 10px; /* 画面端の余裕 */
 }
 
 #cold-map-container img {
