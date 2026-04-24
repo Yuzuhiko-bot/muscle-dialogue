@@ -832,6 +832,35 @@ body {
   border-radius: var(--radius-sm);
 }
 
+/* 前回実績・目標の情報バー */
+.exercise-meta-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.meta-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.meta-badge-prev {
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.meta-badge-target {
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
 .exercise-recommendation {
   font-size: 0.8rem;
   color: var(--text-secondary);

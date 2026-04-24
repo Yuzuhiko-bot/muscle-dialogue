@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.11.0';
+const APP_VERSION = 'v1.12.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -181,7 +181,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.11.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.12.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -899,6 +899,30 @@ function parseGeminiResponse(r) {
   }
 }
 
+/**
+ * 指定されたexercise_idの前回実施データを履歴から取得する
+ * @param {string} exerciseId - 種目ID
+ * @returns {{ lastDate: string|null, lastWeight: number|null }} 前回の実施日と最終セット重量
+ */
+function getLastPerformance(exerciseId) {
+  if (!exerciseId) return { lastDate: null, lastWeight: null };
+  const sortedDates = Object.keys(state.trainingHistory).sort((a, b) => b.localeCompare(a));
+  for (const date of sortedDates) {
+    const rec = state.trainingHistory[date];
+    if (!rec || !rec.exercises) continue;
+    const found = rec.exercises.find(ex => ex.id === exerciseId);
+    if (found && found.sets && found.sets.length > 0) {
+      const lastSet = found.sets[found.sets.length - 1];
+      return { lastDate: date, lastWeight: lastSet.weight || null };
+    }
+    // 有酸素の場合
+    if (found && found.duration != null) {
+      return { lastDate: date, lastWeight: null };
+    }
+  }
+  return { lastDate: null, lastWeight: null };
+}
+
 function renderPlan(plan) {
   const nl2br = (s) => (s || '').replace(/\n/g, '<br>');
   const list = $('#plan-list'); list.innerHTML = '';
@@ -963,13 +987,31 @@ function renderPlan(plan) {
       </div>`;
     }
 
-    const targetHtml = (masterEx && (masterEx.target_weight || masterEx.target_deadline)) ? `
-      <div style="margin-top:0.3rem; margin-bottom:0.3rem;">
-        ${masterEx.target_weight ? `<span class="target-badge">目標: ${masterEx.target_weight}kg</span>` : ''}
-        ${masterEx.target_deadline ? `<span class="target-badge">期限: ${masterEx.target_deadline.replace(/-/g, '/')}</span>` : ''}
-      </div>` : '';
+    // 前回実績と目標情報を統合した情報バーを構築
+    const perf = getLastPerformance(ex.exercise_id);
+    const customEx = getAvailableExercises().find(m => m.id === ex.exercise_id);
+    let metaBadges = [];
 
-    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${targetHtml}${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
+    // 前回の実施日
+    if (perf.lastDate) {
+      const ld = new Date(perf.lastDate + 'T00:00:00');
+      metaBadges.push(`<span class="meta-badge meta-badge-prev">📅 前回: ${ld.getMonth() + 1}/${ld.getDate()}</span>`);
+    }
+    // 前回の最終セット重量
+    if (perf.lastWeight != null) {
+      metaBadges.push(`<span class="meta-badge meta-badge-prev">🏋️ 前回最終: ${perf.lastWeight}kg</span>`);
+    }
+    // 目標重量と時期
+    if (customEx && customEx.target_weight) {
+      const deadlineStr = customEx.target_deadline ? ` (${customEx.target_deadline.replace(/-/g, '/')})` : '';
+      metaBadges.push(`<span class="meta-badge meta-badge-target">🎯 目標: ${customEx.target_weight}kg${deadlineStr}</span>`);
+    }
+
+    const metaInfoHtml = metaBadges.length > 0
+      ? `<div class="exercise-meta-info">${metaBadges.join('')}</div>`
+      : '';
+
+    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${metaInfoHtml}${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
