@@ -2776,3 +2776,61 @@ body {
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
+
+/* ---------- Exercise Meta Info (前回実績・目標) ---------- */
+.exercise-meta-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+}
+
+.meta-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  border: 1.5px solid var(--text-primary);
+}
+
+.meta-badge-prev {
+  background: var(--sky-light, #e0f2fe);
+  color: var(--text-primary);
+}
+
+.meta-badge-target {
+  background: var(--yellow-light);
+  color: var(--text-primary);
+}
+
+/* クリック可能な前回実施日バッジ */
+.meta-badge-link {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--blue, #3b82f6);
+  text-underline-offset: 2px;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.meta-badge-link:hover,
+.meta-badge-link:active {
+  background: var(--blue, #3b82f6);
+  color: #fff;
+  transform: scale(1.05);
+  border-color: var(--blue, #3b82f6);
+}
+
+/* ---------- カレンダージャンプ時のハイライト ---------- */
+.highlight-exercise {
+  animation: highlightPulse 0.6s ease-out 3;
+  box-shadow: 0 0 0 3px var(--red), 0 0 15px rgba(255, 45, 85, 0.4) !important;
+  border-radius: var(--radius-md);
+}
+
+@keyframes highlightPulse {
+  0%   { box-shadow: 0 0 0 3px var(--red), 0 0 15px rgba(255, 45, 85, 0.4); }
+  50%  { box-shadow: 0 0 0 6px var(--yellow), 0 0 25px rgba(255, 204, 0, 0.5); }
+  100% { box-shadow: 0 0 0 3px var(--red), 0 0 15px rgba(255, 45, 85, 0.4); }
+}

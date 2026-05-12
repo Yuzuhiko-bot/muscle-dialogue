@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.12.1';
+const APP_VERSION = 'v1.13.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -182,7 +182,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.12.1 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.13.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -935,6 +935,49 @@ function getLastPerformance(exerciseId) {
   return { lastDate: null, lastWeight: null };
 }
 
+/**
+ * カレンダータブに切り替え、指定した日付のトレーニング詳細を表示する
+ * @param {string} dateStr - 'YYYY-MM-DD'形式の日付
+ * @param {string} [exerciseId] - ハイライトする種目ID（省略可）
+ */
+function navigateToTrainingDate(dateStr, exerciseId) {
+  if (!dateStr || !state.trainingHistory[dateStr]) return;
+
+  // カレンダータブへ切り替え
+  $$('.tab-btn').forEach(b => b.classList.remove('active'));
+  $$('.tab-content').forEach(c => c.classList.remove('active'));
+  const calBtn = document.querySelector('.tab-btn[data-tab="calendar"]');
+  if (calBtn) calBtn.classList.add('active');
+  const calTab = $('#tab-calendar');
+  if (calTab) calTab.classList.add('active');
+
+  // カレンダーを該当月に移動
+  const d = new Date(dateStr + 'T00:00:00');
+  state.currentYear = d.getFullYear();
+  state.currentMonth = d.getMonth();
+  state.selectedDate = dateStr;
+  renderCalendar();
+  showHistoryDetail(dateStr);
+
+  // モーダルが開いていたら閉じる
+  $$('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+
+  // 指定種目をハイライト
+  if (exerciseId) {
+    setTimeout(() => {
+      const exercises = $$('#history-content .history-exercise');
+      const rec = state.trainingHistory[dateStr];
+      if (!rec) return;
+      const targetIdx = rec.exercises.findIndex(ex => ex.id === exerciseId);
+      if (targetIdx >= 0 && exercises[targetIdx]) {
+        exercises[targetIdx].classList.add('highlight-exercise');
+        exercises[targetIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => exercises[targetIdx].classList.remove('highlight-exercise'), 2000);
+      }
+    }, 100);
+  }
+}
+
 function renderPlan(plan) {
   const nl2br = (s) => (s || '').replace(/\n/g, '<br>');
   const list = $('#plan-list'); list.innerHTML = '';
@@ -1007,7 +1050,7 @@ function renderPlan(plan) {
     // 前回の実施日
     if (perf.lastDate) {
       const ld = new Date(perf.lastDate + 'T00:00:00');
-      metaBadges.push(`<span class="meta-badge meta-badge-prev">📅 前回: ${ld.getMonth() + 1}/${ld.getDate()}</span>`);
+      metaBadges.push(`<span class="meta-badge meta-badge-prev meta-badge-link" data-jump-date="${perf.lastDate}" data-jump-exid="${ex.exercise_id}">📅 前回: ${ld.getMonth() + 1}/${ld.getDate()}</span>`);
     }
     // 前回の最終セット重量
     if (perf.lastWeight != null) {
@@ -1032,6 +1075,14 @@ function renderPlan(plan) {
 
   if (plan.cooldown) { const d = document.createElement('div'); d.className = 'plan-exercise'; d.style.borderLeft = 'none'; d.innerHTML = `<div class="exercise-header"><div class="exercise-number" style="background:linear-gradient(135deg,var(--green),var(--sky)); color:var(--text-primary);">C</div><div class="exercise-name">クールダウン</div></div><div class="exercise-note">${nl2br(plan.cooldown)}</div>`; list.appendChild(d); }
   $('#btn-complete').classList.remove('hidden');
+
+  // 前回実施日バッジのクリックイベント登録
+  list.querySelectorAll('.meta-badge-link').forEach(badge => {
+    badge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigateToTrainingDate(badge.dataset.jumpDate, badge.dataset.jumpExid);
+    });
+  });
 }
 
 function checkAllSetsCompleted() { const a = $$('.set-check'), btn = $('#btn-complete'); btn.style.animation = [...a].every(c => c.checked) && a.length > 0 ? 'pulse 0.5s infinite alternate' : 'none'; }
@@ -1759,6 +1810,21 @@ function renderExerciseMasterList() {
     groups[m].forEach(ex => {
       const card = document.createElement('div');
       card.className = 'ex-master-card';
+
+      // 前回実績を取得
+      const perf = getLastPerformance(ex.id);
+      let perfBadges = [];
+      if (perf.lastDate) {
+        const ld = new Date(perf.lastDate + 'T00:00:00');
+        perfBadges.push(`<span class="meta-badge meta-badge-prev meta-badge-link" data-jump-date="${perf.lastDate}" data-jump-exid="${ex.id}">📅 前回: ${ld.getMonth() + 1}/${ld.getDate()}</span>`);
+      }
+      if (perf.lastWeight != null) {
+        perfBadges.push(`<span class="meta-badge meta-badge-prev">🏋️ 前回最終: ${perf.lastWeight}kg</span>`);
+      }
+      const perfHtml = perfBadges.length > 0
+        ? `<div class="exercise-meta-info" style="margin-top:0.3rem;">${perfBadges.join('')}</div>`
+        : '';
+
       card.innerHTML = `
         <div class="ex-master-info">
           <div class="ex-master-name">${ex.exercise_name}${ex.is_cardio ? ' 🏃‍♂️' : ''}</div>
@@ -1768,6 +1834,7 @@ function renderExerciseMasterList() {
               ${ex.target_weight ? `<span class="target-badge">目標: ${ex.target_weight}kg</span>` : ''}
               ${ex.target_deadline ? `<span class="target-badge">期限: ${ex.target_deadline.replace(/-/g, '/')}</span>` : ''}
             </div>` : ''}
+          ${perfHtml}
         </div>
         <div class="ex-master-actions">
           <button class="ex-master-btn ex-master-btn-edit" data-id="${ex.id}">編集</button>
@@ -1784,6 +1851,13 @@ function renderExerciseMasterList() {
   });
   listContainer.querySelectorAll('.ex-master-btn-del').forEach(btn => {
     btn.addEventListener('click', () => deleteExerciseMasterEntry(btn.dataset.id));
+  });
+  // 前回実施日バッジのクリックイベント登録
+  listContainer.querySelectorAll('.meta-badge-link').forEach(badge => {
+    badge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navigateToTrainingDate(badge.dataset.jumpDate, badge.dataset.jumpExid);
+    });
   });
 }
 
