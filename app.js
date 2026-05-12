@@ -959,8 +959,8 @@ function navigateToTrainingDate(dateStr, exerciseId) {
   renderCalendar();
   showHistoryDetail(dateStr);
 
-  // モーダルが開いていたら閉じる
-  $$('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+  // 開いているモーダルをすべて閉じる
+  $$('.modal').forEach(m => m.classList.add('hidden'));
 
   // 指定種目をハイライト
   if (exerciseId) {
