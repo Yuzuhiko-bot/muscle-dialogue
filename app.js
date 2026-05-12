@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.12.0';
+const APP_VERSION = 'v1.12.1';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -62,7 +62,8 @@ const MUSCLE_CATEGORIES = {
   "背中": { size: "big", matches: ["広背筋", "僧帽筋", "脊柱起立筋", "大円筋"] },
   "脚": { size: "big", matches: ["大腿四頭筋", "ハムストリングス", "大臀筋", "中臀筋", "内転筋"] },
   "肩": { size: "small", matches: ["三角筋前部", "三角筋中部", "三角筋後部"] },
-  "腕": { size: "small", matches: ["上腕二頭筋", "上腕三頭筋", "前腕筋群"] },
+  "二頭筋": { size: "small", matches: ["上腕二頭筋", "前腕筋群"] },
+  "三頭筋": { size: "small", matches: ["上腕三頭筋"] },
   "腹": { size: "small", matches: ["腹直筋", "腹直筋下部", "腸腰筋"] }
 };
 
@@ -181,7 +182,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.12.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.12.1 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -678,7 +679,8 @@ function getMuscleColdMapData() {
     "背中": "back",
     "脚": "legs",
     "肩": "shoulders",
-    "腕": "arms",
+    "二頭筋": "biceps",
+    "三頭筋": "triceps",
     "腹": "abs"
   };
 
@@ -722,12 +724,22 @@ function renderColdMap() {
   const data = getMuscleColdMapData();
   if (!data) return;
   
+  // 二頭筋・三頭筋 → SVG要素への個別マッピング
+  const svgIdMap = {
+    'chest':     ['cmap-chest'],
+    'back':      ['cmap-back'],
+    'legs':      ['cmap-legs-l', 'cmap-legs-r', 'cmap-legs-back'],
+    'shoulders': ['cmap-shoulders-l', 'cmap-shoulders-r', 'cmap-shoulders-back-l', 'cmap-shoulders-back-r'],
+    'biceps':    ['cmap-arms-l', 'cmap-arms-r'],       // フロント腕 = 二頭筋
+    'triceps':   ['cmap-arms-back'],                     // バック腕 = 三頭筋
+    'abs':       ['cmap-abs']
+  };
+
   Object.keys(data).forEach(id => {
     const fill = data[id].color;
-    // 全パターンの ID を走査して色を適用
-    const suffixes = ['', '-l', '-r', '-back', '-back-l', '-back-r'];
-    suffixes.forEach(suffix => {
-      const el = document.getElementById(`cmap-${id}${suffix}`);
+    const targets = svgIdMap[id] || [];
+    targets.forEach(svgId => {
+      const el = document.getElementById(svgId);
       if (el) el.style.fill = fill;
     });
   });
