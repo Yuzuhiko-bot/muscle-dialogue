@@ -387,6 +387,11 @@
             </svg>
           </div>
 
+        <h3 class="section-title" style="font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:1rem;">体重推移</h3>
+        <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
+          <canvas id="weightChart"></canvas>
+        </div>
+
         <div class="weight-input-area" style="margin-bottom: 1.5rem;">
           <div style="display:flex; gap:0.5rem; margin-bottom: 0.5rem;">
             <input type="date" id="body-date" class="input-muscle" style="flex:1;">
@@ -398,14 +403,9 @@
           </button>
         </div>
 
-        <div id="body-feedback" class="muscle-feedback-box hidden" style="margin-bottom:1.5rem;">
+        <div id="body-feedback" class="muscle-feedback-box hidden" style="margin-bottom:2rem;">
           <div class="feedback-icon">💪</div>
           <p id="body-feedback-text" class="feedback-text"></p>
-        </div>
-
-        <h3 class="section-title" style="font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:1rem;">体重推移</h3>
-        <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 2rem;">
-          <canvas id="weightChart"></canvas>
         </div>
 
         <!-- 分析ダッシュボード -->
@@ -852,7 +852,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.17.0 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.17.1 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
