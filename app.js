@@ -2165,25 +2165,6 @@ function renderAnalysisCharts() {
   const volumes = [];
   const oneRMs = { 'ベンチプレス': [], 'スクワット': [], 'デッドリフト': [] };
 
-  // 30日より前の最新の1RMを取得して初期値とする
-  let lastKnown1RM = { 'ベンチプレス': null, 'スクワット': null, 'デッドリフト': null };
-  const allDates = Object.keys(state.trainingHistory).sort();
-  for (const dStr of allDates) {
-    if (new Date(dStr) >= thirtyDaysAgo) break;
-    state.trainingHistory[dStr].exercises.forEach(ex => {
-      if (lastKnown1RM[ex.name] !== undefined && ex.sets) {
-        ex.sets.forEach(set => {
-          const w = parseFloat(set.weight) || 0;
-          const r = parseInt(set.reps) || 0;
-          const epley1RM = w * (1 + r / 30);
-          if (lastKnown1RM[ex.name] === null || epley1RM > lastKnown1RM[ex.name]) {
-            lastKnown1RM[ex.name] = epley1RM;
-          }
-        });
-      }
-    });
-  }
-
   // 過去30日の日付リストを生成
   for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
     const dStr = formatDate(d);
@@ -2203,10 +2184,15 @@ function renderAnalysisCharts() {
             dailyVolume += (w * r);
             
             // 1RM推定 (Epley式: 重量 * (1 + 回数/30))
-            if (oneRMs[ex.name] !== undefined) {
+            let big3Name = null;
+            if (ex.name === 'バーベルベンチプレス' || ex.name === 'ベンチプレス') big3Name = 'ベンチプレス';
+            else if (ex.name === 'バーベルスクワット' || ex.name === 'スクワット') big3Name = 'スクワット';
+            else if (ex.name === 'バーベルデッドリフト' || ex.name === 'デッドリフト') big3Name = 'デッドリフト';
+
+            if (big3Name !== null) {
               const epley1RM = w * (1 + r / 30);
-              if (max1RM[ex.name] === null || epley1RM > max1RM[ex.name]) {
-                max1RM[ex.name] = epley1RM;
+              if (max1RM[big3Name] === null || epley1RM > max1RM[big3Name]) {
+                max1RM[big3Name] = epley1RM;
               }
             }
           });
@@ -2215,10 +2201,10 @@ function renderAnalysisCharts() {
     }
     volumes.push(dailyVolume);
 
-    // 1RMデータ構築（nullの場合は前の値を引き継ぐか、過去の最新値を参照する）
+    // 1RMデータ構築（nullの場合は前の値を引き継ぐか、0にする）
     ['ベンチプレス', 'スクワット', 'デッドリフト'].forEach(name => {
       const prevArr = oneRMs[name];
-      const prevVal = prevArr.length > 0 ? prevArr[prevArr.length - 1] : lastKnown1RM[name];
+      const prevVal = prevArr.length > 0 ? prevArr[prevArr.length - 1] : null;
       if (max1RM[name] !== null) {
         prevArr.push(max1RM[name]);
       } else {
