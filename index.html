@@ -307,6 +307,12 @@
       </div>
 
       <div id="no-plan" class="no-plan-area">
+        <div class="generate-options" style="margin-bottom: 1rem; text-align: center;">
+          <label class="toggle-label" style="display:inline-flex; align-items:center; gap:0.5rem; cursor:pointer;">
+            <input type="checkbox" id="chk-tomorrow-plan" style="width:1.2rem; height:1.2rem;">
+            <span style="font-weight:bold; color:var(--text-primary); font-size: 0.95rem;">翌日のプランを作成する（回復日数を+1日）</span>
+          </label>
+        </div>
         <button id="btn-generate" class="btn-mega btn-kinnikun-style">
           <span class="btn-text"><span class="text-keep">AIメニューを</span><span class="text-keep">生成する！</span></span>
           <span class="btn-effect"></span>
@@ -620,6 +626,15 @@
                 class="check-text">首</span></label>
           </div>
         </div>
+        <div class="form-group" style="margin-top: 1rem; border-top: 1px dashed var(--border-color); padding-top: 1rem;">
+          <label class="check-card" style="width:100%; display:flex; align-items:center; background: var(--bg-input); padding: 0.8rem; border-radius: var(--radius-sm);">
+            <input type="checkbox" id="chk-tomorrow-plan">
+            <span class="check-text" style="font-size:0.95rem; font-weight:700; color:var(--red);">
+              📅 明日のプランを作成する（回復日数を+1日）
+            </span>
+          </label>
+          <p class="form-hint" style="margin-top:0.4rem;">※トレーニング前日の夜にプランを作成する場合にチェックしてくれ！</p>
+        </div>
         <div class="form-group">
           <label class="form-label">自由要望（フリーテキスト）</label>
           <p class="form-hint">例：「有酸素30分含めて」「腕だけで組んで」</p>
@@ -852,7 +867,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.17.4 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.17.0 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
@@ -870,7 +885,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.16.0"></script>
+    <script src="app.js?v=1.17.0"></script>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.14.0';
+const APP_VERSION = 'v1.17.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -265,7 +265,16 @@ function initOnboarding() {
   form.addEventListener('submit', e => {
     e.preventDefault();
     const fd = new FormData(form);
-    state.userProfile = { goal: fd.get('goal'), experience: fd.get('experience'), activity: fd.get('activity'), painAreas: fd.getAll('pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('priority'), frequency: parseInt(sl.value), createdAt: new Date().toISOString() };
+    state.userProfile = { 
+      goal: fd.get('goal'), 
+      experience: fd.get('experience'), 
+      activity: fd.get('activity'), 
+      painAreas: fd.getAll('pain').filter(v => v !== 'なし'), 
+      priorityMuscles: fd.getAll('priority'), 
+      frequency: parseInt(sl.value),
+      splitMethod: fd.get('splitMethod') || 'ppl', // Added splitMethod
+      createdAt: new Date().toISOString() 
+    };
     saveProfile(); showScreen('main-screen'); renderCalendar(); showToast('ヤー！！プロフィール登録完了！パワー！！');
   });
 }
@@ -542,10 +551,12 @@ function gatherConditions() {
   localStorage.setItem('muscleDialog_lastFreeRequest', req);
   const custTime = parseInt($('#custom-time-input').value);
   const finalTime = !isNaN(custTime) ? custTime : state.selectedTime;
+  const isTomorrow = $('#chk-tomorrow-plan') ? $('#chk-tomorrow-plan').checked : false;
   return {
     time: finalTime, fatigue: $('input[name="fatigue"]:checked')?.value || '普通',
     todayPain: [...$$('input[name="todayPain"]:checked')].map(c => c.value).filter(v => v !== 'なし'),
-    freeRequest: req
+    freeRequest: req,
+    isTomorrow: isTomorrow
   };
 }
 
@@ -564,10 +575,15 @@ function getRecentHistory(n) {
  */
 function getMuscleRotationStatus(hist, cond) {
   const p = state.userProfile;
-  if (!p || p.frequency <= 2) return ""; // 低頻度は判定スキップ
+  if (!p) return ""; 
+
+  if (p.frequency <= 2) return ""; 
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  if (cond && cond.isTomorrow) {
+    today.setDate(today.getDate() + 1);
+  }
   const lastPerformed = {};
   Object.keys(MUSCLE_CATEGORIES).forEach(cat => lastPerformed[cat] = null);
 
@@ -605,7 +621,19 @@ function getMuscleRotationStatus(hist, cond) {
     
     // 3. 疲労判定（ブラックリスト） (v1.10.1)
     if (lastDate) {
-      if ((data.size === "big" && diffDays <= 2) || (data.size === "small" && diffDays <= 1)) {
+      // 分割法に応じた疲労判定の緩和 (v1.17.0)
+      let fatigueThresholdBig = 2; // デフォルト：中2日（3日目）からOK
+      let fatigueThresholdSmall = 1; // デフォルト：中1日（2日目）からOK
+
+      if (p.splitMethod === 'fullBody') {
+        fatigueThresholdBig = 1; // 全身法なら中1日（2日目）からOK
+      } else if (p.splitMethod === 'ppl' || p.splitMethod === 'upperLower') {
+        fatigueThresholdBig = 1; // PPLや上下分割なら中1日（2日目）からOKに緩和（高頻度対応）
+      } else if (p.splitMethod === 'broSplit') {
+        fatigueThresholdBig = 4; // ブロスプリットなら中4日は空ける（週1回想定）
+      }
+
+      if ((data.size === "big" && diffDays <= fatigueThresholdBig) || (data.size === "small" && diffDays <= fatigueThresholdSmall)) {
         redCards.push(`【疲労中】${cat}(${diffDays}日前)`); // Special marker for exhaustion
       }
     }
@@ -714,6 +742,9 @@ function getMuscleColdMapData() {
     }
 
     let recoveryThreshold = (data.size === "big") ? 3 : 2;
+    if (p.splitMethod === 'fullBody' || p.splitMethod === 'ppl' || p.splitMethod === 'upperLower') {
+      recoveryThreshold = (data.size === "big") ? 3 : 2; // PPL等でも中2日（3日目）から回復扱い
+    }
 
     if (diffDays >= redThreshold) {
       mapData[id] = { days: diffDays, status: 'red-card', color: '#3b82f6' }; // blue (cold)
@@ -777,21 +808,18 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
 
 ## 👑 メニュー構成の【絶対ルール】（システム制約・最優先事項）
 以下のルールはアプリの仕様（UIや安全機能）に関わるため、いかなる理論よりも優先して厳守すること。
-1. **種目の順序（必須）**: 必ず「コンパウンド種目（多関節）」を先に、「アイソレーション種目（単関節）」を後半に配置すること。
-2. **目的別の配布基準（ベースライン）**: 
-   - 【筋肥大】: 8〜12回 / 3〜4セット / 休憩90〜120秒
-   - 【筋力アップ】: 3〜6回 / 3〜5セット / 休憩180〜300秒
-   - 【ダイエット】: 10〜15回 / 3セット / 休憩60〜90秒 ＋ 有酸素運動を必ず組み込む
-   - 【健康維持】: 12〜15回 / 2〜3セット / 休憩90秒
-3. **重量設定と安全基準（厳守）**: 重量は必ずweight_step刻み。前回RPEが8以下なら重量か回数を増やす。【超重要】前回RPEが9以上の場合は「絶対に」重量を増加させないこと。
-4. **マンネリ打破**: 直近履歴で停滞期（数週間同じ内容）の兆候がある場合は、別種目で刺激を変えるか、理論（負荷帯の変更など）を適用すること。
-5. **分割法（スプリット）の自動推論**:
-   - 週1〜2回: 全身をバランスよく鍛えるメニュー（全身法）。
-   - 週3〜4回: 上半身/下半身、またはプッシュ/プル/脚などで分割。
-   - 週5回以上: 1回のトレーニングでターゲットにする部位を「厳密に1〜2部位」に絞り込む（ブロスプリット）。3部位以上を絶対に混ぜないこと。
-6. **怪我の配慮と自由要望**: 指定された痛み部位の種目は完全除外。自由要望がある場合は全てのルールより最優先する。
-7. **トーン＆マナー**: 「礼儀正しく、シンプルで熱いトーン」。長々とした解説は避け、テンポ良くまとめること。最後のメッセージには必ず以下の名言を組み込むこと。
-8. **絶対除外リストの遵守（最優先）**: ユーザー情報の「絶対除外リスト」に掲載されている部位は、他のいかなる理論（「腹筋は毎日やっていい」等の独自解釈を含む）よりも優先して、本日のメニューから「完全除外」すること。
+ 1. **種目の順序（必須）**: 必ず「コンパウンド種目（多関節）」を先に、「アイソレーション種目（単関節）」を後半に配置すること。
+ 2. **目的別の配布基準（ベースライン）**: 
+    - 【筋肥大】: 8〜12回 / 3〜4セット / 休憩90〜120秒
+    - 【ダイエット/健康維持】: 15〜20回 / 2〜3セット / 休憩60秒
+ 3. **分割法（スプリット）の遵守**:
+    - ユーザーが選択した分割法（PPL、全身法、上下分割など）を最優先で尊重すること。
+    - PPL法や上下分割の場合、中1〜2日の休息があれば同じ部位を鍛えても良い。
+    - ブロスプリットの場合のみ、ターゲット部位を厳密に絞り、中6日程度空けること。
+ 4. **マンネリ打破**: 直近履歴で停滞期（数週間同じ内容）の兆候がある場合は、別種目で刺激を変えるか、理論（負荷帯の変更など）を適用すること。
+ 5. **怪我の配慮と自由要望**: 指定された痛み部位の種目は完全除外。自由要望がある場合は全てのルールより最優先する。
+ 6. **トーン＆マナー**: 「礼儀正しく、シンプルで熱いトーン」。長々とした解説は避け、テンポ良くまとめること。最後のメッセージには必ず以下の名言を組み込むこと。
+ 7. **絶対除外リストの遵守（最優先）**: ユーザー情報の「絶対除外リスト」に掲載されている部位は、他のいかなる理論（「腹筋は毎日やっていい」等の独自解釈を含む）よりも優先して、本日のメニューから「完全除外」すること。
    【本日の名言】：${randomQuote}
 
 ## 🧠 専門的バックグラウンド理論（脳内の知識ベース）
@@ -822,10 +850,31 @@ ${exData}
 
   const chatContext = state.chatHistory.slice(-10).map(c => `${c.role === 'user' ? 'ユーザー' : 'AIなかやまきんに君'}: ${c.text}`).join('\n');
 
-  const usr = `## ユーザー: 目的:${p.goal} 経験:${p.experience} 活動量:${p.activity} 痛み:${p.painAreas.length ? p.painAreas.join(',') : 'なし'} 優先:${p.priorityMuscles.length ? p.priorityMuscles.join(',') : '特になし'} 頻度:${p.frequency}回/週
-${rotationAlert}
+  const usr = `## ユーザー情報:
+    - 目的: ${p.goal}
+    - 経験: ${p.experience}
+    - 活動量: ${p.activity}
+    - 週の頻度: ${p.frequency}回
+    - 分割法: ${p.splitMethod === 'ppl' ? 'PPL法 (Push/Pull/Legs)' : 
+               p.splitMethod === 'upperLower' ? '上半身/下半身分割' : 
+               p.splitMethod === 'fullBody' ? '全身法' : 
+               p.splitMethod === 'broSplit' ? 'ブロスプリット (部位ごと週1回)' : '自動推論'}
+    - 重点部位: ${p.priorityMuscles.join(',') || '全体'}
+    - 既往の痛み: ${p.painAreas.join(',') || 'なし'}
+    - 目標体重: ${targetWeight}
+
+## 【重要】本日のコンディション:
+    - 予定時間: ${cond.time}分
+    - 疲労度: ${cond.fatigue}
+    - 今日の痛み: ${cond.todayPain.join(',') || 'なし'}
+    - ターゲット日: ${cond.isTomorrow ? '【明日】のプランを作成（現在は前日の夜）' : '【今日】のプランを作成'}
+    - ユーザー要望: ${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : '特になし'}
+
+## 【最優先】絶対除外リスト（疲労・怪我により本日鍛えてはいけない部位）:
+${rotationAlert || '（特になし。全部位トレーニング可能です）'}
+※PPL法などの高頻度トレーニングの場合、リストに載っていない部位は積極的にメニューに組み込んでください。
+
 ## 体重情報: ${bodyText}
-## 今日: 時間:${cond.time}分 疲労:${cond.fatigue} 痛み:${cond.todayPain.length ? cond.todayPain.join(',') : 'なし'}${cond.freeRequest ? ` 【最優先】要望:${cond.freeRequest}` : ''}
 ## 直近の対話履歴 (参考):
 ${chatContext || '（なし）'}
 ## 直近のトレーニング実積ログ:
@@ -1369,7 +1418,17 @@ function initProfile() {
   setupExclusiveNone('p-pain');
   form.addEventListener('submit', e => {
     e.preventDefault(); const fd = new FormData(form);
-    state.userProfile = { ...state.userProfile, targetWeight: parseFloat(fd.get('p-targetWeight')) || null, goal: fd.get('p-goal'), experience: fd.get('p-experience'), activity: fd.get('p-activity'), painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), priorityMuscles: fd.getAll('p-priority'), frequency: parseInt(sl.value) };
+    state.userProfile = { 
+      ...state.userProfile, 
+      targetWeight: parseFloat(fd.get('p-targetWeight')) || null, 
+      goal: fd.get('p-goal'), 
+      experience: fd.get('p-experience'), 
+      activity: fd.get('p-activity'), 
+      painAreas: fd.getAll('p-pain').filter(v => v !== 'なし'), 
+      priorityMuscles: fd.getAll('p-priority'), 
+      frequency: parseInt(sl.value),
+      splitMethod: fd.get('p-splitMethod') || 'ppl'
+    };
     saveProfile(); 
     populateProfileForm(); 
     showToast('<span class="text-keep">プロフィール更新完了！</span><span class="text-keep">ヤー！！パワー！！</span>');
@@ -1405,6 +1464,7 @@ function populateProfileForm() {
   $$('input[name="p-priority"]').forEach(cb => { cb.checked = p.priorityMuscles.includes(cb.value); });
   const sl = $('#p-frequency'); if (sl) sl.value = p.frequency;
   const fv = $('#p-frequency-value'); if (fv) fv.textContent = p.frequency;
+  const sm = $('#p-splitMethod'); if (sm) sm.value = p.splitMethod || 'ppl';
 }
 
 // ---------- API KEY MANAGEMENT ----------
@@ -2201,9 +2261,9 @@ function renderAnalysisCharts() {
             
             // 1RM推定 (Epley式: 重量 * (1 + 回数/30))
             let big3Name = null;
-            if (ex.name === 'バーベルベンチプレス' || ex.name === 'ベンチプレス') big3Name = 'ベンチプレス';
-            else if (ex.name === 'バーベルスクワット' || ex.name === 'スクワット') big3Name = 'スクワット';
-            else if (ex.name === 'バーベルデッドリフト' || ex.name === 'デッドリフト') big3Name = 'デッドリフト';
+            if (ex.id === 'chest_001' || ex.name === 'バーベルベンチプレス' || ex.name === 'ベンチプレス') big3Name = 'ベンチプレス';
+            else if (ex.id === 'legs_001' || ex.name === 'バーベルスクワット' || ex.name === 'スクワット') big3Name = 'スクワット';
+            else if (ex.id === 'back_001' || ex.name === 'バーベルデッドリフト' || ex.name === 'デッドリフト') big3Name = 'デッドリフト';
 
             if (big3Name !== null) {
               const epley1RM = w * (1 + r / 30);
