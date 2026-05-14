@@ -287,7 +287,12 @@ function initTabs() {
     btn.classList.add('active');
     $(`#tab-${btn.dataset.tab}`).classList.add('active');
     if (btn.dataset.tab === 'calendar') renderCalendar();
-    if (btn.dataset.tab === 'profile') { populateProfileForm(); renderColdMap(); }
+    if (btn.dataset.tab === 'profile') { 
+      populateProfileForm(); 
+      renderColdMap(); 
+      if (typeof renderWeightChart === 'function') renderWeightChart();
+      if (typeof renderAnalysisCharts === 'function') renderAnalysisCharts();
+    }
   }));
 }
 
