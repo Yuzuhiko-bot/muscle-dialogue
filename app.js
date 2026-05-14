@@ -709,11 +709,13 @@ function getMuscleColdMapData() {
       redThreshold = (data.size === "small") ? 8 : 10;
     }
 
+    let recoveryThreshold = (data.size === "big") ? 3 : 2;
+
     if (diffDays >= redThreshold) {
       mapData[id] = { days: diffDays, status: 'red-card', color: '#3b82f6' }; // blue (cold)
     } else if (diffDays >= yellowThreshold) {
       mapData[id] = { days: diffDays, status: 'yellow-card', color: '#fbbf24' }; // yellow
-    } else if (diffDays >= 2) {
+    } else if (diffDays >= recoveryThreshold) {
       mapData[id] = { days: diffDays, status: 'recovered', color: '#4ade80' }; // green
     } else {
       mapData[id] = { days: diffDays, status: 'hot', color: '#ff4d4d' }; // red
