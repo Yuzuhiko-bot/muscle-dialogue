@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.13.0';
+const APP_VERSION = 'v1.14.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -182,7 +182,7 @@ window.onerror = function(msg, url, line) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("%c💪 Muscle Dialogue v1.13.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
+  console.log("%c💪 Muscle Dialogue v1.14.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
   initBodyDashboard(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
@@ -379,12 +379,13 @@ function showHistoryDetail(ds) {
         ${dispDeadline ? `<span class="target-badge">当時の期限: ${dispDeadline.replace(/-/g, '/')}</span>` : ''}
       </div>` : '';
 
-    div.innerHTML = `<div class="history-exercise-name">${ex.name}</div>${targetHtml}<div class="history-sets">${setsHtml}</div>
+    div.innerHTML = `<div class="history-exercise-name exercise-name-link" data-exid="${ex.id}">${ex.name}</div>${targetHtml}<div class="history-sets">${setsHtml}</div>
       <div class="history-exercise-actions"><button class="btn-edit-ex" data-date="${ds}" data-idx="${idx}">編集</button><button class="btn-delete-ex" data-date="${ds}" data-idx="${idx}">削除</button></div>`;
     content.appendChild(div);
   });
   content.querySelectorAll('.btn-edit-ex').forEach(b => b.addEventListener('click', () => openEditExercise(b.dataset.date, parseInt(b.dataset.idx))));
   content.querySelectorAll('.btn-delete-ex').forEach(b => b.addEventListener('click', () => deleteExercise(b.dataset.date, parseInt(b.dataset.idx))));
+  content.querySelectorAll('.exercise-name-link').forEach(el => el.addEventListener('click', () => navigateToExerciseMaster(el.dataset.exid)));
 }
 
 function deleteDayRecord() {
@@ -978,6 +979,28 @@ function navigateToTrainingDate(dateStr, exerciseId) {
   }
 }
 
+/**
+ * 種目マスター管理モーダルを開き、指定した種目IDのカードにスクロール＆ハイライトする
+ * @param {string} exerciseId - 種目ID
+ */
+function navigateToExerciseMaster(exerciseId) {
+  if (!exerciseId) return;
+  renderExerciseMasterList();
+  openModal('modal-exercise-master');
+
+  setTimeout(() => {
+    const btn = document.querySelector(`.ex-master-btn-edit[data-id="${exerciseId}"]`);
+    if (btn) {
+      const card = btn.closest('.ex-master-card');
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('highlight-exercise');
+        setTimeout(() => card.classList.remove('highlight-exercise'), 2000);
+      }
+    }
+  }, 150);
+}
+
 function renderPlan(plan) {
   const nl2br = (s) => (s || '').replace(/\n/g, '<br>');
   const list = $('#plan-list'); list.innerHTML = '';
@@ -1066,7 +1089,7 @@ function renderPlan(plan) {
       ? `<div class="exercise-meta-info">${metaBadges.join('')}</div>`
       : '';
 
-    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${metaInfoHtml}${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
+    div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name exercise-name-link" data-exid="${ex.exercise_id}">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${metaInfoHtml}${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
@@ -1082,6 +1105,10 @@ function renderPlan(plan) {
       e.stopPropagation();
       navigateToTrainingDate(badge.dataset.jumpDate, badge.dataset.jumpExid);
     });
+  });
+  // 種目名クリックで種目マスターへジャンプ
+  list.querySelectorAll('.exercise-name-link').forEach(el => {
+    el.addEventListener('click', () => navigateToExerciseMaster(el.dataset.exid));
   });
 }
 
