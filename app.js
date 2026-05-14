@@ -1426,6 +1426,16 @@ function initApiKey() {
 function initBackup() {
   $('#btn-backup').addEventListener('click', downloadBackup);
   $('#file-restore').addEventListener('change', restoreBackup);
+  
+  const btnDriveBackup = $('#btn-drive-backup');
+  if (btnDriveBackup) btnDriveBackup.addEventListener('click', () => {
+    if (typeof uploadToDrive === 'function') uploadToDrive();
+  });
+  
+  const btnDriveRestore = $('#btn-drive-restore');
+  if (btnDriveRestore) btnDriveRestore.addEventListener('click', () => {
+    if (typeof restoreFromDrive === 'function') restoreFromDrive();
+  });
 }
 
 function downloadBackup() {
