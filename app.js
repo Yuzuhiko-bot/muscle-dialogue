@@ -567,12 +567,14 @@ function getMuscleRotationStatus(hist, cond) {
   if (!p || p.frequency <= 2) return ""; // 低頻度は判定スキップ
 
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const lastPerformed = {};
   Object.keys(MUSCLE_CATEGORIES).forEach(cat => lastPerformed[cat] = null);
 
   // 1. 履歴スキャン（主働筋判定限定）
   hist.forEach(day => {
-    const dayDate = new Date(day.date);
+    const parts = day.date.split('-');
+    const dayDate = new Date(parts[0], parts[1] - 1, parts[2]);
     day.exercises.forEach(ex => {
       const master = getAvailableExercises().find(m => m.id === ex.id);
       if (!master) return;
@@ -599,7 +601,7 @@ function getMuscleRotationStatus(hist, cond) {
     if (allPainAreas.includes(cat)) return;
 
     const lastDate = lastPerformed[cat];
-    const diffDays = lastDate ? Math.floor((today - lastDate) / (1000 * 60 * 60 * 24)) : 21; // 記録なしは21日経過とみなす
+    const diffDays = lastDate ? Math.round((today - lastDate) / (1000 * 60 * 60 * 24)) : 21; // 記録なしは21日経過とみなす
     
     // 3. 疲労判定（ブラックリスト） (v1.10.1)
     if (lastDate) {
@@ -657,12 +659,14 @@ function getMuscleColdMapData() {
   if (!p) return null;
 
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const lastPerformed = {};
   Object.keys(MUSCLE_CATEGORIES).forEach(cat => lastPerformed[cat] = null);
 
   const hist = getRecentHistory(21);
   hist.forEach(day => {
-    const dayDate = new Date(day.date);
+    const parts = day.date.split('-');
+    const dayDate = new Date(parts[0], parts[1] - 1, parts[2]);
     day.exercises.forEach(ex => {
       const master = getAvailableExercises().find(m => m.id === ex.id);
       if (!master) return;
@@ -698,7 +702,7 @@ function getMuscleColdMapData() {
     }
 
     const lastDate = lastPerformed[cat];
-    const diffDays = lastDate ? Math.floor((today - lastDate) / (1000 * 60 * 60 * 24)) : 21;
+    const diffDays = lastDate ? Math.round((today - lastDate) / (1000 * 60 * 60 * 24)) : 21;
     
     let yellowThreshold, redThreshold;
     if (freq >= 5) {
