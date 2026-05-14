@@ -2165,6 +2165,25 @@ function renderAnalysisCharts() {
   const volumes = [];
   const oneRMs = { 'ベンチプレス': [], 'スクワット': [], 'デッドリフト': [] };
 
+  // 30日より前の最新の1RMを取得して初期値とする
+  let lastKnown1RM = { 'ベンチプレス': null, 'スクワット': null, 'デッドリフト': null };
+  const allDates = Object.keys(state.trainingHistory).sort();
+  for (const dStr of allDates) {
+    if (new Date(dStr) >= thirtyDaysAgo) break;
+    state.trainingHistory[dStr].exercises.forEach(ex => {
+      if (lastKnown1RM[ex.name] !== undefined && ex.sets) {
+        ex.sets.forEach(set => {
+          const w = parseFloat(set.weight) || 0;
+          const r = parseInt(set.reps) || 0;
+          const epley1RM = w * (1 + r / 30);
+          if (lastKnown1RM[ex.name] === null || epley1RM > lastKnown1RM[ex.name]) {
+            lastKnown1RM[ex.name] = epley1RM;
+          }
+        });
+      }
+    });
+  }
+
   // 過去30日の日付リストを生成
   for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
     const dStr = formatDate(d);
@@ -2196,10 +2215,10 @@ function renderAnalysisCharts() {
     }
     volumes.push(dailyVolume);
 
-    // 1RMデータ構築（nullの場合は前の値を引き継ぐか、0にする）
+    // 1RMデータ構築（nullの場合は前の値を引き継ぐか、過去の最新値を参照する）
     ['ベンチプレス', 'スクワット', 'デッドリフト'].forEach(name => {
       const prevArr = oneRMs[name];
-      const prevVal = prevArr.length > 0 ? prevArr[prevArr.length - 1] : null;
+      const prevVal = prevArr.length > 0 ? prevArr[prevArr.length - 1] : lastKnown1RM[name];
       if (max1RM[name] !== null) {
         prevArr.push(max1RM[name]);
       } else {
