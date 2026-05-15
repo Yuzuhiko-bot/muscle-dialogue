@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.8';
+const APP_VERSION = 'v1.19.9';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -1522,12 +1522,13 @@ function initProfile() {
     });
   }
 
-  // 拡大編集ボタン
-  const btnExpandRule = $('#btn-expand-rule');
-  if (btnExpandRule) {
-    btnExpandRule.addEventListener('click', () => {
-      $('#modal-rule-textarea').value = $('#profile-user-rules').value;
+  // テキストエリアクリックで拡大編集
+  const rulesArea = $('#profile-user-rules');
+  if (rulesArea) {
+    rulesArea.addEventListener('focus', () => {
+      $('#modal-rule-textarea').value = rulesArea.value;
       openModal('modal-rule-edit');
+      rulesArea.blur(); 
     });
   }
   // モーダル側保存ボタン
