@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.6';
+const APP_VERSION = 'v1.19.7';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -213,6 +213,16 @@ function loadState() {
     if (ce) state.customExercises = JSON.parse(ce);
     if (ch) state.chatHistory = JSON.parse(ch);
     if (ur) state.userRules = JSON.parse(ur); else state.userRules = [];
+
+    // Migration for v1.19.7: Ensure new default exercises like legs_009 (Calf Raise) are added to custom list if missing
+    if (state.customExercises && state.customExercises.length > 0) {
+      const existingIds = new Set(state.customExercises.map(e => e.id));
+      const missingDefaults = EXERCISE_MASTER.filter(e => !existingIds.has(e.id));
+      if (missingDefaults.length > 0) {
+        state.customExercises = [...state.customExercises, ...missingDefaults];
+        saveCustomExercises();
+      }
+    }
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
@@ -1979,7 +1989,7 @@ function renderExerciseMasterList() {
     groups[pm].push(ex);
   });
   
-  const order = ['大胸筋', '大胸筋上部', '広背筋', '脊柱起立筋', '大腿四頭筋', 'ハムストリングス', '大臀筋', '中臀筋', '内転筋', '三角筋前部', '三角筋中部', '三角筋後部', '上腕二頭筋', '上腕三頭筋', '前腕筋群', '腹直筋', '腹直筋下部', '心肺機能', 'その他'];
+  const order = ['大胸筋', '大胸筋上部', '広背筋', '脊柱起立筋', '大腿四頭筋', 'ハムストリングス', '大臀筋', '中臀筋', '内転筋', '下腿三頭筋', '三角筋前部', '三角筋中部', '三角筋後部', '上腕二頭筋', '上腕三頭筋', '前腕筋群', '腹直筋', '腹直筋下部', '心肺機能', 'その他'];
   
   const sortedKeys = Object.keys(groups).sort((a, b) => {
     let ixA = order.indexOf(a); if (ixA === -1) ixA = 999;
