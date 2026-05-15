@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.3';
+const APP_VERSION = 'v1.19.4';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -790,9 +790,45 @@ function renderColdMap() {
     const targets = svgIdMap[id] || [];
     targets.forEach(svgId => {
       const el = document.getElementById(svgId);
-      if (el) el.style.fill = fill;
+      if (el) {
+        el.style.fill = fill;
+        // 部位タップで種目マスタの該当部位へジャンプ
+        el.onclick = () => {
+          const jumpMap = {
+            'chest': '大胸筋',
+            'back': '広背筋',
+            'legs': '大腿四頭筋',
+            'shoulders': '三角筋前部',
+            'biceps': '上腕二頭筋',
+            'triceps': '上腕三頭筋',
+            'abs': '腹直筋'
+          };
+          if (jumpMap[id]) jumpToMuscleInMaster(jumpMap[id]);
+        };
+      }
     });
   });
+}
+
+/**
+ * 指定した筋肉部位まで種目マスタをスクロールさせる
+ */
+function jumpToMuscleInMaster(muscleName) {
+  renderExerciseMasterList();
+  openModal('modal-exercise-master');
+  
+  // モーダルが描画・表示されるのを少し待ってからスクロール
+  setTimeout(() => {
+    const el = document.getElementById(`ex-master-group-${muscleName}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 視覚的なフィードバック（一瞬背景色を変える）
+      const originalColor = el.style.backgroundColor;
+      el.style.backgroundColor = 'rgba(212, 0, 31, 0.1)';
+      el.style.transition = 'background-color 0.5s';
+      setTimeout(() => { el.style.backgroundColor = originalColor; }, 1000);
+    }
+  }, 300);
 }
 
 function buildPrompt(cond, hist, proposalText, feedbackText) {
@@ -1953,7 +1989,7 @@ function renderExerciseMasterList() {
   sortedKeys.forEach(m => {
     const divGroup = document.createElement('div');
     divGroup.className = 'ex-master-group';
-    divGroup.innerHTML = `<div class="ex-master-group-title">${m}</div>`;
+    divGroup.innerHTML = `<div class="ex-master-group-title" id="ex-master-group-${m}">${m}</div>`;
     groups[m].forEach(ex => {
       const card = document.createElement('div');
       card.className = 'ex-master-card';
