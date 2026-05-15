@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.5';
+const APP_VERSION = 'v1.19.6';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -34,6 +34,7 @@ const EXERCISE_MASTER = [
   { id: "legs_006", exercise_name: "プローンレッグカール", primary_muscle: "ハムストリングス", secondary_muscles: [], equipment: "プローンレッグカール", weight_step: 5 },
   { id: "legs_007", exercise_name: "ヒップアブダクション", primary_muscle: "中臀筋", secondary_muscles: [], equipment: "アブダクター×アダクター", weight_step: 5 },
   { id: "legs_008", exercise_name: "ヒップアダクション", primary_muscle: "内転筋", secondary_muscles: [], equipment: "アブダクター×アダクター", weight_step: 5 },
+  { id: "legs_009", exercise_name: "スミス・カーフレイズ", primary_muscle: "下腿三頭筋", secondary_muscles: [], equipment: "スミスマシン", weight_step: 2.5 },
   { id: "shoulders_001", exercise_name: "バーベルショルダープレス", primary_muscle: "三角筋前部", secondary_muscles: ["三角筋中部", "上腕三頭筋"], equipment: "パワーラック", weight_step: 2.5 },
   { id: "shoulders_002", exercise_name: "ダンベルショルダープレス", primary_muscle: "三角筋前部", secondary_muscles: ["三角筋中部", "上腕三頭筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
   { id: "shoulders_003", exercise_name: "マシンショルダープレス", primary_muscle: "三角筋前部", secondary_muscles: ["三角筋中部", "上腕三頭筋"], equipment: "ショルダープレス", weight_step: 5 },
@@ -60,7 +61,7 @@ const EXERCISE_MASTER = [
 const MUSCLE_CATEGORIES = {
   "胸": { size: "big", matches: ["大胸筋", "大胸筋上部", "大胸筋下部"] },
   "背中": { size: "big", matches: ["広背筋", "僧帽筋", "脊柱起立筋", "大円筋"] },
-  "脚": { size: "big", matches: ["大腿四頭筋", "ハムストリングス", "大臀筋", "中臀筋", "内転筋"] },
+  "脚": { size: "big", matches: ["大腿四頭筋", "ハムストリングス", "大臀筋", "中臀筋", "内転筋", "下腿三頭筋"] },
   "肩": { size: "small", matches: ["三角筋前部", "三角筋中部", "三角筋後部"] },
   "二頭筋": { size: "small", matches: ["上腕二頭筋", "前腕筋群"] },
   "三頭筋": { size: "small", matches: ["上腕三頭筋"] },
