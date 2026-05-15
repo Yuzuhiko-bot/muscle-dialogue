@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.9';
+const APP_VERSION = 'v1.20.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -845,7 +845,7 @@ function jumpToMuscleInMaster(muscleName) {
 function buildPrompt(cond, hist, proposalText, feedbackText) {
   const p = state.userProfile;
   const rotationAlert = getMuscleRotationStatus(hist, cond);
-  const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}${e.target_weight ? ` 【将来の目標:${e.target_weight}kg】` : ''}`).join('\n');
+  const exData = getAvailableExercises().map(e => `- ${e.exercise_name}(ID:${e.id}) 主動筋:${e.primary_muscle} 補助筋:${e.secondary_muscles.join(',') || 'なし'} 重量刻み:${e.weight_step}kg${e.is_cardio ? ' [有酸素]' : ''}${e.base_weight > 0 ? ` 【最低重量: ${e.base_weight}kg】` : ''}${e.target_weight ? ` 【将来の目標:${e.target_weight}kg】` : ''}`).join('\n');
   const histText = hist.length > 0 ? hist.map(h => {
     const ed = h.exercises.map(ex => {
       if (isCardio(ex.id)) return `  - ${ex.name}: ${ex.duration || 0}分`;
@@ -887,7 +887,8 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
  13. **サブ部位の網羅的アプローチ（偏りの防止）**: 
     大筋群や肩は複数の筋繊維（例：大胸筋の上部/中部/下部、三角筋の前部/中部/後部、背中の広がり/厚み）で構成されている。直近の履歴を分析し、特定のサブ部位ばかりに種目が偏ることを絶対に防ぐこと。
     特にPPL法など同一部位を週複数回鍛える場合は、「1周目は胸の全体（中部）と肩の前部」「2周目は胸の上部と肩の中部・後部」といったように、ターゲットとなるサブ部位を意図的にズラして立体的な筋肉をデザインすること。
-    【本日の名言】：${randomQuote}
+  15. **最低重量の厳守**: 各種目に【最低重量: Xkg】が設定されている場合、提案する weight_kg は絶対にその数値以上にすること。
+     【本日の名言】：${randomQuote}
  14. **マッスル・ルール（ユーザー個別ルール）の厳守**:
     以下のユーザー固有のルールを「絶対除外リスト」と同等の最優先事項として遵守すること。
 ${(state.userRules || []).map((r, i) => `    - ${i + 1}. ${r}`).join('\n') || '    - (特になし)'}
@@ -1181,7 +1182,7 @@ function renderPlan(plan) {
     } else {
       inputsHtml = `<div class="sets-container"><div class="set-row"><div class="set-label"></div><div class="input-header">重量(kg)</div><div class="input-header">回数</div><div class="input-header">✓</div></div>`;
       for (let s = 0; s < (ex.sets || 3); s++) {
-        inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}"></div>`;
+        inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}"></div>`;
       }
       inputsHtml += `</div>
       <div class="rpe-section" style="background:transparent; border:none; padding:0; margin-top:1.5rem;">
@@ -1395,7 +1396,8 @@ function addManualExerciseEntry() {
     } else {
       const master = getAvailableExercises().find(m => m.id === exId);
       const step = master ? master.weight_step : 2.5;
-      inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10"></div>`).join('')}`;
+      const minW = master ? (master.base_weight || 0) : 0;
+      inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}" min="${minW}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10"></div>`).join('')}`;
       
       // セット1の内容をセット2, 3へ自動反映するロジック
       const weights = inputsArea.querySelectorAll('.manual-weight');
@@ -2089,7 +2091,8 @@ function openExerciseMasterEdit(id) {
   $('#edit-master-primary').value = ex ? ex.primary_muscle : '';
   $('#edit-master-secondary').value = ex ? (ex.secondary_muscles || []).join(', ') : '';
   $('#edit-master-equipment').value = ex ? (ex.equipment || '') : '';
-  $('#edit-master-step').value = ex ? ex.weight_step : 2.5;
+  $('#edit-master-step').value = ex ? (ex.weight_step !== undefined ? ex.weight_step : 2.5) : 2.5;
+  $('#edit-master-base-weight').value = ex ? (ex.base_weight || '') : '';
   $('#edit-master-cardio').checked = ex ? !!ex.is_cardio : false;
   $('#edit-master-target-weight').value = ex ? (ex.target_weight || '') : '';
   $('#edit-master-target-deadline').value = ex ? (ex.target_deadline || '') : '';
@@ -2104,6 +2107,7 @@ function saveExerciseMasterEntry() {
   const secondaryStrs = $('#edit-master-secondary').value.split(',').map(s => s.trim()).filter(s => s);
   const equipment = $('#edit-master-equipment').value.trim();
   const step = parseFloat($('#edit-master-step').value) || 0;
+  const baseWeight = parseFloat($('#edit-master-base-weight').value) || 0;
   const isCardio = $('#edit-master-cardio').checked;
   const targetWeight = parseFloat($('#edit-master-target-weight').value) || null;
   const targetDeadline = $('#edit-master-target-deadline').value || null;
@@ -2122,12 +2126,12 @@ function saveExerciseMasterEntry() {
     // Edit existing
     const idx = state.customExercises.findIndex(e => e.id === id);
     if (idx !== -1) {
-      state.customExercises[idx] = { ...state.customExercises[idx], exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio, target_weight: targetWeight, target_deadline: targetDeadline };
+      state.customExercises[idx] = { ...state.customExercises[idx], exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, base_weight: baseWeight, is_cardio: isCardio, target_weight: targetWeight, target_deadline: targetDeadline };
     }
   } else {
     // Add new
     const newId = 'custom_' + Date.now();
-    state.customExercises.push({ id: newId, exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, is_cardio: isCardio, target_weight: targetWeight, target_deadline: targetDeadline });
+    state.customExercises.push({ id: newId, exercise_name: name, primary_muscle: primary, secondary_muscles: secondaryStrs, equipment: equipment, weight_step: step, base_weight: baseWeight, is_cardio: isCardio, target_weight: targetWeight, target_deadline: targetDeadline });
   }
 
   saveCustomExercises();
