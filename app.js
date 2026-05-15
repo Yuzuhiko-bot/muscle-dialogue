@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.17.0';
+const APP_VERSION = 'v1.17.1';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -628,7 +628,7 @@ function getMuscleRotationStatus(hist, cond) {
       if (p.splitMethod === 'fullBody') {
         fatigueThresholdBig = 1; // 全身法なら中1日（2日目）からOK
       } else if (p.splitMethod === 'ppl' || p.splitMethod === 'upperLower') {
-        fatigueThresholdBig = 1; // PPLや上下分割なら中1日（2日目）からOKに緩和（高頻度対応）
+        fatigueThresholdBig = 2; // PPLや上下分割なら中2日（3日目）からOK
       } else if (p.splitMethod === 'broSplit') {
         fatigueThresholdBig = 4; // ブロスプリットなら中4日は空ける（週1回想定）
       }
@@ -742,8 +742,12 @@ function getMuscleColdMapData() {
     }
 
     let recoveryThreshold = (data.size === "big") ? 3 : 2;
-    if (p.splitMethod === 'fullBody' || p.splitMethod === 'ppl' || p.splitMethod === 'upperLower') {
-      recoveryThreshold = (data.size === "big") ? 3 : 2; // PPL等でも中2日（3日目）から回復扱い
+    if (p.splitMethod === 'fullBody') {
+      recoveryThreshold = 2; // 全身法：中1日（2日目）から回復
+    } else if (p.splitMethod === 'ppl' || p.splitMethod === 'upperLower') {
+      recoveryThreshold = (data.size === "big") ? 3 : 2; // PPL/上下分割：大筋肉は中2日
+    } else if (p.splitMethod === 'broSplit') {
+      recoveryThreshold = (data.size === "big") ? 5 : 2; // ブロスプリット：大筋肉は中4日（5日目）
     }
 
     if (diffDays >= redThreshold) {
