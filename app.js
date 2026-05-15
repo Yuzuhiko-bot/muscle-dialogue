@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.2';
+const APP_VERSION = 'v1.19.3';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -2307,7 +2307,7 @@ function renderAnalysisCharts() {
 
   const dates = [];
   const volumes = [];
-  const oneRMs = { 'ベンチプレス': [], 'スクワット': [], 'デッドリフト': [] };
+  const big3MaxWeights = { 'ベンチプレス': [], 'スクワット': [], 'デッドリフト': [] };
 
   // 過去30日の日付リストを生成
   for (let d = new Date(thirtyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
@@ -2315,8 +2315,8 @@ function renderAnalysisCharts() {
     dates.push(dStr.slice(5)); // 'MM-DD'
     let dailyVolume = 0;
     
-    // その日のBIG3の最大推定1RM
-    let max1RM = { 'ベンチプレス': null, 'スクワット': null, 'デッドリフト': null };
+    // その日のBIG3の最高重量
+    let maxWeight = { 'ベンチプレス': null, 'スクワット': null, 'デッドリフト': null };
 
     if (state.trainingHistory[dStr]) {
       state.trainingHistory[dStr].exercises.forEach(ex => {
@@ -2327,16 +2327,16 @@ function renderAnalysisCharts() {
             const r = parseInt(set.reps) || 0;
             dailyVolume += (w * r);
             
-            // 1RM推定 (Epley式: 重量 * (1 + 回数/30))
+            // BIG3判定
             let big3Name = null;
             if (ex.id === 'chest_001' || ex.name === 'バーベルベンチプレス' || ex.name === 'ベンチプレス') big3Name = 'ベンチプレス';
             else if (ex.id === 'legs_001' || ex.name === 'バーベルスクワット' || ex.name === 'スクワット') big3Name = 'スクワット';
             else if (ex.id === 'back_001' || ex.name === 'バーベルデッドリフト' || ex.name === 'デッドリフト') big3Name = 'デッドリフト';
 
             if (big3Name !== null) {
-              const epley1RM = w * (1 + r / 30);
-              if (max1RM[big3Name] === null || epley1RM > max1RM[big3Name]) {
-                max1RM[big3Name] = epley1RM;
+              // 1RM換算を廃止し、実際の使用重量(w)の最大値を記録
+              if (maxWeight[big3Name] === null || w > maxWeight[big3Name]) {
+                maxWeight[big3Name] = w;
               }
             }
           });
@@ -2345,14 +2345,14 @@ function renderAnalysisCharts() {
     }
     volumes.push(dailyVolume);
 
-    // 1RMデータ構築（nullの場合は前の値を引き継ぐか、0にする）
+    // 最高重量データ構築（nullの場合は前の値を引き継ぐ）
     ['ベンチプレス', 'スクワット', 'デッドリフト'].forEach(name => {
-      const prevArr = oneRMs[name];
+      const prevArr = big3MaxWeights[name];
       const prevVal = prevArr.length > 0 ? prevArr[prevArr.length - 1] : null;
-      if (max1RM[name] !== null) {
-        prevArr.push(max1RM[name]);
+      if (maxWeight[name] !== null) {
+        prevArr.push(maxWeight[name]);
       } else {
-        prevArr.push(prevVal); // 前回の記録を維持
+        prevArr.push(prevVal); 
       }
     });
   }
@@ -2378,21 +2378,21 @@ function renderAnalysisCharts() {
     }
   });
 
-  // 1RMチャート描画
+  // 最高重量チャート描画
   if (onermChartInstance) onermChartInstance.destroy();
   
   // nullを除外したデータセットを作成（線が途切れないようにする）
-  const onermDatasets = [
-    { label: 'ベンチプレス', data: oneRMs['ベンチプレス'], borderColor: '#FF2D55', tension: 0.3, spanGaps: true },
-    { label: 'スクワット', data: oneRMs['スクワット'], borderColor: '#007AFF', tension: 0.3, spanGaps: true },
-    { label: 'デッドリフト', data: oneRMs['デッドリフト'], borderColor: '#34C759', tension: 0.3, spanGaps: true }
+  const maxWeightDatasets = [
+    { label: 'ベンチプレス', data: big3MaxWeights['ベンチプレス'], borderColor: '#FF2D55', tension: 0.3, spanGaps: true },
+    { label: 'スクワット', data: big3MaxWeights['スクワット'], borderColor: '#007AFF', tension: 0.3, spanGaps: true },
+    { label: 'デッドリフト', data: big3MaxWeights['デッドリフト'], borderColor: '#34C759', tension: 0.3, spanGaps: true }
   ];
 
   onermChartInstance = new Chart(oCtx, {
     type: 'line',
     data: {
       labels: dates,
-      datasets: onermDatasets
+      datasets: maxWeightDatasets
     },
     options: {
       responsive: true,
