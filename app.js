@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.17.1';
+const APP_VERSION = 'v1.19.0';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -170,7 +170,7 @@ const DIET_HEALTH_THEORY = `
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
-let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, chatHistory: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 60 };
+let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, chatHistory: [], userRules: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 60 };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
@@ -204,15 +204,18 @@ function loadState() {
     const cp = localStorage.getItem('muscleDialog_currentPlan');
     const ce = localStorage.getItem('muscleDialog_customExercises');
     const ch = localStorage.getItem('muscleDialog_chatHistory');
+    const ur = localStorage.getItem('muscleDialog_userRules');
     if (p) state.userProfile = JSON.parse(p);
     if (h) state.trainingHistory = JSON.parse(h);
     if (b) state.bodyRecord = JSON.parse(b);
     if (cp) state.currentPlan = JSON.parse(cp);
     if (ce) state.customExercises = JSON.parse(ce);
     if (ch) state.chatHistory = JSON.parse(ch);
+    if (ur) state.userRules = JSON.parse(ur); else state.userRules = [];
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
+function saveUserRules() { localStorage.setItem('muscleDialog_userRules', JSON.stringify(state.userRules)); }
 function saveHistory() { localStorage.setItem('muscleDialog_history', JSON.stringify(state.trainingHistory)); }
 function saveBodyRecord() { localStorage.setItem('muscleDialog_bodyRecord', JSON.stringify(state.bodyRecord)); }
 function saveChatHistory() { localStorage.setItem('muscleDialog_chatHistory', JSON.stringify(state.chatHistory)); }
@@ -566,7 +569,7 @@ function getRecentHistory(n) {
   }));
 }
 
-// ---------- ROTATION LOGIC (v1.10.0) ----------
+// ---------- ROTATION LOGIC (v1.19.0) ----------
 /**
  * 過去の履歴を解析し、部位ごとのローテーション状況を判定する
  * @param {Array} hist - 直近21日分の履歴データ
@@ -824,7 +827,23 @@ function buildPrompt(cond, hist, proposalText, feedbackText) {
  5. **怪我の配慮と自由要望**: 指定された痛み部位の種目は完全除外。自由要望がある場合は全てのルールより最優先する。
  6. **トーン＆マナー**: 「礼儀正しく、シンプルで熱いトーン」。長々とした解説は避け、テンポ良くまとめること。最後のメッセージには必ず以下の名言を組み込むこと。
  7. **絶対除外リストの遵守（最優先）**: ユーザー情報の「絶対除外リスト」に掲載されている部位は、他のいかなる理論（「腹筋は毎日やっていい」等の独自解釈を含む）よりも優先して、本日のメニューから「完全除外」すること。
-   【本日の名言】：${randomQuote}
+ 8. **部位別フォーカス型の波状期分け（DUP）の自動適用**: PPL法等の同一部位を週2回鍛える分割法の場合、セッション内のすべての部位を高重量にせず、直近履歴から日によって「主役（High）」と「脇役（Low）」の部位を交代させること。
+    - 【主役の部位 (High)】：そのセッションで最も優先的に伸ばしたい部位。1種目目に配置し、最高重量・低回数でセットを組む。
+    - 【脇役の部位 (Low)】：補助的、または疲労を考慮し刺激を変える部位。中重量・中〜高回数でパンプを狙う。
+    ※どの部位を主役にするかは、直近のトレーニング履歴で「その部位を最後に主役（High）で追い込んだ日」がより遠い方を優先すること。
+ 9. **ターゲット回数設定の厳格化**:
+    - 主役（High）部位：3〜6回（筋力向上・神経系）または 6〜8回（高重量肥大）。
+    - 脇役（Low）部位：10〜15回（代謝的ストレス・パンプ）。
+ 10. **総ボリュームの最適化**: 週頻度が高い（週5〜6回）場合、1セッションあたりの合計セット数を増やしすぎないこと（目安：5〜7種目、計15〜20セット以内）。
+ 11. **重点部位（メイン筋肉）の優先順位**: ユーザー情報の「重点部位」に指定がある筋肉は、その筋肉が含まれるPPLセッションにおいて、常に「主役（High）」候補として最優先に検討すること。
+ 12. **サイクルの継続性**: PPLの「何周目か」を意識し、前回の同一セッション（例：前回のPush）の内容をコピーせず、主役部位を入れ替えることで、1週間（2サイクル）かけて部位全体を網羅的に強化する構成にすること。
+ 13. **サブ部位の網羅的アプローチ（偏りの防止）**: 
+    大筋群や肩は複数の筋繊維（例：大胸筋の上部/中部/下部、三角筋の前部/中部/後部、背中の広がり/厚み）で構成されている。直近の履歴を分析し、特定のサブ部位ばかりに種目が偏ることを絶対に防ぐこと。
+    特にPPL法など同一部位を週複数回鍛える場合は、「1周目は胸の全体（中部）と肩の前部」「2周目は胸の上部と肩の中部・後部」といったように、ターゲットとなるサブ部位を意図的にズラして立体的な筋肉をデザインすること。
+    【本日の名言】：${randomQuote}
+ 14. **マッスル・ルール（ユーザー個別ルール）の厳守**:
+    以下のユーザー固有のルールを「絶対除外リスト」と同等の最優先事項として遵守すること。
+${(state.userRules || []).map((r, i) => `    - ${i + 1}. ${r}`).join('\n') || '    - (特になし)'}
 
 ## 🧠 専門的バックグラウンド理論（脳内の知識ベース）
 以下の理論は、あなたの思考の土台となる最新の専門知識です。
@@ -1446,6 +1465,15 @@ function initProfile() {
       showToast('AIモデルを変更したぞ！パワー！');
     });
   }
+  const btnSaveRules = $('#btn-save-rules');
+  if (btnSaveRules) {
+    btnSaveRules.addEventListener('click', () => {
+      const text = $('#profile-user-rules').value;
+      state.userRules = text.split('\n').map(l => l.trim()).filter(l => l !== '');
+      saveUserRules();
+      showToast('マッスル・ルールを保存したぞ！パワー！');
+    });
+  }
   populateProfileForm();
 }
 
@@ -1469,6 +1497,10 @@ function populateProfileForm() {
   const sl = $('#p-frequency'); if (sl) sl.value = p.frequency;
   const fv = $('#p-frequency-value'); if (fv) fv.textContent = p.frequency;
   const sm = $('#p-splitMethod'); if (sm) sm.value = p.splitMethod || 'ppl';
+  const rulesArea = $('#profile-user-rules');
+  if (rulesArea) {
+    rulesArea.value = (state.userRules || []).join('\n');
+  }
 }
 
 // ---------- API KEY MANAGEMENT ----------
@@ -1517,7 +1549,8 @@ function downloadBackup() {
     history: state.trainingHistory,
     body: state.bodyRecord,
     customExercises: state.customExercises,
-    chatHistory: state.chatHistory
+    chatHistory: state.chatHistory,
+    userRules: state.userRules
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1542,11 +1575,13 @@ function restoreBackup(e) {
       if (data.history) state.trainingHistory = data.history;
       if (data.body) state.bodyRecord = data.body;
       if (data.chatHistory) state.chatHistory = data.chatHistory;
+      if (data.userRules) state.userRules = data.userRules;
       if (data.customExercises !== undefined) {
         state.customExercises = data.customExercises;
         saveCustomExercises();
       }
-      saveProfile(); saveHistory(); saveBodyRecord(); saveChatHistory(); renderCalendar(); renderChatMessages(); populateProfileForm();
+      saveProfile(); saveHistory(); saveBodyRecord(); saveChatHistory(); saveUserRules();
+      renderCalendar(); renderChatMessages(); populateProfileForm();
       showToast('<span class="text-keep">復元完了！筋肉のデータが</span><span class="text-keep">蘇ったぞ！ヤー！！💪</span>');
     } catch (err) { showToast('ファイルが読み込めなかったぞ！😤'); }
   };
@@ -2064,6 +2099,9 @@ function buildProposalPrompt(cond, hist) {
 
 === 思考土台 ===
 ${selectedTheory}
+
+=== マッスル・ルール（ユーザー個別ルール） ===
+${(state.userRules || []).map((r, i) => `- ${r}`).join('\n') || '（なし）'}
 `;
 
   const rotationAlert = getMuscleRotationStatus(hist, cond);
@@ -2127,7 +2165,25 @@ function initChat() {
       const aiReply = resp.candidates[0].content.parts[0].text;
       
       removeChatThinking();
-      state.chatHistory.push({ role: 'model', text: aiReply });
+
+      // ルールの抽出ロジック
+      const ruleMatch = aiReply.match(/\{"action":\s*"add_rule",\s*"rule":\s*"(.*?)"\}/);
+      if (ruleMatch) {
+        const newRule = ruleMatch[1];
+        if (!state.userRules.includes(newRule)) {
+          state.userRules.push(newRule);
+          saveUserRules();
+          showToast(`マッスル・ルール「${newRule}」を記憶したぞ！ヤー！`);
+          // UI（プロフィールタブ）への反映（表示中の場合）
+          const rulesArea = $('#profile-user-rules');
+          if (rulesArea) rulesArea.value = state.userRules.join('\n');
+        }
+      }
+
+      // JSONブロックを表示から隠す
+      const displayReply = aiReply.replace(/\{"action":\s*"add_rule",\s*"rule":\s*".*?"\}/g, '').trim();
+
+      state.chatHistory.push({ role: 'model', text: displayReply });
       saveChatHistory();
       renderChatMessages();
     } catch(err) {
@@ -2159,6 +2215,14 @@ function buildChatPrompt() {
 
 === 思考の土台（バックグラウンド知識） ===
 ${selectedTheory}
+
+=== マッスル・ルール（ユーザー個別ルール） ===
+${(state.userRules || []).map((r, i) => `- ${r}`).join('\n') || '（なし）'}
+
+=== 重要：ルールの自動抽出・追加機能 ===
+会話の中でユーザーが「これからは〜して」「今後は〜をルールにして」といった継続的な要望（マッスル・ルール）を伝えた場合、その返答の末尾（または独立した行）に、以下の形式のJSONブロックを必ず含めてください。
+例：{"action": "add_rule", "rule": "月曜日は必ず胸を鍛える"}
+ユーザーが明示的に「ルール」や「今後ずっと」と言及した場合のみ抽出してください。
 `;
 
   // 履歴を文字列化
@@ -2372,7 +2436,7 @@ function uploadToDrive() {
         version: 1, exportDate: new Date().toISOString(),
         profile: state.userProfile, history: state.trainingHistory,
         body: state.bodyRecord, customExercises: state.customExercises,
-        chatHistory: state.chatHistory
+        chatHistory: state.chatHistory, userRules: state.userRules
       };
       const fileContent = JSON.stringify(data, null, 2);
 
@@ -2450,8 +2514,9 @@ function restoreFromDrive() {
           if (parsed.body) state.bodyRecord = parsed.body;
           if (parsed.customExercises) state.customExercises = parsed.customExercises;
           if (parsed.chatHistory) state.chatHistory = parsed.chatHistory;
+          if (parsed.userRules) state.userRules = parsed.userRules;
           
-          saveProfile(); saveHistory(); saveBodyRecord(); saveChatHistory();
+          saveProfile(); saveHistory(); saveBodyRecord(); saveChatHistory(); saveUserRules();
           if (state.customExercises.length > 0) {
             localStorage.setItem('muscleDialog_customExercises', JSON.stringify(state.customExercises));
           }

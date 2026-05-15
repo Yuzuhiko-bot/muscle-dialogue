@@ -499,6 +499,21 @@
         </form>
       </div>
 
+      <!-- マッスル・ルール (継続的な要望) -->
+      <div class="profile-section">
+        <h2 class="section-title">マッスル・ルール (継続的な要望)</h2>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
+          AIが学習した君のこだわりやルールだ！<br>
+          チャットで伝えた内容はここへ自動的に蓄積され、プラン生成に永続的に反映されるぞ！直接編集も可能だ！
+        </p>
+        <div class="form-group">
+          <textarea id="profile-user-rules" class="input-muscle" style="width:100%; height:120px; padding:0.8rem; font-size:0.9rem; line-height:1.5; resize:vertical; background:var(--bg-input);" placeholder="例: Pushの日は最初にベンチプレスをやりたい&#13;&#10;スクワットは毎回やりたい..."></textarea>
+        </div>
+        <button id="btn-save-rules" class="btn-primary" style="width:100%; margin-top:0.5rem;">
+          <span class="btn-text"><span class="text-keep">ルールを保存する！</span><span class="text-keep">パワー！</span></span>
+        </button>
+      </div>
+
       <!-- Google Drive クラウド同期 -->
       <div class="profile-section" style="margin-top:2rem;">
         <h2 class="section-title">クラウド同期 (Google Drive)</h2>
@@ -885,7 +900,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.17.1"></script>
+    <script src="app.js?v=1.19.0"></script>
 </body>
 
 </html>
