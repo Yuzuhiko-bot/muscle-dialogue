@@ -501,8 +501,9 @@
           AIが学習した君のこだわりやルールだ！<br>
           チャットで伝えた内容はここへ自動的に蓄積され、プラン生成に永続的に反映されるぞ！直接編集も可能だ！
         </p>
-        <div class="form-group">
+        <div class="form-group" style="position:relative;">
           <textarea id="profile-user-rules" class="input-muscle" style="width:100%; height:120px; padding:0.8rem; font-size:0.9rem; line-height:1.5; resize:vertical; background:var(--bg-input); text-align: left;" placeholder="例: Pushの日は最初にベンチプレスをやりたい&#13;&#10;スクワットは毎回やりたい..."></textarea>
+          <button id="btn-expand-rule" style="position:absolute; right:5px; bottom:5px; background:var(--card-bg); border:1px solid var(--red); color:var(--red); padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer; opacity:0.8; z-index:5;">🔍 拡大して編集</button>
         </div>
         <button id="btn-save-rules" class="btn-primary" style="width:100%; margin-top:0.5rem;">
           <span class="btn-text"><span class="text-keep">ルールを保存する！</span><span class="text-keep">パワー！</span></span>
@@ -847,6 +848,25 @@
     </div>
   </div>
 
+  <!-- ========== ルール編集全画面モーダル ========== -->
+  <div id="modal-rule-edit" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content" style="max-width:95vw; width:95vw; height:90vh; display:flex; flex-direction:column;">
+      <div class="modal-header">
+        <h2><span class="text-keep">マッスル・ルールを編集</span></h2>
+        <button class="modal-close" data-modal="modal-rule-edit">✕</button>
+      </div>
+      <div class="modal-body" style="flex:1; display:flex; flex-direction:column; padding:0.5rem;">
+        <textarea id="modal-rule-textarea" class="input-muscle" style="width:100%; flex:1; resize:none; padding:1rem; font-size:1rem; line-height:1.6; text-align:left; background:var(--bg-input);" placeholder="例: Pushの日は最初にベンチプレスをやりたい..."></textarea>
+      </div>
+      <div class="modal-footer" style="padding:1rem;">
+        <button id="btn-save-rule-modal" class="btn-primary btn-mega">
+          <span class="btn-text">保存して閉じる！パワー！</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ========== メニュー事前提案モーダル ========== -->
   <div id="modal-proposal" class="modal hidden">
     <div class="modal-overlay"></div>
@@ -878,7 +898,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.19.7 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.19.8 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
@@ -896,7 +916,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.19.7"></script>
+    <script src="app.js?v=1.19.8"></script>
 </body>
 
 </html>

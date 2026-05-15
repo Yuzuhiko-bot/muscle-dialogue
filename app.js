@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.7';
+const APP_VERSION = 'v1.19.8';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -1521,6 +1521,28 @@ function initProfile() {
       showToast('マッスル・ルールを保存したぞ！パワー！');
     });
   }
+
+  // 拡大編集ボタン
+  const btnExpandRule = $('#btn-expand-rule');
+  if (btnExpandRule) {
+    btnExpandRule.addEventListener('click', () => {
+      $('#modal-rule-textarea').value = $('#profile-user-rules').value;
+      openModal('modal-rule-edit');
+    });
+  }
+  // モーダル側保存ボタン
+  const btnSaveRuleModal = $('#btn-save-rule-modal');
+  if (btnSaveRuleModal) {
+    btnSaveRuleModal.addEventListener('click', () => {
+      const text = $('#modal-rule-textarea').value;
+      $('#profile-user-rules').value = text;
+      state.userRules = text.split('\n').map(l => l.trim()).filter(l => l !== '');
+      saveUserRules();
+      closeModal('modal-rule-edit');
+      showToast('ルールを更新したぞ！パワー！');
+    });
+  }
+
   populateProfileForm();
 }
 
