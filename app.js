@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.20.0';
+const APP_VERSION = 'v1.20.1';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -1224,6 +1224,36 @@ function renderPlan(plan) {
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
+
+      // 追加：Set1の入力値をSet2以降に自動同期（手動で変更した欄は上書きしない）
+      if (!isCar) {
+        const syncPlanSets = (selector) => {
+          const inputs = div.querySelectorAll(selector);
+          if (inputs.length < 2) return;
+
+          ['input', 'change'].forEach(evName => {
+            inputs.forEach((input, i) => {
+              if (i > 0) {
+                input.addEventListener(evName, () => {
+                  input.dataset.dirty = 'true';
+                });
+              }
+            });
+
+            inputs[0].addEventListener(evName, (e) => {
+              const val = e.target.value;
+              for (let i = 1; i < inputs.length; i++) {
+                if (inputs[i].dataset.dirty !== 'true') {
+                  inputs[i].value = val;
+                }
+              }
+            });
+          });
+        };
+
+        syncPlanSets('.input-weight');
+        syncPlanSets('.input-reps');
+      }
     }, 0);
   });
 
