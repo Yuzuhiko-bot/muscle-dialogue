@@ -2404,7 +2404,7 @@ function renderAnalysisCharts() {
 }
 
 // ========== Google Drive 同期 (Google Drive Sync) ==========
-const G_CLIENT_ID = '753175305658-sf1moahpeeb233lfa0pb9uvo8bkbl04c.apps.googleusercontent.com';
+const G_CLIENT_ID = '942630810644-lg8gd09mtu5ssl6a160l81q40r6nk91d.apps.googleusercontent.com';
 const G_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 
 function setDriveStatus(msg, isError = false) {
