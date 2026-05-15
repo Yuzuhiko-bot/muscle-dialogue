@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.19.1';
+const APP_VERSION = 'v1.19.2';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -2441,16 +2441,19 @@ function uploadToDrive() {
       const fileContent = JSON.stringify(data, null, 2);
 
       try {
-        // 1. 既存ファイルの検索
-        const searchRes = await fetch('https://www.googleapis.com/drive/v3/files?q=name="muscle_dialogue_backup.json" and spaces="drive"&fields=files(id)', {
+        // 1. 既存ファイルの検索 (ゴミ箱を除外)
+        const q = encodeURIComponent("name='muscle_dialogue_backup.json' and trashed=false");
+        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id)`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!searchRes.ok) throw new Error(`Search failed: ${searchRes.status}`);
         const searchData = await searchRes.json();
         
+        let uploadRes;
         if (searchData.files && searchData.files.length > 0) {
           // 2a. 既存ファイルを更新 (PATCH)
           const fileId = searchData.files[0].id;
-          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+          uploadRes = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
             method: 'PATCH',
             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: fileContent
@@ -2462,12 +2465,19 @@ function uploadToDrive() {
           formData.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
           formData.append('file', new Blob([fileContent], { type: 'application/json' }));
           
-          await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+          uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData
           });
         }
+
+        if (!uploadRes.ok) {
+          const errBody = await uploadRes.text();
+          console.error('Drive upload error:', errBody);
+          throw new Error(`Upload failed: ${uploadRes.status}`);
+        }
+
         setDriveStatus('Google Drive に保存完了！ヤー！！');
         showToast('バックアップ成功！筋肉の記録は守られた！');
       } catch (err) {
@@ -2496,9 +2506,11 @@ function restoreFromDrive() {
       const token = response.access_token;
       
       try {
-        const searchRes = await fetch('https://www.googleapis.com/drive/v3/files?q=name="muscle_dialogue_backup.json" and spaces="drive"&fields=files(id)', {
+        const q = encodeURIComponent("name='muscle_dialogue_backup.json' and trashed=false");
+        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id)`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!searchRes.ok) throw new Error(`Search failed: ${searchRes.status}`);
         const searchData = await searchRes.json();
         
         if (searchData.files && searchData.files.length > 0) {
@@ -2506,6 +2518,7 @@ function restoreFromDrive() {
           const dlRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
+          if (!dlRes.ok) throw new Error(`Download failed: ${dlRes.status}`);
           const text = await dlRes.text();
           const parsed = JSON.parse(text);
           
