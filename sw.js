@@ -1,4 +1,4 @@
-const CACHE_NAME = 'muscle-dialogue-v1.19.4';
+const CACHE_NAME = 'muscle-dialogue-v1.19.5';
 const ASSETS = [
     './',
     './index.html',
