@@ -217,12 +217,30 @@ function loadState() {
     if (ch) state.chatHistory = JSON.parse(ch);
     if (ur) state.userRules = JSON.parse(ur); else state.userRules = [];
 
-    // Migration for v1.19.7: Ensure new default exercises like legs_009 (Calf Raise) are added to custom list if missing
+    // Migration for default exercises updates (Calf Raise, Lat Pulldown, Incline Curl, etc.)
     if (state.customExercises && state.customExercises.length > 0) {
+      let isUpdated = false;
       const existingIds = new Set(state.customExercises.map(e => e.id));
+      
+      // Update existing exercises details if necessary (e.g. rename back_004 to V-bar/narrow)
+      state.customExercises = state.customExercises.map(e => {
+        const defaultEx = EXERCISE_MASTER.find(d => d.id === e.id);
+        if (defaultEx) {
+          if (e.id === "back_004" && e.exercise_name === "ラットプルダウン") {
+            e.exercise_name = defaultEx.exercise_name;
+            isUpdated = true;
+          }
+        }
+        return e;
+      });
+
       const missingDefaults = EXERCISE_MASTER.filter(e => !existingIds.has(e.id));
       if (missingDefaults.length > 0) {
         state.customExercises = [...state.customExercises, ...missingDefaults];
+        isUpdated = true;
+      }
+      
+      if (isUpdated) {
         saveCustomExercises();
       }
     }
