@@ -2531,7 +2531,19 @@ function renderAnalysisCharts() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { color: '#ccc' } } },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#ccc',
+            boxWidth: 12,
+            padding: 8,
+            font: {
+              size: 11
+            }
+          }
+        }
+      },
       scales: { x: { display: false }, y: { beginAtZero: false } }
     }
   });
