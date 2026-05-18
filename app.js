@@ -1,4 +1,4 @@
-const APP_VERSION = 'v1.20.1';
+const APP_VERSION = 'v1.20.2';
 function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || ''; }
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
@@ -47,6 +47,8 @@ const EXERCISE_MASTER = [
   { id: "arms_004", exercise_name: "ケーブルプッシュダウン", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "ファンクショナルトレーナー", weight_step: 2.5 },
   { id: "arms_005", exercise_name: "マシントライセプスエクステンション", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "アームカール×トライセプス", weight_step: 5 },
   { id: "arms_006", exercise_name: "ディップス", primary_muscle: "上腕三頭筋", secondary_muscles: ["大胸筋下部", "三角筋前部"], equipment: "アシストチンニング×ディップス", weight_step: 5 },
+  { id: "arms_007", exercise_name: "EZバーライイングトライセプスエクステンション", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "EZバー", weight_step: 2.5 },
+  { id: "arms_008", exercise_name: "インクラインダンベルカール", primary_muscle: "上腕二頭筋", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 2.5 },
   { id: "abs_001", exercise_name: "アブドミナルクランチ", primary_muscle: "腹直筋", secondary_muscles: [], equipment: "アブドミナル", weight_step: 5 },
   { id: "abs_002", exercise_name: "アブベンチクランチ", primary_muscle: "腹直筋", secondary_muscles: [], equipment: "アブベンチ", weight_step: 0 },
   { id: "abs_003", exercise_name: "レッグレイズ", primary_muscle: "腹直筋下部", secondary_muscles: ["腸腰筋"], equipment: "レッグレイズ", weight_step: 0 },
