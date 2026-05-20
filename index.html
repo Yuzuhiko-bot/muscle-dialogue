@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1.20.5">
+  <link rel="stylesheet" href="style.css?v=1.20.6">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://apis.google.com/js/api.js" async defer></script>
@@ -552,9 +552,9 @@
         <label class="form-label">🤖 AIモデル選択 (テスト用)</label>
         <div style="margin-bottom:1.5rem;">
           <select id="profile-ai-model" class="input-muscle" style="text-align: left; padding: 0.6rem;">
-            <option value="gemini-3.1-flash-lite-preview">Gemini 3.1 Flash Lite (推奨/スタミナ最強)</option>
-            <option value="gemini-3-flash-preview">Gemini 3 Flash (一番賢い/1日20回)</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (一世代前/1日20回)</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash (標準/超スマート/1日20回)</option>
+            <option value="gemini-3-flash-preview">Gemini 3 Flash (サブ/高速/1日20回)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (スタミナ最強/無料枠無限)</option>
           </select>
         </div>
         <label class="form-label">Gemini APIキー</label>
@@ -902,7 +902,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.5 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.6 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
@@ -920,7 +920,7 @@
         } else { window.location.reload(true); }
       }
     </script>
-    <script src="app.js?v=1.20.5"></script>
+    <script src="app.js?v=1.20.6"></script>
 </body>
 
 </html>

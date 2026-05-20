@@ -3,7 +3,14 @@ function getApiKey() { return localStorage.getItem('muscleDialog_apiKey') || '';
 function saveApiKey(key) { localStorage.setItem('muscleDialog_apiKey', key); }
 
 // AIモデルの取得と保存
-function getSelectedModel() { return localStorage.getItem('muscleDialog_aiModel') || 'gemini-3.1-flash-lite-preview'; }
+function getSelectedModel() { 
+  let model = localStorage.getItem('muscleDialog_aiModel') || 'gemini-3.5-flash';
+  if (model === 'gemini-3.1-flash-lite-preview' || model === 'gemini-2.5-flash') {
+    model = 'gemini-3.5-flash';
+    localStorage.setItem('muscleDialog_aiModel', model);
+  }
+  return model;
+}
 function saveSelectedModel(model) { localStorage.setItem('muscleDialog_aiModel', model); }
 
 function getApiUrl(model) { 
@@ -553,7 +560,7 @@ async function generatePlanProposal() {
   try {
     const cond = gatherConditions(), hist = getRecentHistory(21);
     const { sys, usr } = buildProposalPrompt(cond, hist);
-    const resp = await callGeminiAPI({ systemPrompt: sys, userPrompt: usr, modelOverride: 'gemini-3.1-flash-lite-preview', mimeTypeOverride: 'text/plain' });
+    const resp = await callGeminiAPI({ systemPrompt: sys, userPrompt: usr, modelOverride: 'gemini-3.1-flash-lite', mimeTypeOverride: 'text/plain' });
     
     // Parse response
     const proposalText = resp.candidates[0].content.parts[0].text;
@@ -2293,7 +2300,7 @@ function initChat() {
       const resp = await callGeminiAPI({ 
         systemPrompt: sys, 
         userPrompt: usr, 
-        modelOverride: 'gemini-3.1-flash-lite-preview', 
+        modelOverride: 'gemini-3.1-flash-lite', 
         mimeTypeOverride: 'text/plain' 
       });
       const aiReply = resp.candidates[0].content.parts[0].text;
