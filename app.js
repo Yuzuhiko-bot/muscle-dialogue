@@ -2332,6 +2332,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
             display: true,
             position: 'left',
             title: { display: true, text: '最高重量 (kg)', font: { size: 10 } },
+            ticks: { stepSize: 5 },
             beginAtZero: true
           },
           y1: {
