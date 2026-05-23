@@ -205,7 +205,7 @@ const DIET_HEALTH_THEORY = `
 function isCardio(id) { return id && id.startsWith('cardio_'); }
 
 // ---------- STATE ----------
-let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, chatHistory: [], userRules: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 60 };
+let state = { userProfile: null, trainingHistory: {}, bodyRecord: {}, currentPlan: null, customExercises: null, deletedExercises: [], chatHistory: [], userRules: [], currentMonth: new Date().getMonth(), currentYear: new Date().getFullYear(), selectedDate: null, selectedTime: 60 };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 
@@ -238,6 +238,7 @@ function loadState() {
     const b = localStorage.getItem('muscleDialog_bodyRecord');
     const cp = localStorage.getItem('muscleDialog_currentPlan');
     const ce = localStorage.getItem('muscleDialog_customExercises');
+    const de = localStorage.getItem('muscleDialog_deletedExercises');
     const ch = localStorage.getItem('muscleDialog_chatHistory');
     const ur = localStorage.getItem('muscleDialog_userRules');
     if (p) state.userProfile = JSON.parse(p);
@@ -245,6 +246,7 @@ function loadState() {
     if (b) state.bodyRecord = JSON.parse(b);
     if (cp) state.currentPlan = JSON.parse(cp);
     if (ce) state.customExercises = JSON.parse(ce);
+    if (de) state.deletedExercises = JSON.parse(de);
     if (ch) state.chatHistory = JSON.parse(ch);
     if (ur) state.userRules = JSON.parse(ur); else state.userRules = [];
 
@@ -265,7 +267,7 @@ function loadState() {
         return e;
       });
 
-      const missingDefaults = EXERCISE_MASTER.filter(e => !existingIds.has(e.id));
+      const missingDefaults = EXERCISE_MASTER.filter(e => !existingIds.has(e.id) && !state.deletedExercises.includes(e.id));
       if (missingDefaults.length > 0) {
         state.customExercises = [...state.customExercises, ...missingDefaults];
         isUpdated = true;
@@ -296,6 +298,13 @@ function saveCustomExercises() {
     localStorage.setItem('muscleDialog_customExercises', JSON.stringify(state.customExercises)); 
   } else {
     localStorage.removeItem('muscleDialog_customExercises');
+  }
+}
+function saveDeletedExercises() {
+  if (state.deletedExercises && state.deletedExercises.length > 0) {
+    localStorage.setItem('muscleDialog_deletedExercises', JSON.stringify(state.deletedExercises));
+  } else {
+    localStorage.removeItem('muscleDialog_deletedExercises');
   }
 }
 
@@ -2085,7 +2094,9 @@ function initExerciseMaster() {
     btnReset.addEventListener('click', () => {
       showConfirm('<span class="text-keep">すべてのカスタム種目を削除し、</span><span class="text-keep">デフォルトに戻しますか？</span>', () => {
         state.customExercises = null;
+        state.deletedExercises = [];
         saveCustomExercises();
+        saveDeletedExercises();
         renderExerciseMasterList();
         showToast('<span class="text-keep">デフォルトリストに</span><span class="text-keep">リセットしたぞ！パワー！</span>');
       });
@@ -2244,6 +2255,10 @@ function deleteExerciseMasterEntry(id) {
       state.customExercises = JSON.parse(JSON.stringify(EXERCISE_MASTER));
     }
     state.customExercises = state.customExercises.filter(e => e.id !== id);
+    if (!state.deletedExercises.includes(id)) {
+      state.deletedExercises.push(id);
+      saveDeletedExercises();
+    }
     saveCustomExercises();
     renderExerciseMasterList();
     showToast('<span class="text-keep">種目を削除したぞ！</span>');
