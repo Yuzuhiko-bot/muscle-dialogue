@@ -2325,31 +2325,27 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
         interaction: { mode: 'index', intersect: false },
         scales: {
           x: { 
-            ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
-            grid: { color: 'rgba(255,255,255,0.1)' }
+            ticks: { font: { size: 10 } }
           },
           y: {
             type: 'linear',
             display: true,
             position: 'left',
-            title: { display: true, text: '最高重量 (kg)', color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
-            ticks: { color: 'rgba(255,255,255,0.7)' },
-            grid: { color: 'rgba(255,255,255,0.1)' },
+            title: { display: true, text: '最高重量 (kg)', font: { size: 10 } },
             beginAtZero: true
           },
           y1: {
             type: 'linear',
             display: true,
             position: 'right',
-            title: { display: true, text: '総ボリューム (kg)', color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
-            ticks: { color: 'rgba(255,255,255,0.7)' },
+            title: { display: true, text: '総ボリューム (kg)', font: { size: 10 } },
             grid: { drawOnChartArea: false },
             beginAtZero: true
           }
         },
         plugins: {
           legend: {
-            labels: { color: 'rgba(255,255,255,0.8)', boxWidth: 12, padding: 10, font: { size: 11 } }
+            labels: { boxWidth: 12, padding: 10, font: { size: 11 } }
           }
         }
       }
