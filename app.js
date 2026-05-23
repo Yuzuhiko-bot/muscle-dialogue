@@ -2244,7 +2244,17 @@ let exerciseProgressChartInstance = null;
 
 function showExerciseProgressChart(exerciseId, exerciseName) {
   const titleEl = document.getElementById('exercise-chart-title');
-  if(titleEl) titleEl.textContent = exerciseName + ' の成長推移';
+  if(titleEl) {
+    const fullTitle = exerciseName + ' の成長推移';
+    titleEl.textContent = fullTitle;
+    if (fullTitle.length > 20) {
+      titleEl.style.fontSize = '0.8rem';
+    } else if (fullTitle.length > 15) {
+      titleEl.style.fontSize = '0.95rem';
+    } else {
+      titleEl.style.fontSize = '1.15rem';
+    }
+  }
   
   const dates = Object.keys(state.trainingHistory).sort();
   let labels = [];
