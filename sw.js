@@ -1,9 +1,9 @@
-const CACHE_NAME = 'muscle-dialogue-v1.20.6';
+const CACHE_NAME = 'muscle-dialogue-v1.20.7';
 const ASSETS = [
     './',
     './index.html',
-    './style.css?v=1.20.6',
-    './app.js?v=1.20.6',
+    './style.css?v=1.20.7',
+    './app.js?v=1.20.7',
     './manifest.json',
     './sw.js',
     './biceps.png',
