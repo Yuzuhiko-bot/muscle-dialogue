@@ -26,6 +26,8 @@ const EXERCISE_MASTER = [
   { id: "chest_005", exercise_name: "マシンチェストプレス", primary_muscle: "大胸筋", secondary_muscles: ["三角筋前部", "上腕三頭筋"], equipment: "チェストプレス", weight_step: 5 },
   { id: "chest_006", exercise_name: "プレートアッパーチェスト", primary_muscle: "大胸筋上部", secondary_muscles: ["三角筋前部", "上腕三頭筋"], equipment: "プレートアッパーチェストプレス", weight_step: 5 },
   { id: "chest_007", exercise_name: "マシンペックフライ", primary_muscle: "大胸筋", secondary_muscles: [], equipment: "ペックフライ", weight_step: 5 },
+  { id: "chest_008", exercise_name: "ダンベルベンチプレス", primary_muscle: "大胸筋", secondary_muscles: ["三角筋前部", "上腕三頭筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "back_009", exercise_name: "ワンハンドダンベルローイング", primary_muscle: "広背筋", secondary_muscles: ["僧帽筋", "上腕二頭筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
   { id: "back_001", exercise_name: "バーベルデッドリフト", primary_muscle: "脊柱起立筋", secondary_muscles: ["広背筋", "大臀筋", "ハムストリングス"], equipment: "パワーラック", weight_step: 2.5 },
   { id: "back_002", exercise_name: "ベントオーバーローイング", primary_muscle: "広背筋", secondary_muscles: ["僧帽筋", "上腕二頭筋", "脊柱起立筋"], equipment: "パワーラック", weight_step: 2.5 },
   { id: "back_003", exercise_name: "Tバーローイング", primary_muscle: "広背筋", secondary_muscles: ["僧帽筋", "上腕二頭筋"], equipment: "Tバーロー", weight_step: 2.5 },
@@ -286,6 +288,50 @@ function loadState() {
       // Save updated/sorted list to localStorage
       saveCustomExercises();
     }
+      // Auto-migrate mismatched names in history (e.g., AI hijacked back_002 for ワンハンドダンベルローイング)
+      if (state.trainingHistory) {
+        let isHistoryUpdated = false;
+        let newCustomExs = [];
+        
+        Object.values(state.trainingHistory).forEach(session => {
+          session.exercises.forEach(ex => {
+            const masterEx = EXERCISE_MASTER.find(m => m.id === ex.id);
+            if (masterEx && masterEx.exercise_name !== ex.name) {
+              // Standard ID but name diverges! Let's check if the name matches any existing available exercise.
+              const availableExs = getAvailableExercises();
+              let exactMatch = availableExs.find(e => e.exercise_name === ex.name) || newCustomExs.find(e => e.exercise_name === ex.name);
+              
+              if (exactMatch) {
+                ex.id = exactMatch.id;
+                isHistoryUpdated = true;
+              } else {
+                // Generate a custom ID to separate this exercise permanently
+                const targetId = 'custom_migrated_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+                const newEx = {
+                  ...masterEx,
+                  id: targetId,
+                  exercise_name: ex.name
+                };
+                newCustomExs.push(newEx);
+                ex.id = targetId;
+                isHistoryUpdated = true;
+              }
+            }
+          });
+        });
+        
+        if (newCustomExs.length > 0) {
+          if (!state.customExercises) state.customExercises = JSON.parse(JSON.stringify(EXERCISE_MASTER));
+          // Filter out deleted ones just in case
+          const validNewCustoms = newCustomExs.filter(e => !state.deletedExercises.includes(e.id));
+          state.customExercises = [...state.customExercises, ...validNewCustoms];
+          saveCustomExercises();
+        }
+        if (isHistoryUpdated) {
+          saveHistory();
+        }
+      }
+
   } catch (e) { console.error(e); }
 }
 function saveProfile() { localStorage.setItem('muscleDialog_profile', JSON.stringify(state.userProfile)); }
