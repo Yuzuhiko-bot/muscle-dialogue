@@ -874,13 +874,13 @@
     <!-- ========== 種目別成長推移モーダル ========== -->
   <div id="modal-exercise-chart" class="modal hidden">
     <div class="modal-overlay"></div>
-    <div class="modal-content" style="max-width:600px; padding:1.5rem;">
-      <div class="modal-header">
-        <h2 id="exercise-chart-title">成長推移</h2>
+    <div class="modal-content" style="max-width:95vw; width:95vw; height:85vh; display:flex; flex-direction:column; padding:1rem;">
+      <div class="modal-header" style="margin-bottom:0.5rem; padding-bottom:0.5rem;">
+        <h2 id="exercise-chart-title" style="font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:left; flex:1; margin:0; line-height:1.2;">成長推移</h2>
         <button class="modal-close" data-modal="modal-exercise-chart">✕</button>
       </div>
-      <div class="modal-body">
-        <div style="background:var(--bg-card); padding:1rem; border-radius:12px; border:1px solid var(--border-color);">
+      <div class="modal-body" style="flex:1; display:flex; flex-direction:column; padding:0;">
+        <div style="background:var(--bg-card); padding:0.5rem; border-radius:12px; border:1px solid var(--border-color); flex:1; position:relative; width:100%; min-height:0;">
           <canvas id="exerciseProgressChart"></canvas>
         </div>
         <div id="exercise-chart-empty" style="display:none; text-align:center; padding:2rem; color:var(--text-secondary);">
@@ -921,7 +921,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.12 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.13 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>

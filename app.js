@@ -2322,6 +2322,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         scales: {
           x: { 
