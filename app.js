@@ -2165,6 +2165,7 @@ function renderExerciseMasterList() {
           ${perfHtml}
         </div>
         <div class="ex-master-actions">
+          <button class="ex-master-btn ex-master-btn-chart" data-id="${ex.id}" data-name="${ex.exercise_name}">📈 成長</button>
           <button class="ex-master-btn ex-master-btn-edit" data-id="${ex.id}">編集</button>
           <button class="ex-master-btn ex-master-btn-del" data-id="${ex.id}">削除</button>
         </div>
@@ -2174,6 +2175,9 @@ function renderExerciseMasterList() {
     listContainer.appendChild(divGroup);
   });
 
+  listContainer.querySelectorAll('.ex-master-btn-chart').forEach(btn => {
+    btn.addEventListener('click', () => showExerciseProgressChart(btn.dataset.id, btn.dataset.name));
+  });
   listContainer.querySelectorAll('.ex-master-btn-edit').forEach(btn => {
     btn.addEventListener('click', () => openExerciseMasterEdit(btn.dataset.id));
   });
@@ -2187,6 +2191,126 @@ function renderExerciseMasterList() {
       navigateToTrainingDate(badge.dataset.jumpDate, badge.dataset.jumpExid);
     });
   });
+}
+
+
+let exerciseProgressChartInstance = null;
+
+function showExerciseProgressChart(exerciseId, exerciseName) {
+  const titleEl = document.getElementById('exercise-chart-title');
+  if(titleEl) titleEl.textContent = exerciseName + ' の成長推移';
+  
+  const dates = Object.keys(state.trainingHistory).sort();
+  let labels = [];
+  let maxWeights = [];
+  let totalVolumes = [];
+  
+  dates.forEach(date => {
+    const session = state.trainingHistory[date];
+    let dayMaxWeight = 0;
+    let dayTotalVolume = 0;
+    let found = false;
+    
+    session.exercises.forEach(ex => {
+      if (ex.id === exerciseId) {
+        found = true;
+        ex.sets.forEach(set => {
+          const w = parseFloat(set.weight) || 0;
+          const r = parseInt(set.reps) || 0;
+          if (w > dayMaxWeight) dayMaxWeight = w;
+          dayTotalVolume += (w * r);
+        });
+      }
+    });
+    
+    if (found) {
+      const dStr = date.split('-');
+      labels.push(parseInt(dStr[1]) + '/' + parseInt(dStr[2]));
+      maxWeights.push(dayMaxWeight);
+      totalVolumes.push(dayTotalVolume);
+    }
+  });
+  
+  const ctxEl = document.getElementById('exerciseProgressChart');
+  const emptyEl = document.getElementById('exercise-chart-empty');
+  
+  if (labels.length === 0) {
+    if(ctxEl) ctxEl.style.display = 'none';
+    if(emptyEl) emptyEl.style.display = 'block';
+  } else {
+    if(ctxEl) ctxEl.style.display = 'block';
+    if(emptyEl) emptyEl.style.display = 'none';
+    
+    const ctx = ctxEl.getContext('2d');
+    if (exerciseProgressChartInstance) {
+      exerciseProgressChartInstance.destroy();
+    }
+    
+    exerciseProgressChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '最高重量 (kg)',
+            data: maxWeights,
+            borderColor: '#FF2D55',
+            backgroundColor: 'rgba(255, 45, 85, 0.1)',
+            tension: 0.3,
+            yAxisID: 'y',
+            pointBackgroundColor: '#FF2D55',
+            borderWidth: 3
+          },
+          {
+            label: '総ボリューム (kg)',
+            data: totalVolumes,
+            borderColor: '#007AFF',
+            backgroundColor: 'rgba(0, 122, 255, 0.1)',
+            tension: 0.3,
+            yAxisID: 'y1',
+            pointBackgroundColor: '#007AFF',
+            borderWidth: 2,
+            borderDash: [5, 5]
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: { 
+            ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          },
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            title: { display: true, text: '最高重量 (kg)', color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
+            ticks: { color: 'rgba(255,255,255,0.7)' },
+            grid: { color: 'rgba(255,255,255,0.1)' },
+            beginAtZero: true
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            title: { display: true, text: '総ボリューム (kg)', color: 'rgba(255,255,255,0.7)', font: { size: 10 } },
+            ticks: { color: 'rgba(255,255,255,0.7)' },
+            grid: { drawOnChartArea: false },
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            labels: { color: 'rgba(255,255,255,0.8)', boxWidth: 12, padding: 10, font: { size: 11 } }
+          }
+        }
+      }
+    });
+  }
+  
+  openModal('modal-exercise-chart');
 }
 
 function openExerciseMasterEdit(id) {

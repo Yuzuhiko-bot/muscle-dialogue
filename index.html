@@ -871,6 +871,25 @@
     </div>
   </div>
 
+    <!-- ========== 種目別成長推移モーダル ========== -->
+  <div id="modal-exercise-chart" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content" style="max-width:600px; padding:1.5rem;">
+      <div class="modal-header">
+        <h2 id="exercise-chart-title">成長推移</h2>
+        <button class="modal-close" data-modal="modal-exercise-chart">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-card); padding:1rem; border-radius:12px; border:1px solid var(--border-color);">
+          <canvas id="exerciseProgressChart"></canvas>
+        </div>
+        <div id="exercise-chart-empty" style="display:none; text-align:center; padding:2rem; color:var(--text-secondary);">
+          この種目の履歴データがまだないぞ！<br>これからバチバチに鍛えていこう！ヤー！
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ========== メニュー事前提案モーダル ========== -->
   <div id="modal-proposal" class="modal hidden">
     <div class="modal-overlay"></div>
@@ -902,7 +921,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.8 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.9 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
