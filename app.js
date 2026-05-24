@@ -483,7 +483,7 @@ function renderCalendar() {
           dailyCardioMin += ex.duration;
         } else if (ex.sets) {
           dailySets += ex.sets.length;
-          const isAssist = exerciseMaster.find(m => m.exercise_name === ex.exercise_name)?.isAssist;
+          const isAssist = EXERCISE_MASTER.find(m => m.exercise_name === ex.exercise_name)?.isAssist;
           ex.sets.forEach(s => { 
             if (!isAssist) dailyVolume += ((s.weight || 0) * (s.reps || 0)); 
           });
@@ -2246,7 +2246,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
     titleEl.style.fontSize = targetPx + 'px';
   }
   
-  const isAssist = exerciseMaster.find(m => m.id === exerciseId)?.isAssist || false;
+  const isAssist = EXERCISE_MASTER.find(m => m.id === exerciseId)?.isAssist || false;
   const dates = Object.keys(state.trainingHistory).sort();
   let labels = [];
   let maxWeights = [];
@@ -2745,7 +2745,7 @@ function renderAnalysisCharts() {
       state.trainingHistory[dStr].exercises.forEach(ex => {
         // ボリューム計算
         if (ex.sets) {
-          const isAssist = exerciseMaster.find(m => m.exercise_name === ex.exercise_name)?.isAssist || false;
+          const isAssist = EXERCISE_MASTER.find(m => m.exercise_name === ex.exercise_name)?.isAssist || false;
           ex.sets.forEach(set => {
             const w = parseFloat(set.weight) || 0;
             const r = parseInt(set.reps) || 0;
