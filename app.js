@@ -2515,7 +2515,9 @@ function initChat() {
   
   // Enter to submit, Shift+Enter for newline, ArrowUp for last message
   chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || ('ontouchstart' in window);
+    // on mobile, Enter adds a newline (default). On desktop, Enter submits unless Shift is held.
+    if (e.key === 'Enter' && !e.shiftKey && !isMobile) {
       e.preventDefault();
       $('#chat-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     } else if (e.key === 'ArrowUp') {
