@@ -1854,7 +1854,11 @@ function initBodyDashboard() {
       $('#cold-map-overlay-back').classList.add('hidden');
       document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_front.png');
       const container = $('#cold-map-container');
-      if (container) container.style.backgroundImage = "url('images/bg_gym_front.png')";
+      if (container) {
+        container.style.backgroundImage = "url('images/bg_gym_front.png')";
+        container.style.backgroundSize = "cover";
+        container.style.backgroundPosition = "center";
+      }
     });
     btnBack.addEventListener('click', () => {
       btnBack.classList.add('active'); btnBack.style.borderColor = 'var(--red)'; btnBack.style.color = 'var(--red)'; btnBack.style.background = 'var(--red-light)';
@@ -1863,7 +1867,11 @@ function initBodyDashboard() {
       $('#cold-map-overlay-front').classList.add('hidden');
       document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_back.png');
       const container = $('#cold-map-container');
-      if (container) container.style.backgroundImage = "url('images/bg_gym_back.png')";
+      if (container) {
+        container.style.backgroundImage = "url('images/bg_gym_back.png')";
+        container.style.backgroundSize = "180%";
+        container.style.backgroundPosition = "center 90%";
+      }
     });
   }
 
