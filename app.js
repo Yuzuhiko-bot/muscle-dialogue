@@ -2310,7 +2310,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
             data: maxWeights,
             borderColor: '#FF2D55',
             backgroundColor: 'rgba(255, 45, 85, 0.1)',
-            tension: 0.3,
+            tension: 0,
             yAxisID: 'y',
             pointBackgroundColor: '#FF2D55',
             borderWidth: 3
@@ -2320,7 +2320,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
             data: totalVolumes,
             borderColor: '#007AFF',
             backgroundColor: 'rgba(0, 122, 255, 0.1)',
-            tension: 0.3,
+            tension: 0,
             yAxisID: 'y1',
             pointBackgroundColor: '#007AFF',
             borderWidth: 2,
