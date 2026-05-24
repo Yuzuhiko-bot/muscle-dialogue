@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>繝槭ャ繧ｹ繝ｫ繝ｻ繝繧､繧｢繝ｭ繧ｰ - 遲玖ｉ蟇ｾ隧ｱ</title>
-  <meta name="description" content="AI繝代・繧ｽ繝翫Ν繝医Ξ繝ｼ繝翫・縺後≠縺ｪ縺溘□縺代・遲九ヨ繝ｬ繝｡繝九Η繝ｼ繧堤函謌撰ｼ∫ｭ玖ｉ縺ｨ縺ｮ蟇ｾ隧ｱ縲∝ｧ九ａ繧医≧縲ゅΖ繝ｼ・・ｼ・>
+  <title>マッスル・ダイアログ - 筋肉対話</title>
+  <meta name="description" content="AIパーソナルトレーナーがあなただけの筋トレメニューを生成！筋肉との対話、始めよう。ヤー！！">
 
   <!-- PWA / iOS -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="繝槭ャ繧ｹ繝ｫ繝繧､繧｢繝ｭ繧ｰ">
+  <meta name="apple-mobile-web-app-title" content="マッスルダイアログ">
   <link rel="apple-touch-icon" href="rpe_smile.png">
   <meta name="theme-color" content="#D4001F">
 
@@ -26,51 +26,51 @@
 
 <body>
 
-  <!-- ========== 繧ｹ繝励Λ繝・す繝･ ========== -->
-  <!-- ========== 繧ｹ繝励Λ繝・す繝･ ========== -->
+  <!-- ========== スプラッシュ ========== -->
+  <!-- ========== スプラッシュ ========== -->
   <div id="splash-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-white p-6 transition-opacity duration-1000">
     <div class="splash-content">
-      <h1 class="splash-title-mega"><span class="text-keep">繝槭ャ繧ｹ繝ｫ</span><br><span class="text-keep">繝繧､繧｢繝ｭ繧ｰ</span></h1>
-      <p class="splash-subtitle">縲・遲玖ｉ縺ｨ縺ｮ繝昴ャ繝励↑蟇ｾ隧ｱ 縲・/p>
+      <h1 class="splash-title-mega"><span class="text-keep">マッスル</span><br><span class="text-keep">ダイアログ</span></h1>
+      <p class="splash-subtitle">〜 筋肉とのポップな対話 〜</p>
 
-      <!-- 驥崎､・☆繧九う繝ｩ繧ｹ繝医ｒ蜑企勁・夊レ譎ｯ縺ｮ蟾ｨ螟ｧ縺ｪ遲玖ｉ繧呈ｴｻ縺九☆・・-->
+      <!-- 重複するイラストを削除：背景の巨大な筋肉を活かす！ -->
 
 
       <div class="loading-muscle">
         <div class="w-6 h-6 bg-red-600 rounded-full animate-pulse"></div>
-        <div class="loading-text-muscle">遲玖ｉ繝代Ν繧ｹ縲∬ｨ域ｸｬ荳ｭ窶ｦ</div>
+        <div class="loading-text-muscle">筋肉パルス、計測中…</div>
       </div>
     </div>
   </div>
 
-    <!-- ========== 繧ｪ繝ｳ繝懊・繝・ぅ繝ｳ繧ｰ (V184) ========== -->
+    <!-- ========== オンボーディング (V184) ========== -->
   <div id="onboarding-screen" class="screen">
     <div class="onboard-container">
       <div class="onboard-header">
-        <div class="onboard-logo">繝槭ャ繧ｹ繝ｫ繝ｻ繝繧､繧｢繝ｭ繧ｰ</div>
+        <div class="onboard-logo">マッスル・ダイアログ</div>
         <div class="onboard-message-box">
           <h1 class="onboard-title-muscle">
-            <span class="text-keep">繧ｭ繝溘・縺薙ｌ縺九ｉ</span><br>
-            <span class="text-keep">繝槭ャ繝√Ι縺ｫ縺ｪ繧九・縺九＞・・ｼ・/span><br>
-            <span class="text-keep">縺ｪ繧峨↑縺・・縺九＞・・ｼ・/span><br>
-            <span class="text-keep">縺ｩ縺｣縺｡縺ｪ繧薙□縺・ｼ・ｼ・/span><br>
-            <span class="catchphrase-punch">窶ｦ窶ｦ縺ｪ繝ｼ繝ｼ繝ｼ繧具ｼ・ｼ・/span>
+            <span class="text-keep">キミはこれから</span><br>
+            <span class="text-keep">マッチョになるのかい！？</span><br>
+            <span class="text-keep">ならないのかい！？</span><br>
+            <span class="text-keep">どっちなんだい！？</span><br>
+            <span class="catchphrase-punch">……なーーーる！！</span>
           </h1>
-          <p class="onboard-sub-msg">縺ｾ縺壹・繧ｭ繝溘・遲玖ｉ縺ｮ迴ｾ迥ｶ繧呈蕗縺医※縺上ｌ・・br>譛鬮倥・繝｡繝九Η繝ｼ繧堤ｵ・・縺橸ｼ√ヱ繝ｯ繝ｼ・・ｼ・/p>
+          <p class="onboard-sub-msg">まずはキミの筋肉の現状を教えてくれ！<br>最高のメニューを組むぞ！パワー！！</p>
         </div>
       </div>
 
       <form id="onboarding-form" class="onboard-form">
         <div class="form-group">
-          <label class="form-label">繝医Ξ繝ｼ繝九Φ繧ｰ縺ｮ逶ｮ逧・・縺ｪ繧薙□縺・ｼ・ｼ・/label>
+          <label class="form-label">トレーニングの目的はなんだい！？</label>
           <div class="radio-group" id="goal-group">
             <!-- Build V170: Ultimate Muscle Icon (Requested Design with Impact Lines) -->
-            <label class="radio-card"><input type="radio" name="goal" value="遲玖ぇ螟ｧ" checked>
+            <label class="radio-card"><input type="radio" name="goal" value="筋肥大" checked>
               <span class="radio-visual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));"><!-- Bicep Outline ONLY --><path d="M12.409 13.017A5 5 0 0 1 22 15c0 3.866-4 7-9 7c-4.077 0-8.153-.82-10.371-2.462c-.426-.316-.631-.832-.62-1.362C2.118 12.723 2.627 2 10 2a3 3 0 0 1 3 3a2 2 0 0 1-2 2c-1.105 0-1.64-.444-2-1" /><path d="M15 14a5 5 0 0 0-7.584 2" /><path d="M9.964 6.825C8.019 7.977 9.5 13 8 15" /></svg>
               </span>
-              <span class="radio-text">遲玖ぇ螟ｧ<br><small>繝・き縺上↑繧翫◆縺・ｼ・/small></span></label>
-            <label class="radio-card"><input type="radio" name="goal" value="繝繧､繧ｨ繝・ヨ">
+              <span class="radio-text">筋肥大<br><small>デカくなりたい！</small></span></label>
+            <label class="radio-card"><input type="radio" name="goal" value="ダイエット">
               <span class="radio-visual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -78,16 +78,16 @@
                   <rect x="8" y="11" width="8" height="6" rx="1" />
                 </svg>
               </span>
-              <span class="radio-text">繝繧､繧ｨ繝・ヨ<br><small>閼りが繧堤㏍繧・☆・・/small></span></label>
-            <label class="radio-card"><input type="radio" name="goal" value="蛛･蠎ｷ邯ｭ謖・>
+              <span class="radio-text">ダイエット<br><small>脂肪を燃やす！</small></span></label>
+            <label class="radio-card"><input type="radio" name="goal" value="健康維持">
               <span class="radio-visual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                   <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
                 </svg>
               </span>
-              <span class="radio-text">蛛･蠎ｷ邯ｭ謖・br><small>蜈・ｰ励〒縺・◆縺・ｼ・/small></span></label>
-            <label class="radio-card"><input type="radio" name="goal" value="遲句鴨繧｢繝・・">
+              <span class="radio-text">健康維持<br><small>元気でいたい！</small></span></label>
+            <label class="radio-card"><input type="radio" name="goal" value="筋力アップ">
               <span class="radio-visual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z" />
@@ -97,93 +97,93 @@
                   <path d="m9.6 14.4 4.8-4.8" />
                 </svg>
               </span>
-              <span class="radio-text">遲句鴨UP<br><small>繝代Ρ繝ｼ蜈ｨ髢具ｼ・/small></span></label>
+              <span class="radio-text">筋力UP<br><small>パワー全開！</small></span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">繝医Ξ繝ｼ繝九Φ繧ｰ邨碁ｨ薙・縺ｩ縺・↑繧薙□縺・ｼ・ｼ・/label>
+          <label class="form-label">トレーニング経験はどうなんだい！？</label>
           <div class="radio-group" id="experience-group">
-            <label class="radio-card"><input type="radio" name="experience" value="蛻晏ｿ・・ checked>
+            <label class="radio-card"><input type="radio" name="experience" value="初心者" checked>
               <span class="radio-visual">
-                <span class="beginner-emoji">伐</span>
+                <span class="beginner-emoji">🔰</span>
               </span>
-              <span class="radio-text">蛻晏ｿ・・br><small>縲・繝ｶ譛・/small></span></label>
-            <label class="radio-card"><input type="radio" name="experience" value="荳ｭ邏夊・>
+              <span class="radio-text">初心者<br><small>〜6ヶ月</small></span></label>
+            <label class="radio-card"><input type="radio" name="experience" value="中級者">
               <span class="radio-visual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
                 </svg>
               </span>
-              <span class="radio-text">荳ｭ邏夊・br><small>6繝ｶ譛医・蟷ｴ</small></span></label>
-            <label class="radio-card"><input type="radio" name="experience" value="荳顔ｴ夊・>
+              <span class="radio-text">中級者<br><small>6ヶ月〜2年</small></span></label>
+            <label class="radio-card"><input type="radio" name="experience" value="上級者">
               <span class="radio-visual">
-                <span class="gorilla-emoji shadow-muscle">ｦ・/span>
+                <span class="gorilla-emoji shadow-muscle">🦍</span>
               </span>
-              <span class="radio-text">荳顔ｴ夊・br><small>2蟷ｴ莉･荳・/small></span></label>
+              <span class="radio-text">上級者<br><small>2年以上</small></span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">譎ｮ谿ｵ縺ｮ逕滓ｴｻ豢ｻ蜍暮㍼縺ｯ・・/label>
+          <label class="form-label">普段の生活活動量は？</label>
           <div class="radio-group" id="activity-group">
-            <label class="radio-card"><input type="radio" name="activity" value="繝・せ繧ｯ繝ｯ繝ｼ繧ｯ" checked>
+            <label class="radio-card"><input type="radio" name="activity" value="デスクワーク" checked>
               <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="4" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></span>
-              <span class="radio-text">繝・せ繧ｯ繝ｯ繝ｼ繧ｯ<br><small>蠎ｧ繧贋ｻ穂ｺ倶ｸｭ蠢・/small></span></label>
-            <label class="radio-card"><input type="radio" name="activity" value="譎ｮ騾・>
+              <span class="radio-text">デスクワーク<br><small>座り仕事中心</small></span></label>
+            <label class="radio-card"><input type="radio" name="activity" value="普通">
               <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M7 21l3 -4" /><path d="M16 21l-2 -4l-3 -3l1 -6" /><path d="M6 12l2 -3l4 -1l3 3l3 1" /></svg></span>
-              <span class="radio-text">譎ｮ騾・br><small>驕ｩ蠎ｦ縺ｫ蜍輔￥</small></span></label>
-            <label class="radio-card"><input type="radio" name="activity" value="蜉帑ｻ穂ｺ・>
+              <span class="radio-text">普通<br><small>適度に動く</small></span></label>
+            <label class="radio-card"><input type="radio" name="activity" value="力仕事">
               <span class="radio-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg></span>
-              <span class="radio-text">蜉帑ｻ穂ｺ・br><small>菴薙ｒ繧医￥菴ｿ縺・/small></span></label>
+              <span class="radio-text">力仕事<br><small>体をよく使う</small></span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">逞帙∩縺ｮ縺ゅｋ驛ｨ菴阪・縺ゅｋ縺九＞・滂ｼ郁､・焚驕ｸ謚朧K・・/label>
+          <label class="form-label">痛みのある部位はあるかい？（複数選択OK）</label>
           <div class="checkbox-group" id="pain-group">
-            <label class="check-card"><input type="checkbox" name="pain" value="縺ｪ縺・ checked><span class="check-text">縺ｪ縺・/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="閧ｩ"><span
-                class="check-text">閧ｩ</span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="閻ｰ"><span
-                class="check-text">閻ｰ</span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="閹・><span
-                class="check-text">閹・/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="閧・><span
-                class="check-text">閧・/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="謇矩ｦ・><span
-                class="check-text">謇矩ｦ・/span></label>
-            <label class="check-card"><input type="checkbox" name="pain" value="鬥・><span
-                class="check-text">鬥・/span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="なし" checked><span class="check-text">なし</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="肩"><span
+                class="check-text">肩</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="腰"><span
+                class="check-text">腰</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="膝"><span
+                class="check-text">膝</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="肘"><span
+                class="check-text">肘</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="手首"><span
+                class="check-text">手首</span></label>
+            <label class="check-card"><input type="checkbox" name="pain" value="首"><span
+                class="check-text">首</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">蜆ｪ蜈医＠縺ｦ骰帙∴縺溘＞驛ｨ菴阪・・滂ｼ郁､・焚驕ｸ謚朧K・・/label>
+          <label class="form-label">優先して鍛えたい部位は？（複数選択OK）</label>
           <div class="checkbox-group" id="priority-group">
-            <label class="check-card"><input type="checkbox" name="priority" value="閭ｸ"><span class="check-text">閭ｸ</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="閭御ｸｭ"><span class="check-text">閭御ｸｭ</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="荳句濠霄ｫ"><span class="check-text">荳句濠霄ｫ</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="閧ｩ"><span class="check-text">閧ｩ</span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="閻・><span class="check-text">閻・/span></label>
-            <label class="check-card"><input type="checkbox" name="priority" value="閻ｹ"><span class="check-text">閻ｹ</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="胸"><span class="check-text">胸</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="背中"><span class="check-text">背中</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="下半身"><span class="check-text">下半身</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="肩"><span class="check-text">肩</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="腕"><span class="check-text">腕</span></label>
+            <label class="check-card"><input type="checkbox" name="priority" value="腹"><span class="check-text">腹</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">繝医Ξ繝ｼ繝九Φ繧ｰ縺ｮ蛻・牡豕包ｼ医し繧､繧ｯ繝ｫ・峨・・・/label>
+          <label class="form-label">トレーニングの分割法（サイクル）は？</label>
           <div style="margin-bottom: 0.5rem;">
             <select name="splitMethod" id="splitMethod" class="input-muscle" style="padding: 0.8rem; text-align: left;">
-              <option value="ppl" selected>PPL豕・(Push/Pull/Legs)</option>
-              <option value="upperLower">荳贋ｸ句・蜑ｲ (Upper/Lower)</option>
-              <option value="fullBody">蜈ｨ霄ｫ豕・(Full Body)</option>
-              <option value="broSplit">繝悶Ο繧ｹ繝励Μ繝・ヨ (驛ｨ菴阪＃縺ｨ騾ｱ1蝗・</option>
+              <option value="ppl" selected>PPL法 (Push/Pull/Legs)</option>
+              <option value="upperLower">上下分割 (Upper/Lower)</option>
+              <option value="fullBody">全身法 (Full Body)</option>
+              <option value="broSplit">ブロスプリット (部位ごと週1回)</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">騾ｱ縺ｫ菴募屓繝医Ξ繝ｼ繝九Φ繧ｰ縺吶ｋ繧薙□縺・ｼ・ｼ・/label>
+          <label class="form-label">週に何回トレーニングするんだい！？</label>
           <div class="frequency-slider">
             <div class="frequency-slider-wrapper">
               <div class="frequency-track-bg">
@@ -193,42 +193,42 @@
             </div>
             <div class="frequency-display">
               <span id="frequency-value" class="frequency-num">3</span>
-              <span class="frequency-unit">蝗・騾ｱ</span>
+              <span class="frequency-unit">回/週</span>
             </div>
           </div>
         </div>
 
         <button type="submit" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">貅門ｙ螳御ｺ・ｼ・/span><span class="text-keep">繝｡繝九Η繝ｼ繧剃ｽ懈・縺吶ｋ</span></span>
+          <span class="btn-text"><span class="text-keep">準備完了！</span><span class="text-keep">メニューを作成する</span></span>
           <span class="btn-effect"></span>
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ========== 繝｡繧､繝ｳ逕ｻ髱｢ ========== -->
+  <!-- ========== メイン画面 ========== -->
   <div id="main-screen" class="screen">
-    <!-- 繧ｿ繝悶リ繝薙ご繝ｼ繧ｷ繝ｧ繝ｳ -->
+    <!-- タブナビゲーション -->
     <nav class="tab-nav">
       <button class="tab-btn active" data-tab="calendar">
         <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span class="tab-label">繧ｫ繝ｬ繝ｳ繝繝ｼ</span>
+        <span class="tab-label">カレンダー</span>
       </button>
       <button class="tab-btn" data-tab="chat">
         <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        <span class="tab-label">蟇ｾ隧ｱ</span>
+        <span class="tab-label">対話</span>
       </button>
       <button class="tab-btn" data-tab="training">
         <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6M6 14l6-6 6 6M6 19l6-6 6 6"/></svg>
-        <span class="tab-label">繝医Ξ繝ｼ繝九Φ繧ｰ</span>
+        <span class="tab-label">トレーニング</span>
       </button>
       <button class="tab-btn" data-tab="profile">
         <svg class="tab-icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span class="tab-label">繝槭う繝槭ャ繧ｹ繝ｫ</span>
+        <span class="tab-label">マイマッスル</span>
       </button>
     </nav>
 
-    <!-- 繧ｿ繝泡: 繧ｫ繝ｬ繝ｳ繝繝ｼ -->
+    <!-- タブA: カレンダー -->
     <div id="tab-calendar" class="tab-content active">
       <div class="calendar-header">
         <button id="cal-prev" class="cal-nav-btn">
@@ -240,39 +240,39 @@
         </button>
       </div>
       <div class="calendar-weekdays">
-        <span>譌･</span><span>譛・/span><span>轣ｫ</span><span>豌ｴ</span><span>譛ｨ</span><span>驥・/span><span>蝨・/span>
+        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
       </div>
       <div id="cal-grid" class="calendar-grid"></div>
 
       <div class="calendar-actions">
         <button id="btn-manual-add" class="btn-secondary">
-          <span>・・謇句虚縺ｧ險倬鹸繧定ｿｽ蜉縺吶ｋ</span>
+          <span>＋ 手動で記録を追加する</span>
         </button>
       </div>
 
-      <!-- 螳溽ｸｾ隧ｳ邏ｰ -->
+      <!-- 実績詳細 -->
       <div id="history-detail" class="history-detail hidden">
         <div class="history-detail-header">
           <h3 id="history-date-title" class="history-title"></h3>
-          <button id="btn-delete-day" class="btn-danger-small" title="縺薙・譌･縺ｮ險倬鹸繧貞・縺ｦ蜑企勁">蜈ｨ蜑企勁</button>
+          <button id="btn-delete-day" class="btn-danger-small" title="この日の記録を全て削除">全削除</button>
         </div>
         <div id="history-content" class="history-content"></div>
       </div>
     </div>
 
-    <!-- 繧ｿ繝烹: 蟇ｾ隧ｱ (Chat) -->
+    <!-- タブB: 対話 (Chat) -->
     <div id="tab-chat" class="tab-content flex-tab">
       <div class="chat-header" style="padding:1rem; border-bottom:1px solid var(--border-color); background:var(--white); box-shadow:0 2px 5px rgba(0,0,0,0.05); z-index:10; display:flex; align-items:center; gap:0.5rem;">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        <h2 style="font-size:1.1rem; color:var(--text-primary); font-weight:900;">AI縺ｪ縺九ｄ縺ｾ縺阪ｓ縺ｫ蜷帛ｯｾ隧ｱ</h2>
-        <button id="btn-clear-chat" style="margin-left:auto; background:none; border:none; color:var(--text-muted); font-size:0.8rem; text-decoration:underline; padding:0.2rem; cursor:pointer;">螻･豁ｴ豸亥悉</button>
+        <h2 style="font-size:1.1rem; color:var(--text-primary); font-weight:900;">AIなかやまきんに君対話</h2>
+        <button id="btn-clear-chat" style="margin-left:auto; background:none; border:none; color:var(--text-muted); font-size:0.8rem; text-decoration:underline; padding:0.2rem; cursor:pointer;">履歴消去</button>
       </div>
       <div id="chat-messages" class="chat-messages" style="flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:1rem; background:var(--bg-main);">
-        <!-- JS縺ｧ繝｡繝・そ繝ｼ繧ｸ繧呈緒逕ｻ -->
+        <!-- JSでメッセージを描画 -->
       </div>
       <div class="chat-input-area">
         <form id="chat-form" style="display:flex; gap:0.5rem;">
-          <textarea id="chat-input" class="input-muscle" placeholder="遲玖ｉ縺ｸ縺ｮ諤昴＞繧剃ｼ昴∴繧・.." style="flex:1; margin:0; resize:none; overflow-y:auto; min-height:45px; max-height:120px; line-height:1.5; padding:0.8rem;" rows="1" required></textarea>
+          <textarea id="chat-input" class="input-muscle" placeholder="筋肉への思いを伝える..." style="flex:1; margin:0; resize:none; overflow-y:auto; min-height:45px; max-height:120px; line-height:1.5; padding:0.8rem;" rows="1" required></textarea>
           <button type="submit" class="btn-primary" style="padding:0 1.2rem; min-width:60px; height:45px; align-self:flex-end;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           </button>
@@ -280,112 +280,112 @@
       </div>
     </div>
 
-    <!-- 繧ｿ繝砲: 繝医Ξ繝ｼ繝九Φ繧ｰ -->
+    <!-- タブC: トレーニング -->
     <div id="tab-training" class="tab-content">
       <div class="training-hero-modern">
         <div class="hero-text-area">
           <h2 class="hero-title-mega">
-            <span class="text-keep">縺翫＞縲√が繝ｬ縺ｮ遲玖ｉ・・/span><br>
-            <span class="text-keep">莉頑律縺ｮ繝｡繝九Η繝ｼ縺ｯ</span><br>
-            <span class="text-keep">縺ｩ縺・☆繧九ｓ縺縺・▲・・/span>
+            <span class="text-keep">おい、オレの筋肉！</span><br>
+            <span class="text-keep">今日のメニューは</span><br>
+            <span class="text-keep">どうするんだいっ！</span>
           </h2>
         </div>
         <div class="hero-image-area">
-          <img src="biceps.png" alt="縺阪ｓ縺ｫ蜷・ class="hero-kinnikun-img"
+          <img src="biceps.png" alt="きんに君" class="hero-kinnikun-img"
             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <div
             style="display:none; width:100px; height:100px; background:#F1E00B; border-radius:10px; text-align:center; line-height:100px; font-weight:bold;">
-            逕ｻ蜒上お繝ｪ繧｢</div>
+            画像エリア</div>
         </div>
       </div>
 
-      <!-- 謗ｨ螂ｨ繧ｵ繧､繧ｯ繝ｫ陦ｨ遉ｺ繧ｨ繝ｪ繧｢ -->
+      <!-- 推奨サイクル表示エリア -->
       <div id="recommended-cycle-area" class="recommended-cycle-box hidden" style="margin: 0 1rem 1rem 1rem; background: var(--white); border-radius: var(--radius-lg); padding: 1rem; border-left: 5px solid var(--red); box-shadow: var(--shadow-sm);">
-        <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: bold; margin-bottom: 0.3rem;">套 譛ｬ譌･縺ｮ謗ｨ螂ｨ繧ｻ繝・す繝ｧ繝ｳ</div>
-        <div id="recommended-cycle-text" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 900;">蛻・梵荳ｭ...</div>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: bold; margin-bottom: 0.3rem;">📅 本日の推奨セッション</div>
+        <div id="recommended-cycle-text" style="font-size: 1.1rem; color: var(--text-primary); font-weight: 900;">分析中...</div>
         <div id="recommended-cycle-sub" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;"></div>
       </div>
 
       <div id="no-plan" class="no-plan-area">
 
         <button id="btn-generate" class="btn-mega btn-kinnikun-style">
-          <span class="btn-text"><span class="text-keep">AI繝｡繝九Η繝ｼ繧・/span><span class="text-keep">逕滓・縺吶ｋ・・/span></span>
+          <span class="btn-text"><span class="text-keep">AIメニューを</span><span class="text-keep">生成する！</span></span>
           <span class="btn-effect"></span>
         </button>
       </div>
 
       <div id="loading-area" class="loading-area hidden">
         <div class="loading-spinner" style="margin-bottom:1rem;">
-          <img src="kinnikun_spinner.png" class="kinnikun-spin-img" alt="遲玖ｉ繝ｫ繝ｼ繝ｬ繝・ヨ" onerror="this.src='biceps.png'">
+          <img src="kinnikun_spinner.png" class="kinnikun-spin-img" alt="筋肉ルーレット" onerror="this.src='biceps.png'">
         </div>
-        <p class="loading-text" style="color:var(--text-primary); font-size:1.4rem;">遲玖ｉ繝ｫ繝ｼ繝ｬ繝・ヨ縲√せ繧ｿ繝ｼ繝茨ｼ≫ｦ</p>
+        <p class="loading-text" style="color:var(--text-primary); font-size:1.4rem;">筋肉ルーレット、スタート！…</p>
         <p id="loading-quote" class="loading-subtext" style="font-size:1.1rem; color:var(--red); height:2rem; margin-top:1rem;"></p>
       </div>
 
       <div id="plan-area" class="plan-area hidden">
         <div id="plan-list" class="plan-list"></div>
         <button id="btn-complete" class="btn-primary btn-mega btn-complete hidden">
-          <span class="btn-text"><span class="text-keep">螳御ｺ・ｼ・/span><span class="text-keep">繝代Ρ繝ｼ・・ｼ・/span></span>
+          <span class="btn-text"><span class="text-keep">完了！</span><span class="text-keep">パワー！！</span></span>
           <span class="btn-effect"></span>
         </button>
         <button id="btn-regenerate" class="btn-secondary btn-regen">
-          <span>繝｡繝九Η繝ｼ繧剃ｽ懊ｊ逶ｴ縺・/span>
+          <span>メニューを作り直す</span>
         </button>
       </div>
     </div>
 
-    <!-- 繧ｿ繝縫: 繝槭う繝槭ャ繧ｹ繝ｫ (謌宣聞險倬鹸) -->
+    <!-- タブD: マイマッスル (成長記録) -->
     <div id="tab-profile" class="tab-content">
       
       <div class="profile-section">
-        <h2 class="section-title">繝懊ョ繧｣繝ｻ繝√Ε繝ｼ繝・/h2>
+        <h2 class="section-title">ボディ・チャート</h2>
         
-        <!-- 繧ｳ繝ｼ繝ｫ繝峨・繝・・繝ｻ繧ｦ繧｣繧ｸ繧ｧ繝・ヨ -->
+        <!-- コールドマップ・ウィジェット -->
         <div class="cold-map-wrapper" style="margin-bottom: 1.5rem; text-align: center;">
           <div class="cold-map-controls" style="margin-bottom: 0.8rem;">
-            <button id="btn-coldmap-front" class="btn-secondary btn-small active" style="margin-right: 0.5rem; border-color:var(--red); color:var(--red); background:var(--red-light);">繝輔Ο繝ｳ繝・/button>
-            <button id="btn-coldmap-back" class="btn-secondary btn-small">繝舌ャ繧ｯ</button>
+            <button id="btn-coldmap-front" class="btn-secondary btn-small active" style="margin-right: 0.5rem; border-color:var(--red); color:var(--red); background:var(--red-light);">フロント</button>
+            <button id="btn-coldmap-back" class="btn-secondary btn-small">バック</button>
           </div>
           
           <div style="display:flex; justify-content:flex-end; margin-bottom:0.5rem; margin-top:-1rem;">
-            <button id="btn-toggle-cold-map" title="縺薙・鬆・岼繧帝撼陦ｨ遉ｺ縺ｫ縺吶ｋ・亥・陦ｨ遉ｺ縺ｯ繝壹・繧ｸ譖ｴ譁ｰ・・ style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.75rem; display:flex; align-items:center; gap:4px; padding:0.3rem 0.5rem; border-radius:4px; transition:background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='none'">
+            <button id="btn-toggle-cold-map" title="この項目を非表示にする（再表示はページ更新）" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.75rem; display:flex; align-items:center; gap:4px; padding:0.3rem 0.5rem; border-radius:4px; transition:background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='none'">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-              <span>縺薙・鬆・岼繧帝國縺・/span>
+              <span>この項目を隠す</span>
             </button>
           </div>
           <div id="cold-map-visibility-wrapper">
-          <!-- 蜃｡萓具ｼ医う繝ｩ繧ｹ繝医・荳雁・縺ｫ遘ｻ蜍包ｼ・-->
+          <!-- 凡例（イラストの上側に移動） -->
           <div id="cold-map-legend" class="cold-map-legend">
-            <div class="legend-item"><span class="legend-color" style="background:#ff4d4d;"></span>逶ｴ霑・蝗槫ｾｩ荳ｭ</div>
-            <div class="legend-item"><span class="legend-color" style="background:#4ade80;"></span>蝗槫ｾｩ螳御ｺ・/div>
-            <div class="legend-item"><span class="legend-color" style="background:#fbbf24;"></span>繧､繧ｨ繝ｭ繝ｼ</div>
-            <div class="legend-item"><span class="legend-color" style="background:#3b82f6;"></span>蜀ｷ縺・/div>
-            <div class="legend-item"><span class="legend-color" style="background:#9ca3af;"></span>逞帙∩/髯､螟・/div>
+            <div class="legend-item"><span class="legend-color" style="background:#ff4d4d;"></span>直近/回復中</div>
+            <div class="legend-item"><span class="legend-color" style="background:#4ade80;"></span>回復完了</div>
+            <div class="legend-item"><span class="legend-color" style="background:#fbbf24;"></span>イエロー</div>
+            <div class="legend-item"><span class="legend-color" style="background:#3b82f6;"></span>冷え</div>
+            <div class="legend-item"><span class="legend-color" style="background:#9ca3af;"></span>痛み/除外</div>
           </div>
 
           <div id="cold-map-container" style="background-image: url('images/bg_gym_front.png');">
-            <!-- 閭梧勹逕ｻ蜒・-->
-            <img id="cold-map-image" class="cold-map-base-img" src="images/hm_front.png" alt="Body Map" onerror="this.alt='逕ｻ蜒上′縺ゅｊ縺ｾ縺帙ｓ'" style="position:relative; z-index:10;">
-            <!-- 繝輔Ο繝ｳ繝磯擇 SVG -->
+            <!-- 背景画像 -->
+            <img id="cold-map-image" class="cold-map-base-img" src="images/hm_front.png" alt="Body Map" onerror="this.alt='画像がありません'" style="position:relative; z-index:10;">
+            <!-- フロント面 SVG -->
             <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="842 57 800 1067">
-              <!-- 閭ｸ -->
+              <!-- 胸 -->
               <path id="cmap-chest" d="M 1105.448 313.944 C 1130.08 316.295 1155.517 330.442 1168.573 327.523 C 1180.08 324.857 1202.6543 303.8183 1221.826 277.394 C 1224.285 278.9587 1228.714 281.903 1229.203 282.088 C 1235.74 290.332 1239.03 309.2 1241.863 317.828 C 1243.737 324.097 1250.07 325.843 1258.209 332.22 C 1268.676 360.078 1276.849 388.784 1287.886 416.11 C 1253.138 448.896 1223.4357 436.1143 1195.22 445.544 C 1162.648 453.954 1146.172 446.576 1132.676 424.27 C 1124.497 409.17 1124.39 395.016 1120.422 373.678 C 1113.258 365.023 1105.011 358.228 1096.904 348.528 C 1105.964 335.875 1106.948 329.127 1105.823 316.662 Z" fill="gray" />
-              <!-- 蜑崎・(蟾ｦ) -->
+              <!-- 前脚(左) -->
               <path id="cmap-legs-l" d="M 1253.835 478.118 C 1253.9687 485.6077 1265.932 489.498 1254.236 500.587 C 1257.221 506.531 1232.21 540.849 1214.114 589.658 C 1215.733 607.742 1226.784 625.386 1230.965 650.243 C 1229.506 672.308 1233.384 675.41 1228.959 703.204 C 1234.175 706.6813 1239.391 710.1587 1244.607 713.636 C 1258.382 687.044 1310.344 626.745 1339.295 570.801 C 1326.962 543.377 1315.135 520.693 1308.712 491.029 C 1277.884 491.804 1269.547 485.794 1253.433 477.717 Z" fill="gray" />
-              <!-- 蜑崎・(蜿ｳ) -->
+              <!-- 前脚(右) -->
               <path id="cmap-legs-r" d="M 1355.199 478.112 C 1392.713 460.364 1397.13 435.826 1396.414 425.266 C 1396.884 411.043 1394.073 397.382 1383.013 388.096 C 1420.414 396.105 1442.605 409.835 1459.88 433.61 C 1472.516 455.336 1475.709 471.62 1478.586 495.815 C 1477.541 539.472 1469.837 581.78 1436.07 693.226 C 1435.4973 686.8463 1435.618 682.677 1433.064 673.098 C 1419.8747 656.992 1408.318 637.816 1390.92 622.802 C 1386.589 598.541 1381.31 608.916 1368.858 532.445 C 1365.505 512.809 1362.631 497.962 1355.34 478.764 Z" fill="gray" />
-              <!-- 蜑崎か(蟾ｦ) -->
+              <!-- 前肩(左) -->
               <path id="cmap-shoulders-l" d="M 1183.597 242.252 C 1239.3 252.041 1262.686 241.647 1277.345 248.004 C 1301.664 261.569 1312.058 295.927 1312.058 304.3 C 1313.79 333.461 1313.213 347.031 1305.995 352.517 C 1297.91 355.404 1263.3497 337.3417 1244.208 322.201 C 1238.145 313.828 1239.011 296.505 1229.608 282.512 C 1212.737 271.963 1198.301 258.971 1183.614 242.236 Z" fill="gray" />
-              <!-- 蜑崎か(蜿ｳ) -->
+              <!-- 前肩(右) -->
               <path id="cmap-shoulders-r" d="M 1107.527 278.91 C 1093.7343 289.7923 1068.104 297.798 1066.149 311.557 C 1062.429 333.482 1074.367 351.799 1084.75 369.259 C 1090.666 355.341 1101.304 344.824 1105.204 332.771 C 1110.1567 316.5603 1115.1093 300.3497 1120.062 284.139 C 1117.266 283.44 1114.237 282.274 1107.148 279.289 Z" fill="gray" />
-              <!-- 蜑崎・(蟾ｦ) -->
+              <!-- 前腕(左) -->
               <path id="cmap-arms-l" d="M 1258.501 332.475 C 1280.065 397.232 1287.999 416.275 1304.64 458.688 C 1315.176 448.808 1327.475 445.436 1337.01 433.791 C 1329.062 392.273 1320.397 348.456 1312.163 305.47 C 1312.503 321.654 1315.683 348.245 1305.033 352.871 C 1291.824 353.767 1269.919 338.418 1258.552 332.446 Z" fill="gray" />
-              <!-- 蜑崎・(蜿ｳ) -->
+              <!-- 前腕(右) -->
               <path id="cmap-arms-r" d="M 1084.702 369.072 C 1104.308 400.675 1122.199 434.892 1137.311 465.766 C 1150.155 459.717 1163.126 458.151 1175.417 457.322 C 1174.664 454.476 1174.113 451.3923 1172.998 448.666 C 1158.759 449.872 1140.643 442.619 1129.351 417.797 C 1123.76 402.927 1124.096 389.398 1120.388 373.81 C 1113.333 364.578 1104.287 358.092 1096.859 348.338 C 1092.8003 355.2887 1088.869 360.218 1084.683 369.19 Z" fill="gray" />
-              <!-- 閻ｹ -->
+              <!-- 腹 -->
               <path id="cmap-abs" d="M 1291.322 428.375 C 1297.034 438.686 1301.273 449.415 1305.081 460.239 C 1306.983 470.017 1308.021 480.573 1309.064 490.654 C 1288.793 492.469 1273.585 487.762 1254.026 478.343 C 1246.428 470.019 1252.946 466.399 1206.236 451.553 C 1263.808 451.553 1274.671 438.155 1291.69 428.379 Z" fill="gray" />
             </svg>
-            <!-- 繝舌ャ繧ｯ髱｢ SVG -->
+            <!-- バック面 SVG -->
             <svg id="cold-map-overlay-back" class="cold-map-svg hidden" viewBox="0 0 800 1067">
               <path id="cmap-back" transform="translate(-6,-54)" d="M 444.388 448.414 C 446.338 430.17 444.2307 417.9667 444.152 402.743 S 437.052 368.925 436.543 365.786 S 445.643 353.84 455.022 347.308 S 473.422 337.173 485.457 334.264 S 518.053 336.437 523.5 337.525 S 538.982 365.881 543.797 382.363 S 549.352 405.882 549.587 416.873 S 548.984 457.734 544.152 472.308 S 557.879 528.852 555.471 533.482 S 543.618 553.668 541.951 562.187 S 531.989 576.563 528.935 585.351 S 508.455 620.441 505.022 624.482 S 493.495 634.802 486.543 645.134 S 468.367 659.532 458.283 673.395 S 448.624 713.186 444.152 715.786 S 383.6 716.177 378.935 712.525 S 372.829 683.467 372.413 667.96 S 374.226 618.044 377.848 599.482 S 388.186 539.061 393.065 527.743 S 426.681 505.153 431.109 500.569 S 442.438 466.658 444.388 448.414" fill="gray" />
               <path id="cmap-arms-back" transform="translate(-6,-54)" d="M 351.393 442.147 C 353.501 472.775 358.412 468.892 361.193 482.812 C 361.877 509.147 355.852 513.107 354.131 526.706 C 348.015 542.447 352.584 545.417 347.933 563.201 C 333.736 590.879 338.419 594.192 336.02 604.015 C 318.202 587.11 310.549 587.339 297.028 584.556 C 310.319 548.157 306.995 524.286 311.125 505.898 C 319.217 479.966 312.6283 470.3747 314.035 452.084 C 326.285 450.169 327.343 449.816 339.484 446.625 Z" fill="gray" />
@@ -399,7 +399,7 @@
     </div>
 
     <div class="profile-section">
-      <h3 class="section-title" style="font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:1rem;">菴馴㍾謗ｨ遘ｻ</h3>
+      <h3 class="section-title" style="font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:1rem;">体重推移</h3>
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="weightChart"></canvas>
         </div>
@@ -407,22 +407,22 @@
         <div class="weight-input-area" style="margin-bottom: 1.5rem;">
           <div style="display:flex; gap:0.5rem; margin-bottom: 0.5rem;">
             <input type="date" id="body-date" class="input-muscle" style="flex:1;">
-            <input type="number" id="body-weight" class="input-muscle" step="0.1" placeholder="菴馴㍾(kg)" style="flex:1;">
-            <input type="number" id="body-fat" class="input-muscle" step="0.1" placeholder="菴楢р閧ｪ(%)" style="flex:0.8;">
+            <input type="number" id="body-weight" class="input-muscle" step="0.1" placeholder="体重(kg)" style="flex:1;">
+            <input type="number" id="body-fat" class="input-muscle" step="0.1" placeholder="体脂肪(%)" style="flex:0.8;">
           </div>
           <button id="btn-save-weight" class="btn-primary" style="width:100%; padding:0.8rem;">
-            <span class="btn-text"><span class="text-keep">菴馴㍾繧定ｨ倬鹸縺吶ｋ・・/span><span class="text-keep">繝代Ρ繝ｼ・・/span></span>
+            <span class="btn-text"><span class="text-keep">体重を記録する！</span><span class="text-keep">パワー！</span></span>
           </button>
         </div>
 
         <div id="body-feedback" class="muscle-feedback-box hidden" style="margin-bottom:2rem;">
-          <div class="feedback-icon">潮</div>
+          <div class="feedback-icon">💪</div>
           <p id="body-feedback-text" class="feedback-text"></p>
         </div>
 
-        <!-- 蛻・梵繝繝・す繝･繝懊・繝・-->
-        <h3 class="section-title" style="margin-top:1rem; font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:0.5rem;">遲玖ｉ縺ｮ謌宣聞蛻・梵</h3>
-        <p style="font-size:clamp(0.6rem, 3vw, 0.8rem); color:var(--text-light); margin-bottom:1rem; white-space:nowrap; letter-spacing:-0.5px; overflow:hidden; text-overflow:ellipsis;">窶ｻ驕主悉30譌･髢薙・繝医Ξ繝ｼ繝九Φ繧ｰ險倬鹸繧偵ｂ縺ｨ縺ｫ繧ｰ繝ｩ繝輔′陦ｨ遉ｺ縺輔ｌ縺ｾ縺吶・/p>
+        <!-- 分析ダッシュボード -->
+        <h3 class="section-title" style="margin-top:1rem; font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:0.5rem;">筋肉の成長分析</h3>
+        <p style="font-size:clamp(0.6rem, 3vw, 0.8rem); color:var(--text-light); margin-bottom:1rem; white-space:nowrap; letter-spacing:-0.5px; overflow:hidden; text-overflow:ellipsis;">※過去30日間のトレーニング記録をもとにグラフが表示されます。</p>
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="volumeChart"></canvas>
         </div>
@@ -432,66 +432,66 @@
       </div>
 
       <div class="profile-section">
-        <h2 class="section-title">遲玖ｉ縺ｮ蝓ｺ譛ｬ繝励Ο繝輔ぅ繝ｼ繝ｫ</h2>
+        <h2 class="section-title">筋肉の基本プロフィール</h2>
         <form id="profile-form" class="onboard-form">
           <div class="form-group" style="margin-bottom:1rem;">
-            <label class="form-label">識 逶ｮ讓吩ｽ馴㍾ (kg)</label>
-            <input type="number" name="p-targetWeight" id="p-targetWeight" class="input-muscle" step="0.1" placeholder="萓・ 70.0">
+            <label class="form-label">🎯 目標体重 (kg)</label>
+            <input type="number" name="p-targetWeight" id="p-targetWeight" class="input-muscle" step="0.1" placeholder="例: 70.0">
           </div>
           
-          <div class="form-group"><label class="form-label">逶ｮ逧・/label>
+          <div class="form-group"><label class="form-label">目的</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-goal" value="遲玖ぇ螟ｧ"><span class="radio-text">遲玖ぇ螟ｧ</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="繝繧､繧ｨ繝・ヨ"><span class="radio-text">繝繧､繧ｨ繝・ヨ</span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="蛛･蠎ｷ邯ｭ謖・><span class="radio-text">蛛･蠎ｷ邯ｭ謖・/span></label>
-              <label class="radio-card"><input type="radio" name="p-goal" value="遲句鴨繧｢繝・・"><span class="radio-text">遲句鴨UP</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="筋肥大"><span class="radio-text">筋肥大</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="ダイエット"><span class="radio-text">ダイエット</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="健康維持"><span class="radio-text">健康維持</span></label>
+              <label class="radio-card"><input type="radio" name="p-goal" value="筋力アップ"><span class="radio-text">筋力UP</span></label>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">邨碁ｨ・/label>
+          <div class="form-group"><label class="form-label">経験</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-experience" value="蛻晏ｿ・・><span class="radio-text">蛻晏ｿ・・/span></label>
-              <label class="radio-card"><input type="radio" name="p-experience" value="荳ｭ邏夊・><span class="radio-text">荳ｭ邏夊・/span></label>
-              <label class="radio-card"><input type="radio" name="p-experience" value="荳顔ｴ夊・><span class="radio-text">荳顔ｴ夊・/span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="初心者"><span class="radio-text">初心者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="中級者"><span class="radio-text">中級者</span></label>
+              <label class="radio-card"><input type="radio" name="p-experience" value="上級者"><span class="radio-text">上級者</span></label>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">豢ｻ蜍暮㍼</label>
+          <div class="form-group"><label class="form-label">活動量</label>
             <div class="radio-group">
-              <label class="radio-card"><input type="radio" name="p-activity" value="繝・せ繧ｯ繝ｯ繝ｼ繧ｯ"><span class="radio-text">繝・せ繧ｯ</span></label>
-              <label class="radio-card"><input type="radio" name="p-activity" value="譎ｮ騾・><span class="radio-text">譎ｮ騾・/span></label>
-              <label class="radio-card"><input type="radio" name="p-activity" value="蜉帑ｻ穂ｺ・><span class="radio-text">蜉帑ｻ穂ｺ・/span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="デスクワーク"><span class="radio-text">デスク</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="普通"><span class="radio-text">普通</span></label>
+              <label class="radio-card"><input type="radio" name="p-activity" value="力仕事"><span class="radio-text">力仕事</span></label>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">逞帙∩縺ｮ縺ゅｋ驛ｨ菴・/label>
+          <div class="form-group"><label class="form-label">痛みのある部位</label>
             <div class="checkbox-group" id="p-pain-group">
-              <label class="check-card"><input type="checkbox" name="p-pain" value="縺ｪ縺・><span class="check-text">縺ｪ縺・/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="閧ｩ"><span class="check-text">閧ｩ</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="閻ｰ"><span class="check-text">閻ｰ</span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="閹・><span class="check-text">閹・/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="閧・><span class="check-text">閧・/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="謇矩ｦ・><span class="check-text">謇矩ｦ・/span></label>
-              <label class="check-card"><input type="checkbox" name="p-pain" value="鬥・><span class="check-text">鬥・/span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="なし"><span class="check-text">なし</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="肩"><span class="check-text">肩</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="腰"><span class="check-text">腰</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="膝"><span class="check-text">膝</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="肘"><span class="check-text">肘</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="手首"><span class="check-text">手首</span></label>
+              <label class="check-card"><input type="checkbox" name="p-pain" value="首"><span class="check-text">首</span></label>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">蜆ｪ蜈磯Κ菴・/label>
+          <div class="form-group"><label class="form-label">優先部位</label>
             <div class="checkbox-group" id="p-priority-group">
-              <label class="check-card"><input type="checkbox" name="p-priority" value="閭ｸ"><span class="check-text">閭ｸ</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="閭御ｸｭ"><span class="check-text">閭御ｸｭ</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="荳句濠霄ｫ"><span class="check-text">荳句濠霄ｫ</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="閧ｩ"><span class="check-text">閧ｩ</span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="閻・><span class="check-text">閻・/span></label>
-              <label class="check-card"><input type="checkbox" name="p-priority" value="閻ｹ"><span class="check-text">閻ｹ</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="胸"><span class="check-text">胸</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="背中"><span class="check-text">背中</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="下半身"><span class="check-text">下半身</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="肩"><span class="check-text">肩</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="腕"><span class="check-text">腕</span></label>
+              <label class="check-card"><input type="checkbox" name="p-priority" value="腹"><span class="check-text">腹</span></label>
             </div>
           </div>
           <div class="form-group" style="margin-bottom:1rem;">
-            <label class="form-label">繝医Ξ繝ｼ繝九Φ繧ｰ蛻・牡豕・/label>
+            <label class="form-label">トレーニング分割法</label>
             <select name="p-splitMethod" id="p-splitMethod" class="input-muscle" style="padding: 0.8rem; text-align: left;">
-              <option value="ppl">PPL豕・(Push/Pull/Legs)</option>
-              <option value="upperLower">荳贋ｸ句・蜑ｲ (Upper/Lower)</option>
-              <option value="fullBody">蜈ｨ霄ｫ豕・(Full Body)</option>
-              <option value="broSplit">繝悶Ο繧ｹ繝励Μ繝・ヨ (驛ｨ菴阪＃縺ｨ騾ｱ1蝗・</option>
+              <option value="ppl">PPL法 (Push/Pull/Legs)</option>
+              <option value="upperLower">上下分割 (Upper/Lower)</option>
+              <option value="fullBody">全身法 (Full Body)</option>
+              <option value="broSplit">ブロスプリット (部位ごと週1回)</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">騾ｱ縺ｮ鬆ｻ蠎ｦ</label>
+          <div class="form-group"><label class="form-label">週の頻度</label>
             <div class="frequency-slider">
               <div class="frequency-slider-wrapper">
                 <div class="frequency-track-bg"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
@@ -500,79 +500,79 @@
             </div>
           </div>
           <button type="submit" class="btn-primary" style="width:100%;">
-            <span class="btn-text"><span class="text-keep">繝励Ο繝輔ぅ繝ｼ繝ｫ譖ｴ譁ｰ・・/span><span class="text-keep">繝代Ρ繝ｼ・・ｼ・/span></span>
+            <span class="btn-text"><span class="text-keep">プロフィール更新！</span><span class="text-keep">パワー！！</span></span>
           </button>
         </form>
       </div>
 
-      <!-- 繝槭ャ繧ｹ繝ｫ繝ｻ繝ｫ繝ｼ繝ｫ (邯咏ｶ夂噪縺ｪ隕∵悍) -->
+      <!-- マッスル・ルール (継続的な要望) -->
       <div class="profile-section">
-        <h2 class="section-title" style="white-space: nowrap; font-size: clamp(0.9rem, 4.5vw, 1.25rem); letter-spacing: -0.5px;">繝槭ャ繧ｹ繝ｫ繝ｻ繝ｫ繝ｼ繝ｫ (邯咏ｶ夂噪縺ｪ隕∵悍)</h2>
+        <h2 class="section-title" style="white-space: nowrap; font-size: clamp(0.9rem, 4.5vw, 1.25rem); letter-spacing: -0.5px;">マッスル・ルール (継続的な要望)</h2>
         <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
-          AI縺悟ｭｦ鄙偵＠縺溷菅縺ｮ縺薙□繧上ｊ繧・Ν繝ｼ繝ｫ縺・・br>
-          繝√Ε繝・ヨ縺ｧ莨昴∴縺溷・螳ｹ縺ｯ縺薙％縺ｸ閾ｪ蜍慕噪縺ｫ闢・ｩ阪＆繧後√・繝ｩ繝ｳ逕滓・縺ｫ豌ｸ邯夂噪縺ｫ蜿肴丐縺輔ｌ繧九◇・∫峩謗･邱ｨ髮・ｂ蜿ｯ閭ｽ縺・・
+          AIが学習した君のこだわりやルールだ！<br>
+          チャットで伝えた内容はここへ自動的に蓄積され、プラン生成に永続的に反映されるぞ！直接編集も可能だ！
         </p>
         <div class="form-group">
-          <textarea id="profile-user-rules" class="input-muscle" style="width:100%; height:120px; padding:0.8rem; font-size:0.9rem; line-height:1.5; resize:none; background:var(--bg-input); text-align: left; cursor: pointer; caret-color: transparent;" placeholder="繧ｿ繝・・縺励※蜷帙・縺薙□繧上ｊ繧堤ｷｨ髮・＠縺ｦ縺上ｌ・√ヱ繝ｯ繝ｼ・・ readonly></textarea>
+          <textarea id="profile-user-rules" class="input-muscle" style="width:100%; height:120px; padding:0.8rem; font-size:0.9rem; line-height:1.5; resize:none; background:var(--bg-input); text-align: left; cursor: pointer; caret-color: transparent;" placeholder="タップして君のこだわりを編集してくれ！パワー！" readonly></textarea>
         </div>
         <button id="btn-save-rules" class="btn-primary" style="width:100%; margin-top:0.5rem;">
-          <span class="btn-text"><span class="text-keep">繝ｫ繝ｼ繝ｫ繧剃ｿ晏ｭ倥☆繧具ｼ・/span><span class="text-keep">繝代Ρ繝ｼ・・/span></span>
+          <span class="btn-text"><span class="text-keep">ルールを保存する！</span><span class="text-keep">パワー！</span></span>
         </button>
       </div>
 
 
       <div class="profile-section">
-        <h2 class="section-title">繝医Ξ繝ｼ繝九Φ繧ｰ遞ｮ逶ｮ繧ｫ繧ｹ繧ｿ繝</h2>
+        <h2 class="section-title">トレーニング種目カスタム</h2>
         <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.5;">
-          <span class="text-keep">繧ｪ繧､縲√◎縺薙・蜷幢ｼ・/span>
-          <span class="text-keep">蜷帙□縺代・繧ｪ繝ｪ繧ｸ繝翫Ν遞ｮ逶ｮ繧・・繧ｷ繝ｳ繧・/span>
-          <span class="text-keep">閾ｪ逕ｱ縺ｫ霑ｽ蜉繝ｻ邱ｨ髮・〒縺阪ｋ縺橸ｼ・/span><br>
-          <span class="text-keep">縺薙％縺ｧ骰帙∴荳翫￡縺溘Μ繧ｹ繝医ｒ菴ｿ縺｣縺ｦ縲・/span>
-          <span class="text-keep">遲玖ｉ繧ｳ繝ｳ繝斐Η繝ｼ繧ｿ繝ｼ・・I・峨′</span>
-          <span class="text-keep">閾ｪ蛻・□縺代・譛蠑ｷ繝励Ο繧ｰ繝ｩ繝繧・/span>
-          <span class="text-keep">逕滓・縺吶ｋ繧薙□・・/span><br>
-          <span class="text-keep" style="font-weight:700; color:var(--text-primary);">縺輔≠縲∫炊諠ｳ縺ｮ遲玖ｉ繧貞卸繧贋ｸ翫￡繧医≧・√Ζ繝ｼ・・ｼÅ汳ｪ笨ｨ</span>
+          <span class="text-keep">オイ、そこの君！</span>
+          <span class="text-keep">君だけのオリジナル種目やマシンを</span>
+          <span class="text-keep">自由に追加・編集できるぞ！</span><br>
+          <span class="text-keep">ここで鍛え上げたリストを使って、</span>
+          <span class="text-keep">筋肉コンピューター（AI）が</span>
+          <span class="text-keep">自分だけの最強プログラムを</span>
+          <span class="text-keep">生成するんだ！</span><br>
+          <span class="text-keep" style="font-weight:700; color:var(--text-primary);">さあ、理想の筋肉を創り上げよう！ヤー！！💪✨</span>
         </p>
         <button id="btn-open-exercise-master" class="btn-primary" style="width:100%; margin-top:0.5rem; padding:1.2rem;">
-          <span class="btn-text" style="font-size:1.05rem;"><span class="text-keep">暑・・遞ｮ逶ｮ繝ｪ繧ｹ繝医ｒ</span><span class="text-keep">邱ｨ髮・☆繧具ｼ√ヱ繝ｯ繝ｼ・・/span></span>
+          <span class="btn-text" style="font-size:1.05rem;"><span class="text-keep">🏋️ 種目リストを</span><span class="text-keep">編集する！パワー！</span></span>
           <span class="btn-effect"></span>
         </button>
       </div>
 
       <div class="profile-section" style="background:var(--bg-input);">
-        <h2 class="section-title" style="font-size:1rem; border:none; box-shadow:none; padding-left:0; background:transparent;">繧ｷ繧ｹ繝・Β險ｭ螳・/h2>
+        <h2 class="section-title" style="font-size:1rem; border:none; box-shadow:none; padding-left:0; background:transparent;">システム設定</h2>
         
-        <label class="form-label">､・AI繝｢繝・Ν驕ｸ謚・(繝・せ繝育畑)</label>
+        <label class="form-label">🤖 AIモデル選択 (テスト用)</label>
         <div style="margin-bottom:1.5rem;">
           <select id="profile-ai-model" class="input-muscle" style="text-align: left; padding: 0.6rem;">
-            <option value="gemini-3.5-flash">Gemini 3.5 Flash (讓呎ｺ・雜・せ繝槭・繝・1譌･20蝗・</option>
-            <option value="gemini-3-flash-preview">Gemini 3 Flash (繧ｵ繝・鬮倬・1譌･20蝗・</option>
-            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (繧ｹ繧ｿ繝溘リ譛蠑ｷ/辟｡譁呎棧辟｡髯・</option>
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash (標準/超スマート/1日20回)</option>
+            <option value="gemini-3-flash-preview">Gemini 3 Flash (サブ/高速/1日20回)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (スタミナ最強/無料枠無限)</option>
           </select>
         </div>
-        <label class="form-label">Gemini API繧ｭ繝ｼ</label>
+        <label class="form-label">Gemini APIキー</label>
         <div style="display:flex;gap:0.5rem;align-items:center; margin-bottom:1.5rem;">
           <input type="password" id="profile-api-key" class="input-muscle" placeholder="AIzaSy..." style="flex:1;text-align:left;">
-          <button id="btn-save-apikey" class="btn-primary" style="padding:0.5rem 1rem;">菫晏ｭ・/button>
+          <button id="btn-save-apikey" class="btn-primary" style="padding:0.5rem 1rem;">保存</button>
         </div>
 
 
       </div>
 
-<!-- Google Drive 繧ｯ繝ｩ繧ｦ繝牙酔譛・-->
+<!-- Google Drive クラウド同期 -->
       <div class="profile-section" style="margin-top:2rem;">
-        <h2 class="section-title">繧ｯ繝ｩ繧ｦ繝牙酔譛・(Google Drive)</h2>
+        <h2 class="section-title">クラウド同期 (Google Drive)</h2>
         <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
-          繝悶Λ繧ｦ繧ｶ縺ｮ繧ｭ繝｣繝・す繝･縺後け繝ｪ繧｢縺輔ｌ縺ｦ繧らｭ玖ｉ縺ｮ險倬鹸繧貞､ｱ繧上↑縺・ｈ縺・↓縲；oogle Drive縺ｫ繝・・繧ｿ繧偵ヰ繝・け繧｢繝・・縺励∪縺吶・
+          ブラウザのキャッシュがクリアされても筋肉の記録を失わないように、Google Driveにデータをバックアップします。
         </p>
         <div style="display:flex; flex-direction:column; gap:0.5rem;">
           <button id="btn-drive-backup" class="btn-primary" style="background:var(--card-bg); color:var(--text-primary); border:2px solid var(--red);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            Google Drive 縺ｸ菫晏ｭ倥☆繧・
+            Google Drive へ保存する
           </button>
           <button id="btn-drive-restore" class="btn-secondary" style="border:2px solid #ccc; background:transparent;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Google Drive 縺九ｉ蠕ｩ蜈・☆繧・
+            Google Drive から復元する
           </button>
         </div>
         <p id="drive-status-text" style="font-size:0.8rem; color:var(--red); text-align:center; margin-top:0.5rem; display:none;"></p>
@@ -582,140 +582,140 @@
     </div>
   </div>
 
-  <!-- ========== 譚｡莉ｶ險ｭ螳壹Δ繝ｼ繝繝ｫ ========== -->
+  <!-- ========== 条件設定モーダル ========== -->
   <div id="modal-conditions" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h2><span class="text-keep">莉頑律縺ｮ繧ｳ繝ｳ繝・ぅ繧ｷ繝ｧ繝ｳ繧・/span><span class="text-keep">謨吶∴縺ｦ縺上ｌ・・/span></h2>
-        <button class="modal-close" data-modal="modal-conditions">笨・/button>
+        <h2><span class="text-keep">今日のコンディションを</span><span class="text-keep">教えてくれ！</span></h2>
+        <button class="modal-close" data-modal="modal-conditions">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label class="form-label">莉雁屓縺ｮ莠亥ｮ壽凾髢・/label>
+          <label class="form-label">今回の予定時間</label>
           <div class="time-selector">
-            <button class="time-btn" data-time="30">30蛻・/button>
-            <button class="time-btn active" data-time="60">60蛻・/button>
-            <button class="time-btn" data-time="90">90蛻・/button>
-            <button class="time-btn" data-time="120">120蛻・/button>
+            <button class="time-btn" data-time="30">30分</button>
+            <button class="time-btn active" data-time="60">60分</button>
+            <button class="time-btn" data-time="90">90分</button>
+            <button class="time-btn" data-time="120">120分</button>
           </div>
           <div class="custom-time-wrapper" style="margin-top: 0.8rem;">
-            <label class="form-hint" style="display:block; margin-bottom:0.3rem;">120蛻・ｒ雜・∴繧句ｴ蜷医・謇句・蜉幢ｼ・/label>
+            <label class="form-hint" style="display:block; margin-bottom:0.3rem;">120分を超える場合は手入力：</label>
             <div style="display:flex; align-items:center; gap:0.5rem;">
-              <input type="number" id="custom-time-input" class="input-muscle" placeholder="萓・ 150" step="30" style="flex:1; padding: 0.8rem; font-size: 1.1rem; text-align: center;">
-              <span style="font-weight:900; font-family:var(--font-title); color:var(--text-primary);">蛻・/span>
+              <input type="number" id="custom-time-input" class="input-muscle" placeholder="例: 150" step="30" style="flex:1; padding: 0.8rem; font-size: 1.1rem; text-align: center;">
+              <span style="font-weight:900; font-family:var(--font-title); color:var(--text-primary);">分</span>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">莉翫・逍ｲ蜉ｴ蠎ｦ縺ｯ縺ｩ縺・↑繧薙□縺・ｼ・/label>
+          <label class="form-label">今の疲労度はどうなんだい？</label>
           <div class="fatigue-selector">
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="蜈・ｰ・ checked>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="元気" checked>
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><polyline points="17 11 12 4 7 11"/><polyline points="17 19 12 12 7 19"/></svg>
-              <span>邨ｶ螂ｽ隱ｿ・・/span></label>
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="譎ｮ騾・>
+              <span>絶好調！</span></label>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="普通">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
-              <span>譎ｮ騾・/span></label>
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="蟆代＠逍ｲ繧・>
+              <span>普通</span></label>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="少し疲れ">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><line x1="6" y1="6" x2="18" y2="18"/><polyline points="18 10 18 18 10 18"/></svg>
-              <span>蟆代＠逍ｲ繧・/span></label>
-            <label class="fatigue-card"><input type="radio" name="fatigue" value="逍ｲ蜉ｴ蝗ｰ諞・>
+              <span>少し疲れ</span></label>
+            <label class="fatigue-card"><input type="radio" name="fatigue" value="疲労困憊">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.2rem;"><polyline points="7 13 12 20 17 13"/><polyline points="7 5 12 12 17 5"/></svg>
-              <span>逍ｲ蜉ｴ蝗ｰ諞・/span></label>
+              <span>疲労困憊</span></label>
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">莉頑律縲∫李縺ｿ縺後≠繧矩Κ菴阪・・・/label>
+          <label class="form-label">今日、痛みがある部位は？</label>
           <div class="checkbox-group compact" id="today-pain-group">
-            <label class="check-card"><input type="checkbox" name="todayPain" value="縺ｪ縺・ checked><span
-                class="check-text">縺ｪ縺・/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="閧ｩ"><span
-                class="check-text">閧ｩ</span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="閻ｰ"><span
-                class="check-text">閻ｰ</span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="閹・><span
-                class="check-text">閹・/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="閧・><span
-                class="check-text">閧・/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="謇矩ｦ・><span
-                class="check-text">謇矩ｦ・/span></label>
-            <label class="check-card"><input type="checkbox" name="todayPain" value="鬥・><span
-                class="check-text">鬥・/span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="なし" checked><span
+                class="check-text">なし</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="肩"><span
+                class="check-text">肩</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="腰"><span
+                class="check-text">腰</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="膝"><span
+                class="check-text">膝</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="肘"><span
+                class="check-text">肘</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="手首"><span
+                class="check-text">手首</span></label>
+            <label class="check-card"><input type="checkbox" name="todayPain" value="首"><span
+                class="check-text">首</span></label>
           </div>
         </div>
         <div class="form-group" style="margin-top: 1rem; border-top: 1px dashed var(--border-color); padding-top: 1rem;">
           <label class="check-card" style="width:100%; display:flex; align-items:center; background: var(--bg-input); padding: 0.8rem; border-radius: var(--radius-sm);">
             <input type="checkbox" id="chk-tomorrow-plan">
             <span class="check-text" style="font-size:0.95rem; font-weight:700; color:var(--red);">
-              套 譏取律縺ｮ繝励Λ繝ｳ繧剃ｽ懈・縺吶ｋ・亥屓蠕ｩ譌･謨ｰ繧・1譌･・・
+              📅 明日のプランを作成する（回復日数を+1日）
             </span>
           </label>
-          <p class="form-hint" style="margin-top:0.4rem;">窶ｻ繝医Ξ繝ｼ繝九Φ繧ｰ蜑肴律縺ｮ螟懊↓繝励Λ繝ｳ繧剃ｽ懈・縺吶ｋ蝣ｴ蜷医↓繝√ぉ繝・け縺励※縺上ｌ・・/p>
+          <p class="form-hint" style="margin-top:0.4rem;">※トレーニング前日の夜にプランを作成する場合にチェックしてくれ！</p>
         </div>
         <div class="form-group">
-          <label class="form-label">閾ｪ逕ｱ隕∵悍・医ヵ繝ｪ繝ｼ繝・く繧ｹ繝茨ｼ・/label>
-          <p class="form-hint">萓具ｼ壹梧怏驟ｸ邏30蛻・性繧√※縲阪瑚・縺縺代〒邨・ｓ縺ｧ縲・/p>
-          <textarea id="free-request" class="textarea-muscle" rows="3" placeholder="遲玖ｉ縺ｸ縺ｮ諠ｳ縺・√↑繧薙〒繧よ嶌縺・※縺上ｌ・・></textarea>
+          <label class="form-label">自由要望（フリーテキスト）</label>
+          <p class="form-hint">例：「有酸素30分含めて」「腕だけで組んで」</p>
+          <textarea id="free-request" class="textarea-muscle" rows="3" placeholder="筋肉への想い、なんでも書いてくれ！"></textarea>
         </div>
       </div>
       <div class="modal-footer">
         <button id="btn-start-generate" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">遲玖ｉ繝ｫ繝ｼ繝ｬ繝・ヨ縲・/span><span class="text-keep">繧ｹ繧ｿ繝ｼ繝茨ｼ・/span></span>
+          <span class="btn-text"><span class="text-keep">筋肉ルーレット、</span><span class="text-keep">スタート！</span></span>
           <span class="btn-effect"></span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 謇句虚霑ｽ蜉繝｢繝ｼ繝繝ｫ ========== -->
+  <!-- ========== 手動追加モーダル ========== -->
   <div id="modal-manual" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h2><span class="text-keep">謇句虚縺ｧ繝医Ξ繝ｼ繝九Φ繧ｰ繧・/span><span class="text-keep">險倬鹸・・/span></h2>
-        <button class="modal-close" data-modal="modal-manual">笨・/button>
+        <h2><span class="text-keep">手動でトレーニングを</span><span class="text-keep">記録！</span></h2>
+        <button class="modal-close" data-modal="modal-manual">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label class="form-label">譌･莉・/label>
+          <label class="form-label">日付</label>
           <input type="date" id="manual-date" class="input-muscle">
         </div>
         <div id="manual-exercises" class="manual-exercises"></div>
-        <button id="btn-add-exercise" class="btn-secondary btn-small" type="button">・・遞ｮ逶ｮ繧定ｿｽ蜉</button>
+        <button id="btn-add-exercise" class="btn-secondary btn-small" type="button">＋ 種目を追加</button>
       </div>
       <div class="modal-footer">
         <button id="btn-save-manual" class="btn-primary">
-          <span class="btn-text"><span class="text-keep">險倬鹸螳御ｺ・ｼ・/span><span class="text-keep">繝代Ρ繝ｼ・・/span></span>
+          <span class="btn-text"><span class="text-keep">記録完了！</span><span class="text-keep">パワー！</span></span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 螳溽ｸｾ邱ｨ髮・Δ繝ｼ繝繝ｫ ========== -->
+  <!-- ========== 実績編集モーダル ========== -->
   <div id="modal-edit-exercise" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h2><span class="text-keep">繝医Ξ繝ｼ繝九Φ繧ｰ險倬鹸繧・/span><span class="text-keep">邱ｨ髮・/span></h2>
-        <button class="modal-close" data-modal="modal-edit-exercise">笨・/button>
+        <h2><span class="text-keep">トレーニング記録を</span><span class="text-keep">編集</span></h2>
+        <button class="modal-close" data-modal="modal-edit-exercise">✕</button>
       </div>
       <div class="modal-body" id="edit-exercise-body"></div>
       <div class="modal-footer">
         <button id="btn-save-edit" class="btn-primary">
-          <span class="btn-text"><span class="text-keep">譖ｴ譁ｰ螳御ｺ・ｼ・/span><span class="text-keep">繝代Ρ繝ｼ・・/span></span>
+          <span class="btn-text"><span class="text-keep">更新完了！</span><span class="text-keep">パワー！</span></span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 螳御ｺ・・繝・・繧｢繝・・ ========== -->
+  <!-- ========== 完了ポップアップ ========== -->
   <div id="modal-complete" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content modal-celebration">
       <div class="onboard-title-muscle">
-        <span class="phrase">莉頑律縺ｮ繝医Ξ繝ｼ繝九Φ繧ｰ縲・/span>
-        <span class="phrase">縺顔夢繧梧ｧ倥□・・/span>
-        <span class="catchphrase-punch">繝翫う繧ｹ繝舌Ν繧ｯ・・/span>
+        <span class="phrase">今日のトレーニング、</span>
+        <span class="phrase">お疲れ様だ！</span>
+        <span class="catchphrase-punch">ナイスバルク！</span>
       </div>
       <div style="background:var(--yellow-light); border:3px solid var(--text-primary); border-radius:var(--radius-sm); padding:1rem; margin-bottom:1.5rem; position:relative;">
         <svg style="position:absolute; top:-15px; left:10px; width:30px; height:30px; fill:var(--white); stroke:var(--text-primary); stroke-width:2;" viewBox="0 0 24 24"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zM15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
@@ -723,214 +723,214 @@
       </div>
       <div id="celebration-stats" class="celebration-stats"></div>
       <button id="btn-close-complete" class="btn-primary btn-mega">
-        <span class="btn-text"><span class="text-keep">螳御ｺ・☆繧・/span></span>
+        <span class="btn-text"><span class="text-keep">完了する</span></span>
         <span class="btn-effect"></span>
       </button>
       <div class="confetti-container" id="confetti"></div>
     </div>
   </div>
 
-  <!-- ========== API繧ｭ繝ｼ蜈･蜉帙Δ繝ｼ繝繝ｫ ========== -->
+  <!-- ========== APIキー入力モーダル ========== -->
   <div id="modal-apikey" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h2><span class="text-keep">Gemini API繧ｭ繝ｼ繧・/span><span class="text-keep">蜈･蜉帙＠縺ｦ縺上ｌ・・/span></h2>
-        <button class="modal-close" data-modal="modal-apikey">笨・/button>
+        <h2><span class="text-keep">Gemini APIキーを</span><span class="text-keep">入力してくれ！</span></h2>
+        <button class="modal-close" data-modal="modal-apikey">✕</button>
       </div>
       <div class="modal-body">
         <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem;line-height:1.6;">
-          AI繝｡繝九Η繝ｼ逕滓・縺ｫ縺ｯGoogle Gemini縺ｮAPI繧ｭ繝ｼ縺悟ｿ・ｦ√□・・br>
+          AIメニュー生成にはGoogle GeminiのAPIキーが必要だ！<br>
           <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--blue);font-weight:700;">Google
-            AI Studio</a> 縺ｧ辟｡譁吝叙蠕励〒縺阪ｋ縺橸ｼ・
+            AI Studio</a> で無料取得できるぞ！
         </p>
         <div class="form-group">
-          <label class="form-label">API繧ｭ繝ｼ</label>
+          <label class="form-label">APIキー</label>
           <input type="password" id="apikey-input" class="input-muscle" placeholder="AIzaSy..."
             style="text-align:left;">
         </div>
         <p style="font-size:0.7rem;color:var(--text-muted);line-height:1.5;">
-          繧ｭ繝ｼ縺ｯ縺薙・繝・ヰ繧､繧ｹ縺ｮLocalStorage縺ｫ縺ｮ縺ｿ菫晏ｭ倥＆繧後∪縺吶・br>繧ｵ繝ｼ繝舌・繧・ｬｬ荳芽・↓縺ｯ荳蛻・∽ｿ｡縺輔ｌ縺ｾ縺帙ｓ縲・
+          キーはこのデバイスのLocalStorageにのみ保存されます。<br>サーバーや第三者には一切送信されません。
         </p>
       </div>
       <div class="modal-footer">
         <button id="btn-save-apikey-modal" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">菫晏ｭ倥＠縺ｦ遲玖ｉ縺ｨ縺ｮ</span><span class="text-keep">蟇ｾ隧ｱ繧貞ｧ九ａ繧具ｼ・/span></span>
+          <span class="btn-text"><span class="text-keep">保存して筋肉との</span><span class="text-keep">対話を始める！</span></span>
           <span class="btn-effect"></span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 遞ｮ逶ｮ繝槭せ繧ｿ荳隕ｧ繝｢繝ｼ繝繝ｫ ========== -->
+  <!-- ========== 種目マスタ一覧モーダル ========== -->
   <div id="modal-exercise-master" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content" style="max-height:85vh; display:flex; flex-direction:column; padding-bottom:1rem;">
       <div class="modal-header">
-        <h2><span class="text-keep">遞ｮ逶ｮ繝槭せ繧ｿ邂｡逅・/span></h2>
-        <button class="modal-close" data-modal="modal-exercise-master">笨・/button>
+        <h2><span class="text-keep">種目マスタ管理</span></h2>
+        <button class="modal-close" data-modal="modal-exercise-master">✕</button>
       </div>
       <div class="modal-body" style="flex:1; overflow-y:auto; padding:0.5rem;" id="exercise-master-list">
-        <!-- JS縺ｧ荳隕ｧ繧呈緒逕ｻ -->
+        <!-- JSで一覧を描画 -->
       </div>
       <div class="modal-footer" style="display:flex; gap:0.5rem; flex-direction:column; padding-top:1rem; border-top:2px dashed var(--bg-input);">
         <button id="btn-add-exercise-master" class="btn-primary btn-mega">
-          <span class="btn-text"><span class="text-keep">・・譁ｰ隕冗ｨｮ逶ｮ繧・/span><span class="text-keep">霑ｽ蜉縺吶ｋ</span></span>
+          <span class="btn-text"><span class="text-keep">＋ 新規種目を</span><span class="text-keep">追加する</span></span>
         </button>
         <button id="btn-reset-exercise-master" class="btn-secondary" style="font-size:0.8rem;">
-          繝・ヵ繧ｩ繝ｫ繝医Μ繧ｹ繝医↓謌ｻ縺・
+          デフォルトリストに戻す
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 遞ｮ逶ｮ繧ｨ繝・ぅ繧ｿ繝ｼ繝｢繝ｼ繝繝ｫ ========== -->
+  <!-- ========== 種目エディターモーダル ========== -->
   <div id="modal-exercise-edit" class="modal hidden" style="z-index: 10001;">
     <div class="modal-overlay"></div>
     <div class="modal-content" style="max-height:85vh; overflow-y:auto;">
       <div class="modal-header" style="position:sticky; top:0; background:white; z-index:2;">
-        <h2><span class="text-keep" id="exercise-edit-title">譁ｰ縺励＞遞ｮ逶ｮ</span></h2>
-        <button class="modal-close" data-modal="modal-exercise-edit">笨・/button>
+        <h2><span class="text-keep" id="exercise-edit-title">新しい種目</span></h2>
+        <button class="modal-close" data-modal="modal-exercise-edit">✕</button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="edit-master-id">
         <div class="form-group">
-          <label class="form-label">識 遞ｮ逶ｮ蜷・/label>
-          <input type="text" id="edit-master-name" class="input-muscle" placeholder="萓・ yuzuhiko豬∬・遲・ style="text-align:left;">
+          <label class="form-label">🎯 種目名</label>
+          <input type="text" id="edit-master-name" class="input-muscle" placeholder="例: yuzuhiko流腹筋" style="text-align:left;">
         </div>
         <div class="form-group">
-          <label class="form-label">潮 繝｡繧､繝ｳ驛ｨ菴・(Primary)</label>
-          <input type="text" id="edit-master-primary" class="input-muscle" placeholder="萓・ 螟ｧ閭ｸ遲・ 蠎・レ遲・ style="text-align:left;" list="datalist-primary">
+          <label class="form-label">💪 メイン部位 (Primary)</label>
+          <input type="text" id="edit-master-primary" class="input-muscle" placeholder="例: 大胸筋, 広背筋" style="text-align:left;" list="datalist-primary">
           <datalist id="datalist-primary">
-            <option value="螟ｧ閭ｸ遲・>
-            <option value="蠎・レ遲・>
-            <option value="螟ｧ閻ｿ蝗幃ｭ遲・>
-            <option value="繝上Β繧ｹ繝医Μ繝ｳ繧ｰ繧ｹ">
-            <option value="螟ｧ閾遲・>
-            <option value="荳芽ｧ堤ｭ句燕驛ｨ">
-            <option value="荳願・莠碁ｭ遲・>
-            <option value="荳願・荳蛾ｭ遲・>
-            <option value="荳玖・荳蛾ｭ遲・>
-            <option value="閻ｹ逶ｴ遲・>
+            <option value="大胸筋">
+            <option value="広背筋">
+            <option value="大腿四頭筋">
+            <option value="ハムストリングス">
+            <option value="大臀筋">
+            <option value="三角筋前部">
+            <option value="上腕二頭筋">
+            <option value="上腕三頭筋">
+            <option value="下腿三頭筋">
+            <option value="腹直筋">
           </datalist>
         </div>
         <div class="form-group">
-          <label class="form-label">､・繧ｵ繝夜Κ菴・(繧ｫ繝ｳ繝槫玄蛻・ｊ縺ｧ隍・焚蜿ｯ)</label>
-          <input type="text" id="edit-master-secondary" class="input-muscle" placeholder="萓・ 閧ｩ蜑埼Κ, 荳願・荳蛾ｭ遲・ style="text-align:left;">
+          <label class="form-label">🤝 サブ部位 (カンマ区切りで複数可)</label>
+          <input type="text" id="edit-master-secondary" class="input-muscle" placeholder="例: 肩前部, 上腕三頭筋" style="text-align:left;">
         </div>
         <div class="form-group">
-          <label class="form-label">屏・・菴ｿ逕ｨ蝎ｨ蜈ｷ</label>
-          <input type="text" id="edit-master-equipment" class="input-muscle" placeholder="萓・ 繝繝ｳ繝吶Ν, 繝槭す繝ｳ, 閾ｪ驥・ style="text-align:left;">
+          <label class="form-label">🛠️ 使用器具</label>
+          <input type="text" id="edit-master-equipment" class="input-muscle" placeholder="例: ダンベル, マシン, 自重" style="text-align:left;">
         </div>
         <div style="display:flex; gap:1rem; margin-bottom:1rem;">
           <div class="form-group" style="flex:1;">
-            <label class="form-label">識 逶ｮ讓咎㍾驥・kg)</label>
-            <input type="number" id="edit-master-target-weight" class="input-muscle" step="0.5" placeholder="萓・ 100">
+            <label class="form-label">🎯 目標重量(kg)</label>
+            <input type="number" id="edit-master-target-weight" class="input-muscle" step="0.5" placeholder="例: 100">
           </div>
           <div class="form-group" style="flex:1;">
-            <label class="form-label">套 逶ｮ讓呎悄髯・/label>
+            <label class="form-label">📅 目標期限</label>
             <input type="date" id="edit-master-target-deadline" class="input-muscle">
           </div>
         </div>
         <div style="display:flex; gap:1rem; margin-bottom:1rem;">
           <div class="form-group" style="flex:1;">
-            <label class="form-label">笞厄ｸ・驥埼㍼蛻ｻ縺ｿ蟷・kg)</label>
-            <input type="number" id="edit-master-step" class="input-muscle" step="0.5" placeholder="萓・ 2.5">
-            <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">閾ｪ驥阪ｄ譛蛾・邏縺ｯ 0</p>
+            <label class="form-label">⚖️ 重量刻み幅(kg)</label>
+            <input type="number" id="edit-master-step" class="input-muscle" step="0.5" placeholder="例: 2.5">
+            <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">自重や有酸素は 0</p>
           </div>
           <div class="form-group" style="flex:1;">
-            <label class="form-label">悼 譛菴朱㍾驥・kg)</label>
-            <input type="number" id="edit-master-base-weight" class="input-muscle" step="0.1" placeholder="萓・ 11.6 (遨ｺ谺・↑繧・)">
-            <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">繝槭す繝ｳ縺ｮ蛻晄悄驥埼㍼縺ｪ縺ｩ</p>
+            <label class="form-label">📉 最低重量(kg)</label>
+            <input type="number" id="edit-master-base-weight" class="input-muscle" step="0.1" placeholder="例: 11.6 (空欄なら0)">
+            <p style="font-size:0.65rem; color:var(--text-muted); margin-top:0.2rem;">マシンの初期重量など</p>
           </div>
         </div>
         <div class="form-group">
           <label class="check-card" style="width:100%;">
             <input type="checkbox" id="edit-master-cardio">
-            <span class="check-text" style="font-size:0.8rem;">純 譛蛾・邏驕句虚 (驥埼㍼繝ｻ譛菴朱㍾驥上・辟｡隕悶＆繧後∪縺・</span>
+            <span class="check-text" style="font-size:0.8rem;">🏃 有酸素運動 (重量・最低重量は無視されます)</span>
           </label>
         </div>
       </div>
       <div class="modal-footer" style="position:sticky; bottom:0; background:white; z-index:2;">
         <button id="btn-save-exercise-master" class="btn-primary">
-          <span class="btn-text">菫晏ｭ倥☆繧・/span>
+          <span class="btn-text">保存する</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ========== 繝ｫ繝ｼ繝ｫ邱ｨ髮・・逕ｻ髱｢繝｢繝ｼ繝繝ｫ ========== -->
+  <!-- ========== ルール編集全画面モーダル ========== -->
   <div id="modal-rule-edit" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content" style="max-width:95vw; width:95vw; height:90vh; display:flex; flex-direction:column;">
       <div class="modal-header">
-        <h2><span class="text-keep">繝槭ャ繧ｹ繝ｫ繝ｻ繝ｫ繝ｼ繝ｫ繧堤ｷｨ髮・/span></h2>
-        <button class="modal-close" data-modal="modal-rule-edit">笨・/button>
+        <h2><span class="text-keep">マッスル・ルールを編集</span></h2>
+        <button class="modal-close" data-modal="modal-rule-edit">✕</button>
       </div>
       <div class="modal-body" style="flex:1; display:flex; flex-direction:column; padding:0.5rem;">
-        <textarea id="modal-rule-textarea" class="input-muscle" style="width:100%; flex:1; resize:none; padding:1rem; font-size:1rem; line-height:1.6; text-align:left; background:var(--bg-input);" placeholder="萓・ Push縺ｮ譌･縺ｯ譛蛻昴↓繝吶Φ繝√・繝ｬ繧ｹ繧偵ｄ繧翫◆縺・.."></textarea>
+        <textarea id="modal-rule-textarea" class="input-muscle" style="width:100%; flex:1; resize:none; padding:1rem; font-size:1rem; line-height:1.6; text-align:left; background:var(--bg-input);" placeholder="例: Pushの日は最初にベンチプレスをやりたい..."></textarea>
       </div>
       <div class="modal-footer" style="padding:1rem;">
         <button id="btn-save-rule-modal" class="btn-primary btn-mega">
-          <span class="btn-text">菫晏ｭ倥＠縺ｦ髢峨§繧具ｼ√ヱ繝ｯ繝ｼ・・/span>
+          <span class="btn-text">保存して閉じる！パワー！</span>
         </button>
       </div>
     </div>
   </div>
 
-    <!-- ========== 遞ｮ逶ｮ蛻･謌宣聞謗ｨ遘ｻ繝｢繝ｼ繝繝ｫ ========== -->
+    <!-- ========== 種目別成長推移モーダル ========== -->
   <div id="modal-exercise-chart" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content" style="max-width:800px; width:95vw; padding:1.5rem;">
       <div class="modal-header" style="margin-bottom:1rem; border-bottom:none; align-items:center;">
-        <div id="exercise-chart-title" style="font-family:var(--font-title); font-weight:900; color:var(--text-primary); white-space:nowrap; text-align:left; margin:0; line-height:1.2; flex:1; min-width:0;">謌宣聞謗ｨ遘ｻ</div>
-        <button class="modal-close" data-modal="modal-exercise-chart" style="flex-shrink:0;">笨・/button>
+        <div id="exercise-chart-title" style="font-family:var(--font-title); font-weight:900; color:var(--text-primary); white-space:nowrap; text-align:left; margin:0; line-height:1.2; flex:1; min-width:0;">成長推移</div>
+        <button class="modal-close" data-modal="modal-exercise-chart" style="flex-shrink:0;">✕</button>
       </div>
       <div class="modal-body">
         <div style="background:var(--bg-card); padding:0.5rem; border-radius:12px; border:1px solid var(--border-color); position:relative; width:100%; aspect-ratio:4/3; min-height:250px; max-height:400px;">
           <canvas id="exerciseProgressChart"></canvas>
         </div>
         <div id="exercise-chart-empty" style="display:none; text-align:center; padding:2rem; color:var(--text-secondary);">
-          縺薙・遞ｮ逶ｮ縺ｮ螻･豁ｴ繝・・繧ｿ縺後∪縺縺ｪ縺・◇・・br>縺薙ｌ縺九ｉ繝舌メ繝舌メ縺ｫ骰帙∴縺ｦ縺・％縺・ｼ√Ζ繝ｼ・・
+          この種目の履歴データがまだないぞ！<br>これからバチバチに鍛えていこう！ヤー！
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ========== 繝｡繝九Η繝ｼ莠句燕謠先｡医Δ繝ｼ繝繝ｫ ========== -->
+  <!-- ========== メニュー事前提案モーダル ========== -->
   <div id="modal-proposal" class="modal hidden">
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header" style="border-bottom:none;">
-        <h2><span class="text-keep" style="color:var(--red);">AI縺ｪ縺九ｄ縺ｾ縺阪ｓ縺ｫ蜷帙°繧峨・謠先｡・/span></h2>
-        <button class="modal-close" data-modal="modal-proposal">笨・/button>
+        <h2><span class="text-keep" style="color:var(--red);">AIなかやまきんに君からの提案</span></h2>
+        <button class="modal-close" data-modal="modal-proposal">✕</button>
       </div>
       <div class="modal-body" style="padding-top:0;">
         <div id="proposal-text" style="font-size:0.95rem; line-height:1.6; color:var(--text-primary); background:var(--bg-input); padding:1rem; border-radius:var(--radius-sm); border-left:4px solid var(--red); margin-bottom:1rem; font-family:var(--font-main); white-space:pre-wrap;">
-          <!-- 謠先｡医ユ繧ｭ繧ｹ繝医′縺薙％縺ｫ蜈･繧翫∪縺・-->
+          <!-- 提案テキストがここに入ります -->
         </div>
         <div class="form-group">
           <label class="form-label">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> 
-            謠先｡医↓霑ｽ蜉縺ｮ隕∵悍縺後≠繧後・蜈･蜉・
+            提案に追加の要望があれば入力
           </label>
-          <textarea id="proposal-feedback" class="textarea-muscle" rows="2" placeholder="繧ゅ≧蟆代＠霑ｽ縺・ｾｼ縺ｿ縺溘＞縲∬・遲九ｂ蜈･繧後※縺ｿ繧九°縺・ｼ・ｼ・></textarea>
+          <textarea id="proposal-feedback" class="textarea-muscle" rows="2" placeholder="もう少し追い込みたい、腹筋も入れてみるかい！？"></textarea>
         </div>
       </div>
       <div class="modal-footer" style="display:flex; flex-direction:column; gap:0.5rem;">
         <button id="btn-accept-proposal" class="btn-primary btn-mega">
-          <span class="btn-text">縺薙・謠先｡医〒繝｡繝九Η繝ｼ繧堤ｵ・・・・/span>
+          <span class="btn-text">この提案でメニューを組む！</span>
         </button>
         <button id="btn-reject-proposal" class="btn-secondary" style="font-size:0.9rem;">
-          隕∵悍繧定ｿｽ蜉縺励※閠・∴逶ｴ縺・
+          要望を追加して考え直す
         </button>
       </div>
     </div>
   </div>
     <div id="footer-info" style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.30 | Power!! 潮</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.34 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
-        遲玖ｉ繧呈怙譁ｰ縺ｫ譖ｴ譁ｰ縺吶ｋ・医く繝｣繝・す繝･繧ｯ繝ｪ繧｢・・
+        筋肉を最新に更新する（キャッシュクリア）
       </button>
     </div>
     <script>
