@@ -2750,10 +2750,13 @@ body {
   transition: fill 0.3s ease, opacity 0.3s ease;
   pointer-events: auto; /* パス部分はイベントを受け取る */
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* スマホのタップ時の四角い枠を消す */
 }
 
 .cold-map-svg path:hover,
-.cold-map-svg rect:hover {
+.cold-map-svg rect:hover,
+.cold-map-svg path:active,
+.cold-map-svg rect:active {
   opacity: 0.7;
   filter: brightness(1.2);
 }
