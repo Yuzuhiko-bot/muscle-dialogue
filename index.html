@@ -411,7 +411,7 @@
 
         <!-- 分析ダッシュボード -->
         <h3 class="section-title" style="margin-top:1rem; font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:0.5rem;">筋肉の成長分析</h3>
-        <p style="font-size:0.8rem; color:var(--text-light); margin-bottom:1rem;">※過去30日間のトレーニング記録をもとにグラフが表示されます。</p>
+        <p style="font-size:clamp(0.6rem, 3vw, 0.8rem); color:var(--text-light); margin-bottom:1rem; white-space:nowrap; letter-spacing:-0.5px; overflow:hidden; text-overflow:ellipsis;">※過去30日間のトレーニング記録をもとにグラフが表示されます。</p>
         <div class="chart-container" style="position: relative; height:200px; width:100%; margin-bottom: 1rem;">
           <canvas id="volumeChart"></canvas>
         </div>
@@ -921,7 +921,7 @@
     </div>
   </div>
     <div id="footer-info" style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.21 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.22 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
