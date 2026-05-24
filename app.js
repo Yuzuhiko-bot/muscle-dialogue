@@ -34,7 +34,7 @@ const EXERCISE_MASTER = [
   { id: "back_004", exercise_name: "ラットプルダウン（Vバー/ナロー）", primary_muscle: "広背筋", secondary_muscles: ["大円筋", "上腕二頭筋"], equipment: "ラットプル×プーリー", weight_step: 5 },
   { id: "back_008", exercise_name: "ラットプルダウン（ワイド）", primary_muscle: "広背筋", secondary_muscles: ["大円筋", "上腕二頭筋"], equipment: "ラットプル×プーリー", weight_step: 5 },
   { id: "back_005", exercise_name: "マシンシーテッドロウ", primary_muscle: "広背筋", secondary_muscles: ["僧帽筋", "上腕二頭筋"], equipment: "ラットプルシーテッドロウ", weight_step: 5 },
-  { id: "back_006", exercise_name: "懸垂（チンニング）", primary_muscle: "広背筋", secondary_muscles: ["大円筋", "上腕二頭筋"], equipment: "アシストチンニング×ディップス", weight_step: 5 },
+  { id: "back_006", exercise_name: "懸垂（チンニング）", primary_muscle: "広背筋", secondary_muscles: ["大円筋", "上腕二頭筋"], equipment: "アシストチンニング×ディップス", weight_step: 5, isAssist: true },
   { id: "back_007", exercise_name: "バックエクステンション", primary_muscle: "脊柱起立筋", secondary_muscles: ["大臀筋", "ハムストリングス"], equipment: "バックエクステンション", weight_step: 0 },
   { id: "legs_001", exercise_name: "バーベルスクワット", primary_muscle: "大腿四頭筋", secondary_muscles: ["大臀筋", "ハムストリングス"], equipment: "パワーラック", weight_step: 2.5 },
   { id: "legs_002", exercise_name: "スミススクワット", primary_muscle: "大腿四頭筋", secondary_muscles: ["大臀筋", "ハムストリングス"], equipment: "スミスマシン", weight_step: 2.5 },
@@ -56,7 +56,7 @@ const EXERCISE_MASTER = [
   { id: "arms_003", exercise_name: "マシンバイセプスカール", primary_muscle: "上腕二頭筋", secondary_muscles: [], equipment: "アームカール×トライセプス", weight_step: 5 },
   { id: "arms_004", exercise_name: "ケーブルプッシュダウン", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "ファンクショナルトレーナー", weight_step: 2.5 },
   { id: "arms_005", exercise_name: "マシントライセプスエクステンション", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "アームカール×トライセプス", weight_step: 5 },
-  { id: "arms_006", exercise_name: "ディップス", primary_muscle: "上腕三頭筋", secondary_muscles: ["大胸筋下部", "三角筋前部"], equipment: "アシストチンニング×ディップス", weight_step: 5 },
+  { id: "arms_006", exercise_name: "ディップス", primary_muscle: "上腕三頭筋", secondary_muscles: ["大胸筋下部", "三角筋前部"], equipment: "アシストチンニング×ディップス", weight_step: 5, isAssist: true },
   { id: "arms_007", exercise_name: "EZバーライイングトライセプスエクステンション", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "EZバー", weight_step: 2.5 },
   { id: "arms_008", exercise_name: "インクラインダンベルカール", primary_muscle: "上腕二頭筋", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 2.5 },
   { id: "abs_001", exercise_name: "アブドミナルクランチ", primary_muscle: "腹直筋", secondary_muscles: [], equipment: "アブドミナル", weight_step: 5 },
@@ -483,7 +483,10 @@ function renderCalendar() {
           dailyCardioMin += ex.duration;
         } else if (ex.sets) {
           dailySets += ex.sets.length;
-          ex.sets.forEach(s => { dailyVolume += ((s.weight || 0) * (s.reps || 0)); });
+          const isAssist = exerciseMaster.find(m => m.exercise_name === ex.exercise_name)?.isAssist;
+          ex.sets.forEach(s => { 
+            if (!isAssist) dailyVolume += ((s.weight || 0) * (s.reps || 0)); 
+          });
         }
       });
 
@@ -2243,6 +2246,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
     titleEl.style.fontSize = targetPx + 'px';
   }
   
+  const isAssist = exerciseMaster.find(m => m.id === exerciseId)?.isAssist || false;
   const dates = Object.keys(state.trainingHistory).sort();
   let labels = [];
   let maxWeights = [];
@@ -2250,7 +2254,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
   
   dates.forEach(date => {
     const session = state.trainingHistory[date];
-    let dayMaxWeight = 0;
+    let dayMaxWeight = isAssist ? Infinity : 0;
     let dayTotalVolume = 0;
     let found = false;
     
@@ -2260,17 +2264,22 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
         ex.sets.forEach(set => {
           const w = parseFloat(set.weight) || 0;
           const r = parseInt(set.reps) || 0;
-          if (w > dayMaxWeight) dayMaxWeight = w;
-          dayTotalVolume += (w * r);
+          if (isAssist) {
+            if (w > 0 && w < dayMaxWeight) dayMaxWeight = w;
+          } else {
+            if (w > dayMaxWeight) dayMaxWeight = w;
+          }
+          if (!isAssist) dayTotalVolume += (w * r);
         });
       }
     });
     
     if (found) {
+      if (isAssist && dayMaxWeight === Infinity) dayMaxWeight = 0;
       const dStr = date.split('-');
       labels.push(parseInt(dStr[1]) + '/' + parseInt(dStr[2]));
       maxWeights.push(dayMaxWeight);
-      totalVolumes.push(dayTotalVolume);
+      if (!isAssist) totalVolumes.push(dayTotalVolume);
     }
   });
   
@@ -2295,7 +2304,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
         labels: labels,
         datasets: [
           {
-            label: '最高重量 (kg)',
+            label: isAssist ? 'MINアシスト (kg)' : '最高重量 (kg)',
             data: maxWeights,
             borderColor: '#FF2D55',
             backgroundColor: 'rgba(255, 45, 85, 0.1)',
@@ -2303,8 +2312,8 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
             yAxisID: 'y',
             pointBackgroundColor: '#FF2D55',
             borderWidth: 3
-          },
-          {
+          }
+        ].concat(isAssist ? [] : [{
             label: '総ボリューム (kg)',
             data: totalVolumes,
             borderColor: '#007AFF',
@@ -2314,8 +2323,7 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
             pointBackgroundColor: '#007AFF',
             borderWidth: 2,
             borderDash: [5, 5]
-          }
-        ]
+        }])
       },
       options: {
         responsive: true,
@@ -2329,9 +2337,10 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
             type: 'linear',
             display: true,
             position: 'left',
-            title: { display: true, text: '最高重量 (kg)', font: { size: 10 } },
+            title: { display: true, text: isAssist ? 'MINアシスト (kg) [低いほど高負荷]' : '最高重量 (kg)', font: { size: 10 } },
             ticks: { stepSize: 5 },
-            beginAtZero: true
+            beginAtZero: !isAssist,
+            reverse: isAssist
           },
           y1: {
             type: 'linear',
@@ -2736,10 +2745,11 @@ function renderAnalysisCharts() {
       state.trainingHistory[dStr].exercises.forEach(ex => {
         // ボリューム計算
         if (ex.sets) {
+          const isAssist = exerciseMaster.find(m => m.exercise_name === ex.exercise_name)?.isAssist || false;
           ex.sets.forEach(set => {
             const w = parseFloat(set.weight) || 0;
             const r = parseInt(set.reps) || 0;
-            dailyVolume += (w * r);
+            if (!isAssist) dailyVolume += (w * r);
             
             // BIG3判定
             let big3Name = null;
