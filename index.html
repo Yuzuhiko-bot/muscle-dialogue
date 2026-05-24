@@ -363,9 +363,18 @@
             <div class="legend-item"><span class="legend-color" style="background:#9ca3af;"></span>痛み/除外</div>
           </div>
 
-          <div id="cold-map-container">
+          <div id="cold-map-container" class="cyber-container">
+            <div class="cyber-bracket-tl"></div>
+            <div class="cyber-bracket-br"></div>
+            
+            <!-- Background Silhouettes -->
+            <div class="silhouette-layer silhouette-pink"><img class="cold-map-base-img silhouette-target" src="images/hm_front.png"></div>
+            <div class="silhouette-layer silhouette-green"><img class="cold-map-base-img silhouette-target" src="images/hm_front.png"></div>
+            <div class="silhouette-layer silhouette-purple"><img class="cold-map-base-img silhouette-target" src="images/hm_front.png"></div>
+            <div class="silhouette-layer silhouette-yellow"><img class="cold-map-base-img silhouette-target" src="images/hm_front.png"></div>
+
             <!-- 背景画像 -->
-            <img id="cold-map-image" src="images/hm_front.png" alt="Body Map" onerror="this.alt='画像がありません'">
+            <img id="cold-map-image" class="cold-map-base-img" src="images/hm_front.png" alt="Body Map" onerror="this.alt='画像がありません'" style="position:relative; z-index:10;">
             <!-- フロント面 SVG -->
             <svg id="cold-map-overlay-front" class="cold-map-svg" viewBox="842 57 800 1067">
               <!-- 胸 -->
@@ -928,7 +937,7 @@
     </div>
   </div>
     <div id="footer-info" style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.28 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.29 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>

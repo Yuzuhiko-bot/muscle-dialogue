@@ -1852,16 +1852,14 @@ function initBodyDashboard() {
       btnBack.classList.remove('active'); btnBack.style.borderColor = ''; btnBack.style.color = ''; btnBack.style.background = '';
       $('#cold-map-overlay-front').classList.remove('hidden');
       $('#cold-map-overlay-back').classList.add('hidden');
-      const img = $('#cold-map-image');
-      if (img) img.src = 'images/hm_front.png';
+      document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_front.png');
     });
     btnBack.addEventListener('click', () => {
       btnBack.classList.add('active'); btnBack.style.borderColor = 'var(--red)'; btnBack.style.color = 'var(--red)'; btnBack.style.background = 'var(--red-light)';
       btnFront.classList.remove('active'); btnFront.style.borderColor = ''; btnFront.style.color = ''; btnFront.style.background = '';
       $('#cold-map-overlay-back').classList.remove('hidden');
       $('#cold-map-overlay-front').classList.add('hidden');
-      const img = $('#cold-map-image');
-      if (img) img.src = 'images/hm_back.png';
+      document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_back.png');
     });
   }
 
