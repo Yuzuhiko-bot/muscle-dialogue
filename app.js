@@ -1863,7 +1863,7 @@ function initBodyDashboard() {
       $('#cold-map-overlay-front').classList.add('hidden');
       document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_back.png');
       const container = $('#cold-map-container');
-      if (container) container.style.backgroundImage = ""; // バック用は後ほど
+      if (container) container.style.backgroundImage = "url('images/bg_gym_back.png')";
     });
   }
 
