@@ -1859,6 +1859,10 @@ function initBodyDashboard() {
         container.style.backgroundSize = "cover";
         container.style.backgroundPosition = "center";
       }
+      const charWrapper = $('#cold-map-character-wrapper');
+      if (charWrapper) {
+        charWrapper.style.transform = "scale(1) translateY(0)";
+      }
     });
     btnBack.addEventListener('click', () => {
       btnBack.classList.add('active'); btnBack.style.borderColor = 'var(--red)'; btnBack.style.color = 'var(--red)'; btnBack.style.background = 'var(--red-light)';
@@ -1869,8 +1873,12 @@ function initBodyDashboard() {
       const container = $('#cold-map-container');
       if (container) {
         container.style.backgroundImage = "url('images/bg_gym_back.png')";
-        container.style.backgroundSize = "180%";
-        container.style.backgroundPosition = "center 90%";
+        container.style.backgroundSize = "cover";
+        container.style.backgroundPosition = "center";
+      }
+      const charWrapper = $('#cold-map-character-wrapper');
+      if (charWrapper) {
+        charWrapper.style.transform = "scale(0.75) translateY(5%)";
       }
     });
   }
