@@ -876,11 +876,11 @@
     <div class="modal-overlay"></div>
     <div class="modal-content" style="max-width:800px; width:95vw; padding:1.5rem;">
       <div class="modal-header" style="margin-bottom:1rem; border-bottom:none; align-items:center;">
-        <h2 id="exercise-chart-title" style="white-space:nowrap; text-align:left; margin:0; line-height:1.2; flex:1; min-width:0;">成長推移</h2>
+        <div id="exercise-chart-title" style="font-family:var(--font-title); font-weight:900; color:var(--text-primary); white-space:nowrap; text-align:left; margin:0; line-height:1.2; flex:1; min-width:0;">成長推移</div>
         <button class="modal-close" data-modal="modal-exercise-chart" style="flex-shrink:0;">✕</button>
       </div>
       <div class="modal-body">
-        <div style="background:var(--bg-card); padding:0.5rem; border-radius:12px; border:1px solid var(--border-color); position:relative; width:100%; height:50vh; max-height:350px; min-height:250px;">
+        <div style="background:var(--bg-card); padding:0.5rem; border-radius:12px; border:1px solid var(--border-color); position:relative; width:100%; aspect-ratio:4/3; min-height:250px; max-height:400px;">
           <canvas id="exerciseProgressChart"></canvas>
         </div>
         <div id="exercise-chart-empty" style="display:none; text-align:center; padding:2rem; color:var(--text-secondary);">
@@ -921,7 +921,7 @@
     </div>
   </div>
     <div style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.15 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.16 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
