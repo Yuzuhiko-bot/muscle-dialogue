@@ -272,8 +272,8 @@
       </div>
       <div class="chat-input-area">
         <form id="chat-form" style="display:flex; gap:0.5rem;">
-          <input type="text" id="chat-input" class="input-muscle" placeholder="筋肉への思いを伝える..." style="flex:1; margin:0;" required>
-          <button type="submit" class="btn-primary" style="padding:0 1.2rem; min-width:60px;">
+          <textarea id="chat-input" class="input-muscle" placeholder="筋肉への思いを伝える..." style="flex:1; margin:0; resize:none; overflow-y:auto; min-height:45px; max-height:120px; line-height:1.5; padding:0.8rem;" rows="1" required></textarea>
+          <button type="submit" class="btn-primary" style="padding:0 1.2rem; min-width:60px; height:45px; align-self:flex-end;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           </button>
         </form>
@@ -921,7 +921,7 @@
     </div>
   </div>
     <div id="footer-info" style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.18 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.19 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>

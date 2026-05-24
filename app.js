@@ -1820,6 +1820,7 @@ function restoreBackup(e) {
 // ---------- UTILITIES ----------
 function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 
+let toastTimeoutId = null;
 function showToast(msg) {
   let t = $('#toast-notification');
   if (!t) { 
@@ -1828,10 +1829,14 @@ function showToast(msg) {
     t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(300px);background:#D4001F;color:white;padding:1rem 2rem;border-radius:12px;font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:0.9rem;z-index:9999;box-shadow:0 4px 16px rgba(212,0,31,0.3);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);width:max-content;max-width:90%;word-break:keep-all;text-align:center;'; 
     document.body.appendChild(t); 
   }
-  // ★ HTMLタグ（.text-keepなど）をそのまま解釈できるように innerHTML に変更
+  if (toastTimeoutId) clearTimeout(toastTimeoutId);
   t.innerHTML = msg; 
-  requestAnimationFrame(() => { t.style.transform = 'translateX(-50%) translateY(0)'; });
-  setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(300px)'; }, 3000);
+  requestAnimationFrame(() => { 
+    t.style.transform = 'translateX(-50%) translateY(0)'; 
+    toastTimeoutId = setTimeout(() => { 
+      if (t) t.style.transform = 'translateX(-50%) translateY(300px)'; 
+    }, 3000);
+  });
 }
 
 // ---------- CUSTOM CONFIRM MODAL ----------
@@ -2506,11 +2511,40 @@ function initChat() {
     });
   }
 
+  const chatInput = $('#chat-input');
+  
+  // Enter to submit, Shift+Enter for newline, ArrowUp for last message
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      $('#chat-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    } else if (e.key === 'ArrowUp') {
+      const input = e.target;
+      if (input.value === '' || input.selectionStart === 0) {
+        const lastUserMsg = state.chatHistory.slice().reverse().find(m => m.role === 'user');
+        if (lastUserMsg) {
+          input.value = lastUserMsg.text;
+          input.style.height = 'auto';
+          input.style.height = input.scrollHeight + 'px';
+          e.preventDefault();
+        }
+      }
+    }
+  });
+
+  // Auto-resize textarea
+  chatInput.addEventListener('input', () => {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = (chatInput.scrollHeight) + 'px';
+  });
+
   $('#chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('#chat-input');
     const msg = input.value.trim();
     if (!msg) return;
+    
+    input.style.height = 'auto'; // reset height after submit
     input.value = '';
     
     // Add user message to state
@@ -2619,16 +2653,45 @@ function renderChatMessages() {
     return;
   }
 
-  state.chatHistory.forEach(msg => {
+  state.chatHistory.forEach((msg, idx) => {
     const wrap = document.createElement('div');
     wrap.className = `chat-bubble-wrapper ${msg.role === 'user' ? 'user' : 'ai'}`;
     const name = msg.role === 'user' ? 'あなた' : 'AIなかやまきんに君';
     
+    let editBtnHtml = '';
+    if (msg.role === 'user') {
+      editBtnHtml = `<button class="btn-edit-msg" data-idx="${idx}" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.75rem; margin-right:0.5rem; text-decoration:underline; padding:0;">修正</button>`;
+    }
+    
+    const nameWrapStyle = msg.role === 'user' ? 'display:flex; justify-content:flex-end; align-items:baseline; flex-direction:row-reverse;' : 'display:flex; justify-content:flex-start; align-items:baseline;';
+    
     wrap.innerHTML = `
-      <div class="chat-sender-name">${name}</div>
-      <div class="chat-bubble">${msg.text.replace(/\\n/g, '\n')}</div>
+      <div class="chat-sender-name" style="${nameWrapStyle}">
+        <span style="margin-left:0.3rem; margin-right:0.3rem;">${name}</span>
+        ${editBtnHtml}
+      </div>
+      <div class="chat-bubble" style="white-space:pre-wrap; text-align:left;">${msg.text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
     `;
     container.appendChild(wrap);
+  });
+  
+  container.querySelectorAll('.btn-edit-msg').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      const targetMsg = state.chatHistory[idx];
+      if (targetMsg && targetMsg.role === 'user') {
+        const input = document.getElementById('chat-input');
+        input.value = targetMsg.text;
+        input.style.height = 'auto';
+        input.style.height = input.scrollHeight + 'px';
+        
+        state.chatHistory = state.chatHistory.slice(0, idx);
+        saveChatHistory();
+        renderChatMessages();
+        
+        input.focus();
+      }
+    });
   });
   
   container.scrollTop = container.scrollHeight;
