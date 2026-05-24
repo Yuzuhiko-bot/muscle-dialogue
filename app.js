@@ -1878,7 +1878,7 @@ function initBodyDashboard() {
       }
       const charWrapper = $('#cold-map-character-wrapper');
       if (charWrapper) {
-        charWrapper.style.transform = "scale(0.75) translateY(5%)";
+        charWrapper.style.transform = "scale(1) translateY(0)";
       }
     });
   }
