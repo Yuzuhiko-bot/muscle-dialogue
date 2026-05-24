@@ -2247,13 +2247,11 @@ function showExerciseProgressChart(exerciseId, exerciseName) {
   if(titleEl) {
     const fullTitle = exerciseName + ' の成長推移';
     titleEl.textContent = fullTitle;
-    if (fullTitle.length > 20) {
-      titleEl.style.fontSize = '0.8rem';
-    } else if (fullTitle.length > 15) {
-      titleEl.style.fontSize = '0.95rem';
-    } else {
-      titleEl.style.fontSize = '1.15rem';
-    }
+    const charCount = fullTitle.length;
+    let targetPx = (window.innerWidth - 100) / charCount;
+    if (targetPx > 18) targetPx = 18;
+    if (targetPx < 9) targetPx = 9;
+    titleEl.style.fontSize = targetPx + 'px';
   }
   
   const dates = Object.keys(state.trainingHistory).sort();
