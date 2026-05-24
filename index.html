@@ -509,24 +509,6 @@
         </button>
       </div>
 
-      <!-- Google Drive クラウド同期 -->
-      <div class="profile-section" style="margin-top:2rem;">
-        <h2 class="section-title">クラウド同期 (Google Drive)</h2>
-        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
-          ブラウザのキャッシュがクリアされても筋肉の記録を失わないように、Google Driveにデータをバックアップします。
-        </p>
-        <div style="display:flex; flex-direction:column; gap:0.5rem;">
-          <button id="btn-drive-backup" class="btn-primary" style="background:var(--card-bg); color:var(--text-primary); border:2px solid var(--red);">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            Google Drive へ保存する
-          </button>
-          <button id="btn-drive-restore" class="btn-secondary" style="border:2px solid #ccc; background:transparent;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Google Drive から復元する
-          </button>
-        </div>
-        <p id="drive-status-text" style="font-size:0.8rem; color:var(--red); text-align:center; margin-top:0.5rem; display:none;"></p>
-      </div>
 
       <div class="profile-section">
         <h2 class="section-title">トレーニング種目カスタム</h2>
@@ -565,6 +547,26 @@
 
 
       </div>
+
+<!-- Google Drive クラウド同期 -->
+      <div class="profile-section" style="margin-top:2rem;">
+        <h2 class="section-title">クラウド同期 (Google Drive)</h2>
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem; line-height:1.4;">
+          ブラウザのキャッシュがクリアされても筋肉の記録を失わないように、Google Driveにデータをバックアップします。
+        </p>
+        <div style="display:flex; flex-direction:column; gap:0.5rem;">
+          <button id="btn-drive-backup" class="btn-primary" style="background:var(--card-bg); color:var(--text-primary); border:2px solid var(--red);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Google Drive へ保存する
+          </button>
+          <button id="btn-drive-restore" class="btn-secondary" style="border:2px solid #ccc; background:transparent;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Google Drive から復元する
+          </button>
+        </div>
+        <p id="drive-status-text" style="font-size:0.8rem; color:var(--red); text-align:center; margin-top:0.5rem; display:none;"></p>
+      </div>
+
 
     </div>
   </div>
@@ -915,7 +917,7 @@
     </div>
   </div>
     <div id="footer-info" style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.23 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.24 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
