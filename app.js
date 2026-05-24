@@ -219,35 +219,13 @@ window.onerror = function(msg, url, line) {
 };
 
 function initColdMapToggle() {
+  localStorage.removeItem('hide-muscle-map'); // cleanup old state
   const btn = $('#btn-toggle-cold-map');
-  const wrap = $('#cold-map-visibility-wrapper');
-  const iconOn = $('#icon-eye-on');
-  const iconOff = $('#icon-eye-off');
-  const text = $('#text-toggle-cold-map');
-  if (!btn || !wrap) return;
-
-  const isHidden = localStorage.getItem('hide-muscle-map') === 'true';
-  const applyState = (hidden) => {
-    if (hidden) {
-      wrap.style.display = 'none';
-      if(iconOn) iconOn.style.display = 'none';
-      if(iconOff) iconOff.style.display = 'block';
-      if(text) text.textContent = 'マップを表示';
-    } else {
-      wrap.style.display = 'block';
-      if(iconOn) iconOn.style.display = 'block';
-      if(iconOff) iconOff.style.display = 'none';
-      if(text) text.textContent = 'マップを隠す';
-    }
-  };
-  
-  applyState(isHidden);
+  if (!btn) return;
   
   btn.addEventListener('click', () => {
-    const currentState = localStorage.getItem('hide-muscle-map') === 'true';
-    const newState = !currentState;
-    localStorage.setItem('hide-muscle-map', newState);
-    applyState(newState);
+    const section = btn.closest('.profile-section');
+    if (section) section.style.display = 'none';
   });
 }
 
