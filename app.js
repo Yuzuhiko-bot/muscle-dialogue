@@ -425,6 +425,10 @@ function initTabs() {
     $$('.tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     $(`#tab-${btn.dataset.tab}`).classList.add('active');
+    const footerInfo = document.getElementById('footer-info');
+    if (footerInfo) {
+      footerInfo.style.display = btn.dataset.tab === 'chat' ? 'none' : 'block';
+    }
     if (btn.dataset.tab === 'calendar') renderCalendar();
     if (btn.dataset.tab === 'profile') { 
       populateProfileForm(); 
