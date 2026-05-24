@@ -1853,6 +1853,8 @@ function initBodyDashboard() {
       $('#cold-map-overlay-front').classList.remove('hidden');
       $('#cold-map-overlay-back').classList.add('hidden');
       document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_front.png');
+      const container = $('#cold-map-container');
+      if (container) container.style.backgroundImage = "url('images/bg_gym_front.png')";
     });
     btnBack.addEventListener('click', () => {
       btnBack.classList.add('active'); btnBack.style.borderColor = 'var(--red)'; btnBack.style.color = 'var(--red)'; btnBack.style.background = 'var(--red-light)';
@@ -1860,6 +1862,8 @@ function initBodyDashboard() {
       $('#cold-map-overlay-back').classList.remove('hidden');
       $('#cold-map-overlay-front').classList.add('hidden');
       document.querySelectorAll('.cold-map-base-img').forEach(img => img.src = 'images/hm_back.png');
+      const container = $('#cold-map-container');
+      if (container) container.style.backgroundImage = ""; // バック用は後ほど
     });
   }
 
