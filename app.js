@@ -218,10 +218,43 @@ window.onerror = function(msg, url, line) {
   if (typeof showToast === 'function') showToast(err);
 };
 
+function initColdMapToggle() {
+  const btn = $('#btn-toggle-cold-map');
+  const wrap = $('#cold-map-visibility-wrapper');
+  const iconOn = $('#icon-eye-on');
+  const iconOff = $('#icon-eye-off');
+  const text = $('#text-toggle-cold-map');
+  if (!btn || !wrap) return;
+
+  const isHidden = localStorage.getItem('hide-muscle-map') === 'true';
+  const applyState = (hidden) => {
+    if (hidden) {
+      wrap.style.display = 'none';
+      if(iconOn) iconOn.style.display = 'none';
+      if(iconOff) iconOff.style.display = 'block';
+      if(text) text.textContent = 'マップを表示';
+    } else {
+      wrap.style.display = 'block';
+      if(iconOn) iconOn.style.display = 'block';
+      if(iconOff) iconOff.style.display = 'none';
+      if(text) text.textContent = 'マップを隠す';
+    }
+  };
+  
+  applyState(isHidden);
+  
+  btn.addEventListener('click', () => {
+    const currentState = localStorage.getItem('hide-muscle-map') === 'true';
+    const newState = !currentState;
+    localStorage.setItem('hide-muscle-map', newState);
+    applyState(newState);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   console.log("%c💪 Muscle Dialogue v1.14.0 - Nakayama Kinnikun AI Trainer!!", "color:#FF2D55; font-weight:bold; font-size:1.2rem;");
   loadState();
-  initBodyDashboard(); // 優先的に初期化
+  initBodyDashboard(); initColdMapToggle(); // 優先的に初期化
   initSplash(); initOnboarding(); initTabs(); initCalendar(); initTraining(); initChat(); initModals(); initProfile(); initBackup(); initApiKey(); initExerciseMaster();
   if ('serviceWorker' in navigator) {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

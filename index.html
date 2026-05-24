@@ -347,6 +347,14 @@
             <button id="btn-coldmap-back" class="btn-secondary btn-small">バック</button>
           </div>
           
+          <div style="display:flex; justify-content:flex-end; margin-bottom:0.5rem; margin-top:-1rem;">
+            <button id="btn-toggle-cold-map" style="background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.75rem; display:flex; align-items:center; gap:4px; padding:0.3rem 0.5rem; border-radius:4px; transition:background 0.2s;">
+              <svg id="icon-eye-off" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+              <svg id="icon-eye-on" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <span id="text-toggle-cold-map">マップを隠す</span>
+            </button>
+          </div>
+          <div id="cold-map-visibility-wrapper">
           <!-- 凡例（イラストの上側に移動） -->
           <div id="cold-map-legend" class="cold-map-legend">
             <div class="legend-item"><span class="legend-color" style="background:#ff4d4d;"></span>直近/回復中</div>
@@ -386,6 +394,7 @@
               <path id="cmap-shoulders-back-l" transform="translate(-6,-54)" d="M 417.741 369.414 C 385.907 377.233 370.728 358.251 338.839 371.144 C 328.573 373.52 319.228 424.155 313.923 452.122 C 340.837 448.541 356.792 440.573 374.483 430.666 C 404.119 411.497 427.271 396.062 439.196 376.681 C 438.158 373.105 437.458 370.132 436.082 365.953 Z" fill="gray" />
               <path id="cmap-shoulders-back-r" transform="translate(-6,-54)" d="M 525.901 337.688 C 537.4037 350.4087 544.844 364.489 560.409 375.85 C 577.038 382.02 589.628 375.327 602.631 384.376 C 608.594 388.873 621.822 403.536 611.157 433.093 C 606.226 443.175 599.648 457.097 589.234 468.007 C 587.3393 450.55 592.457 435.373 583.55 415.636 C 571.345 399.114 556.352 391.924 541.328 372.196 C 534.168 361.02 531.314 349.4613 526.307 338.094 Z" fill="gray" />
             </svg>
+          </div>
           </div>
 
         <h3 class="section-title" style="font-size:1.1rem; border-bottom: 2px solid var(--red); display:inline-block; margin-bottom:1rem;">体重推移</h3>
@@ -917,7 +926,7 @@
     </div>
   </div>
     <div id="footer-info" style="text-align:center; padding:1rem; opacity:0.6; font-size:0.75rem; color:var(--text-secondary);">
-      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.24 | Power!! 💪</div>
+      <div style="margin-bottom:0.5rem;">Muscle Dialogue v1.20.25 | Power!! 💪</div>
       <button onclick="clearMuscleCache()" style="background:none; border:1px solid var(--text-secondary); color:var(--text-secondary); padding:0.3rem 0.6rem; border-radius:4px; font-size:0.7rem; cursor:pointer;">
         筋肉を最新に更新する（キャッシュクリア）
       </button>
