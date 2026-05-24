@@ -1755,8 +1755,6 @@ function initApiKey() {
 
 // ---------- BACKUP & RESTORE ----------
 function initBackup() {
-  $('#btn-backup').addEventListener('click', downloadBackup);
-  $('#file-restore').addEventListener('change', restoreBackup);
   
   const btnDriveBackup = $('#btn-drive-backup');
   if (btnDriveBackup) btnDriveBackup.addEventListener('click', () => {
@@ -1769,53 +1767,6 @@ function initBackup() {
   });
 }
 
-function downloadBackup() {
-  // 体重記録(bodyRecord)も含めた全データをバックアップ
-  const data = { 
-    version: 1, 
-    exportDate: new Date().toISOString(), 
-    profile: state.userProfile, 
-    history: state.trainingHistory,
-    body: state.bodyRecord,
-    customExercises: state.customExercises,
-    chatHistory: state.chatHistory,
-    userRules: state.userRules
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); 
-  a.href = url; 
-  a.download = `muscle_dialogue_backup.json`; // ★ファイル名を固定化
-  document.body.appendChild(a); 
-  a.click(); 
-  document.body.removeChild(a); 
-  URL.revokeObjectURL(url);
-  showToast('バックアップ完了！最新のデータを保存したぞ！💪');
-}
-
-function restoreBackup(e) {
-  const file = e.target.files[0]; if (!file) return;
-  // confirm replaced by inline proceed
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if (data.profile) state.userProfile = data.profile;
-      if (data.history) state.trainingHistory = data.history;
-      if (data.body) state.bodyRecord = data.body;
-      if (data.chatHistory) state.chatHistory = data.chatHistory;
-      if (data.userRules) state.userRules = data.userRules;
-      if (data.customExercises !== undefined) {
-        state.customExercises = data.customExercises;
-        saveCustomExercises();
-      }
-      saveProfile(); saveHistory(); saveBodyRecord(); saveChatHistory(); saveUserRules();
-      renderCalendar(); renderChatMessages(); populateProfileForm();
-      showToast('<span class="text-keep">復元完了！筋肉のデータが</span><span class="text-keep">蘇ったぞ！ヤー！！💪</span>');
-    } catch (err) { showToast('ファイルが読み込めなかったぞ！😤'); }
-  };
-  reader.readAsText(file); e.target.value = '';
-}
 
 // ---------- UTILITIES ----------
 function formatDate(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
