@@ -565,11 +565,32 @@ function openEditExercise(date, idx) {
   if (isC) {
     html += `<div class="form-group"><label class="form-label">実施時間（分）</label><input type="number" class="input-muscle" id="edit-duration" value="${ex.duration || 0}" min="1"></div>`;
   } else {
+    html += `<div id="edit-sets-container">`;
     ex.sets.forEach((s, i) => {
       html += `<div class="manual-set-row"><span class="set-label">Set${i + 1}</span><input type="number" class="input-muscle edit-weight" value="${s.weight}" step="0.5" placeholder="kg"><input type="number" class="input-muscle edit-reps" value="${s.reps}" placeholder="回"><input type="number" class="input-muscle edit-rpe manual-rpe" value="${s.rpe || ''}" placeholder="RPE" min="1" max="10"></div>`;
     });
+    html += `</div>`;
+    if (ex.sets.length < 10) {
+       html += `<button type="button" class="btn-add-edit-set btn-secondary" style="margin-top: 0.5rem; font-size: 0.8rem; padding: 0.2rem 0.5rem; width: 100%;">+ セット追加</button>`;
+    }
   }
   body.innerHTML = html;
+
+  const btnAddEditSet = body.querySelector('.btn-add-edit-set');
+  if (btnAddEditSet) {
+    btnAddEditSet.addEventListener('click', () => {
+       const setsContainer = body.querySelector('#edit-sets-container');
+       const currentSets = setsContainer.querySelectorAll('.manual-set-row').length;
+       if (currentSets >= 10) return;
+       const s = currentSets;
+       const row = document.createElement('div');
+       row.className = 'manual-set-row';
+       row.innerHTML = `<span class="set-label">Set${s + 1}</span><input type="number" class="input-muscle edit-weight" value="" step="0.5" placeholder="kg"><input type="number" class="input-muscle edit-reps" value="" placeholder="回"><input type="number" class="input-muscle edit-rpe manual-rpe" value="" placeholder="RPE" min="1" max="10">`;
+       setsContainer.appendChild(row);
+       if (s + 1 >= 10) btnAddEditSet.style.display = 'none';
+    });
+  }
+
   $('#btn-save-edit').onclick = () => {
     if (isC) { ex.duration = parseInt($('#edit-duration').value) || 0; }
     else {
@@ -1334,6 +1355,7 @@ function renderPlan(plan) {
         inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}"></div>`;
       }
       inputsHtml += `</div>
+      <button type="button" class="btn-add-plan-set btn-secondary" style="margin-top: 0.5rem; font-size: 0.8rem; padding: 0.2rem 0.5rem; width: 100%; display: ${(ex.sets || 3) >= 10 ? 'none' : 'block'};" data-ex="${idx}">+ セット追加</button>
       <div class="rpe-section" style="background:transparent; border:none; padding:0; margin-top:1.5rem;">
         <div class="rpe-label" style="font-size:0.95rem; line-height:1.4;"><span class="text-keep">（筋肉に問いかけながら）</span><br><span class="text-keep">どうなんだい！？オレの筋肉！</span><span class="text-keep">まだいけるのかい！？</span></div>
         <div class="rpe-slider-wrapper">
@@ -1373,6 +1395,28 @@ function renderPlan(plan) {
     list.appendChild(div);
     setTimeout(() => {
       div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
+
+      const btnAddPlanSet = div.querySelector('.btn-add-plan-set');
+      if (btnAddPlanSet) {
+        btnAddPlanSet.addEventListener('click', () => {
+          const setsContainer = div.querySelector('.sets-container');
+          const currentSets = setsContainer.querySelectorAll('.set-row').length - 1; // header row is there
+          if (currentSets >= 10) return;
+          const s = currentSets;
+          const row = document.createElement('div');
+          row.className = 'set-row';
+          row.innerHTML = `<div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}">`;
+          setsContainer.appendChild(row);
+          
+          const newCb = row.querySelector('.set-check');
+          if (newCb) newCb.addEventListener('change', checkAllSetsCompleted);
+          
+          if (state.currentPlan && state.currentPlan.exercises && state.currentPlan.exercises[idx]) {
+             state.currentPlan.exercises[idx].sets = s + 1;
+          }
+          if (s + 1 >= 10) btnAddPlanSet.style.display = 'none';
+        });
+      }
 
       // 追加：Set1の入力値をSet2以降に自動同期（手動で変更した欄は上書きしない）
       if (!isCar) {
@@ -1576,7 +1620,20 @@ function addManualExerciseEntry() {
       const master = getAvailableExercises().find(m => m.id === exId);
       const step = master ? master.weight_step : 2.5;
       const minW = master ? (master.base_weight || 0) : 0;
-      inputsArea.innerHTML = `${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}" min="${minW}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10"></div>`).join('')}`;
+      inputsArea.innerHTML = `<div class="manual-sets-container">${[1, 2, 3].map(i => `<div class="manual-set-row"><span class="set-label">Set${i}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}" min="${minW}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10"></div>`).join('')}</div><button type="button" class="btn-add-manual-set btn-secondary" style="margin-top: 0.5rem; font-size: 0.8rem; padding: 0.2rem 0.5rem; width: 100%;">+ セット追加</button>`;
+      
+      const btnAddSet = inputsArea.querySelector('.btn-add-manual-set');
+      const setsContainer = inputsArea.querySelector('.manual-sets-container');
+      btnAddSet.addEventListener('click', () => {
+        const currentSets = setsContainer.querySelectorAll('.manual-set-row').length;
+        if (currentSets >= 10) return;
+        const newSet = currentSets + 1;
+        const row = document.createElement('div');
+        row.className = 'manual-set-row';
+        row.innerHTML = `<span class="set-label">Set${newSet}</span><input type="number" class="input-muscle manual-weight" placeholder="kg" step="${step}" min="${minW}"><input type="number" class="input-muscle manual-reps" placeholder="回"><input type="number" class="input-muscle manual-rpe" placeholder="RPE" min="1" max="10">`;
+        setsContainer.appendChild(row);
+        if (newSet >= 10) btnAddSet.style.display = 'none';
+      });
       
       // セット1の内容をセット2, 3へ自動反映するロジック
       const weights = inputsArea.querySelectorAll('.manual-weight');
