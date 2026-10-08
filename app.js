@@ -67,7 +67,16 @@ const EXERCISE_MASTER = [
   { id: "cardio_001", exercise_name: "有酸素運動（バイク）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "アップライトバイク", weight_step: 0, is_cardio: true },
   { id: "cardio_002", exercise_name: "有酸素運動（ランニング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "ランニングマシン", weight_step: 0, is_cardio: true },
   { id: "cardio_003", exercise_name: "有酸素運動（クロストレーナー）", primary_muscle: "心肺機能", secondary_muscles: ["全身"], equipment: "クロストレーナー", weight_step: 0, is_cardio: true },
-  { id: "cardio_004", exercise_name: "有酸素運動（ウォーキング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "自重・屋外", weight_step: 0, is_cardio: true }
+  { id: "cardio_004", exercise_name: "有酸素運動（ウォーキング）", primary_muscle: "心肺機能", secondary_muscles: ["下半身全体"], equipment: "自重・屋外", weight_step: 0, is_cardio: true },
+  { id: "chest_009", exercise_name: "デクライン・ダンベルプレス", primary_muscle: "大胸筋下部", secondary_muscles: ["三角筋前部", "上腕三頭筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "chest_010", exercise_name: "インクライン・ダンベルフライ", primary_muscle: "大胸筋上部", secondary_muscles: ["三角筋前部"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "back_010", exercise_name: "インクライン・ダンベルローイング", primary_muscle: "広背筋", secondary_muscles: ["僧帽筋", "上腕二頭筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "legs_010", exercise_name: "ダンベル・ルーマニアンデッドリフト", primary_muscle: "ハムストリングス", secondary_muscles: ["大臀筋", "脊柱起立筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "legs_011", exercise_name: "ダンベル・ゴブレットスクワット", primary_muscle: "大腿四頭筋", secondary_muscles: ["大臀筋"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "legs_012", exercise_name: "ダンベル・ランジ", primary_muscle: "大腿四頭筋", secondary_muscles: ["大臀筋", "ハムストリングス"], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "shoulders_007", exercise_name: "インクライン・サイドレイズ", primary_muscle: "三角筋中部", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 1 },
+  { id: "shoulders_008", exercise_name: "インクライン・リアレイズ", primary_muscle: "三角筋後部", secondary_muscles: ["僧帽筋"], equipment: "ラバーダンベル", weight_step: 1 },
+  { id: "arms_009", exercise_name: "ダンベル・フレンチプレス", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 2.5 }
 ];
 
 // ---------- MUSCLE CATEGORY MAPPING (For Rotation Logic) ----------
