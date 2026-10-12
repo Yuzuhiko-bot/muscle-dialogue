@@ -1356,23 +1356,42 @@ function renderPlan(plan) {
     const masterEx = EXERCISE_MASTER.find(m => m.id === ex.exercise_id);
     const isCar = ex._isCardio || isCardio(ex.exercise_id);
 
+    // ★重要: ユーザー入力状態の永続化配列 (user_sets) の初期化・復元
+    if (!isCar) {
+      if (!ex.user_sets || !Array.isArray(ex.user_sets) || ex.user_sets.length === 0) {
+        const count = ex.sets || 3;
+        ex.user_sets = [];
+        for (let s = 0; s < count; s++) {
+          ex.user_sets.push({
+            weight: ex.weight_kg !== undefined ? ex.weight_kg : '',
+            reps: ex.reps !== undefined ? ex.reps : '',
+            checked: false
+          });
+        }
+      }
+    } else {
+      if (ex.user_duration === undefined) ex.user_duration = ex.duration_minutes || 20;
+      if (ex.user_checked === undefined) ex.user_checked = false;
+    }
+    if (ex.user_rpe === undefined) ex.user_rpe = 7;
+
     let inputsHtml = '';
     if (isCar) {
-      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.duration_minutes || 20}" min="1" data-ex="${idx}"><span class="cardio-duration-label" style="margin-right:auto;">分</span><input type="checkbox" class="set-check" data-ex="${idx}"></div>`;
+      inputsHtml = `<div class="cardio-duration-row"><span class="cardio-duration-label">⏱️ 実施時間:</span><input type="number" class="input-muscle input-cardio-dur" value="${ex.user_duration}" min="1" data-ex="${idx}"><span class="cardio-duration-label" style="margin-right:auto;">分</span><input type="checkbox" class="set-check" data-ex="${idx}" ${ex.user_checked ? 'checked' : ''}></div>`;
     } else {
       inputsHtml = `<div class="sets-container"><div class="set-row"><div class="set-label"></div><div class="input-header">重量(kg)</div><div class="input-header">回数</div><div class="input-header">✓</div></div>`;
-      for (let s = 0; s < (ex.sets || 3); s++) {
-        inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}"></div>`;
-      }
+      ex.user_sets.forEach((st, s) => {
+        inputsHtml += `<div class="set-row"><div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${st.weight !== '' ? st.weight : ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${st.reps !== '' ? st.reps : ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}" ${st.checked ? 'checked' : ''}></div>`;
+      });
       inputsHtml += `</div>
-      <button type="button" class="btn-add-plan-set btn-secondary" style="margin-top: 0.5rem; font-size: 0.8rem; padding: 0.2rem 0.5rem; width: 100%; display: ${(ex.sets || 3) >= 10 ? 'none' : 'block'};" data-ex="${idx}">+ セット追加</button>
+      <button type="button" class="btn-add-plan-set btn-secondary" style="margin-top: 0.5rem; font-size: 0.8rem; padding: 0.2rem 0.5rem; width: 100%; display: ${ex.user_sets.length >= 10 ? 'none' : 'block'};" data-ex="${idx}">+ セット追加</button>
       <div class="rpe-section" style="background:transparent; border:none; padding:0; margin-top:1.5rem;">
         <div class="rpe-label" style="font-size:0.95rem; line-height:1.4;"><span class="text-keep">（筋肉に問いかけながら）</span><br><span class="text-keep">どうなんだい！？オレの筋肉！</span><span class="text-keep">まだいけるのかい！？</span></div>
         <div class="rpe-slider-wrapper">
           <div class="rpe-track-bg">
             <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
           </div>
-          <input type="range" class="rpe-slider" min="1" max="10" value="7" data-ex="${idx}">
+          <input type="range" class="rpe-slider" min="1" max="10" value="${ex.user_rpe}" data-ex="${idx}">
         </div>
       </div>`;
     }
@@ -1404,32 +1423,79 @@ function renderPlan(plan) {
     div.innerHTML = `<div class="exercise-header"><div class="exercise-number">${idx + 1}</div><div class="exercise-name exercise-name-link" data-exid="${ex.exercise_id}">${ex.exercise_name}</div><span class="exercise-muscle-tag">${ex.primary_muscle || (masterEx ? masterEx.primary_muscle : '')}</span></div>${metaInfoHtml}${ex.note ? `<div class="exercise-note">${nl2br(ex.note)}</div>` : ''}${!isCar ? `<div class="exercise-recommendation">推奨: ${ex.weight_kg || '?'}kg × ${ex.reps || '?'}回 × ${ex.sets || '?'}セット 休憩:${ex.rest_seconds || 90}秒</div>` : ''}${inputsHtml}`;
     list.appendChild(div);
     setTimeout(() => {
-      div.querySelectorAll('.set-check').forEach(cb => cb.addEventListener('change', checkAllSetsCompleted));
+      // 状態変更時の即時ローカルストレージ保存関数
+      const persist = () => {
+        saveCurrentPlan();
+        checkAllSetsCompleted();
+      };
 
-      const btnAddPlanSet = div.querySelector('.btn-add-plan-set');
-      if (btnAddPlanSet) {
-        btnAddPlanSet.addEventListener('click', () => {
-          const setsContainer = div.querySelector('.sets-container');
-          const currentSets = setsContainer.querySelectorAll('.set-row').length - 1; // header row is there
-          if (currentSets >= 10) return;
-          const s = currentSets;
-          const row = document.createElement('div');
-          row.className = 'set-row';
-          row.innerHTML = `<div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${ex.weight_kg || ''}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${ex.reps || ''}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}">`;
-          setsContainer.appendChild(row);
-          
-          const newCb = row.querySelector('.set-check');
-          if (newCb) newCb.addEventListener('change', checkAllSetsCompleted);
-          
-          if (state.currentPlan && state.currentPlan.exercises && state.currentPlan.exercises[idx]) {
-             state.currentPlan.exercises[idx].sets = s + 1;
+      if (isCar) {
+        const durIn = div.querySelector('.input-cardio-dur');
+        const cb = div.querySelector('.set-check');
+        if (durIn) durIn.addEventListener('input', (e) => { ex.user_duration = e.target.value; persist(); });
+        if (cb) cb.addEventListener('change', (e) => { ex.user_checked = e.target.checked; persist(); });
+      } else {
+        const rsl = div.querySelector('.rpe-slider');
+        if (rsl) rsl.addEventListener('input', (e) => { ex.user_rpe = parseInt(e.target.value); persist(); });
+
+        const attachSetListeners = (row, s) => {
+          const wIn = row.querySelector('.input-weight');
+          const rIn = row.querySelector('.input-reps');
+          const cb = row.querySelector('.set-check');
+
+          if (wIn) {
+            wIn.addEventListener('input', (e) => {
+              if (ex.user_sets && ex.user_sets[s]) ex.user_sets[s].weight = e.target.value;
+              persist();
+            });
           }
-          if (s + 1 >= 10) btnAddPlanSet.style.display = 'none';
-        });
-      }
+          if (rIn) {
+            rIn.addEventListener('input', (e) => {
+              if (ex.user_sets && ex.user_sets[s]) ex.user_sets[s].reps = e.target.value;
+              persist();
+            });
+          }
+          if (cb) {
+            cb.addEventListener('change', (e) => {
+              if (ex.user_sets && ex.user_sets[s]) ex.user_sets[s].checked = e.target.checked;
+              persist();
+            });
+          }
+        };
 
-      // 追加：Set1の入力値をSet2以降に自動同期（手動で変更した欄は上書きしない）
-      if (!isCar) {
+        const rows = div.querySelectorAll('.sets-container .set-row:not(:first-child)');
+        rows.forEach((row, s) => attachSetListeners(row, s));
+
+        const btnAddPlanSet = div.querySelector('.btn-add-plan-set');
+        if (btnAddPlanSet) {
+          btnAddPlanSet.addEventListener('click', () => {
+            const setsContainer = div.querySelector('.sets-container');
+            const currentSets = ex.user_sets.length;
+            if (currentSets >= 10) return;
+
+            // 直前のセットから重量・回数を引き継ぐ
+            const lastSet = ex.user_sets[currentSets - 1] || { weight: ex.weight_kg || '', reps: ex.reps || '' };
+            const newWeight = lastSet.weight;
+            const newReps = lastSet.reps;
+
+            const newSetObj = { weight: newWeight, reps: newReps, checked: false };
+            ex.user_sets.push(newSetObj);
+            ex.sets = ex.user_sets.length;
+
+            const s = currentSets;
+            const row = document.createElement('div');
+            row.className = 'set-row';
+            row.innerHTML = `<div class="set-label">Set${s + 1}</div><input type="number" class="input-muscle input-weight" value="${newWeight}" placeholder="kg" data-ex="${idx}" data-set="${s}" step="${masterEx ? masterEx.weight_step : 2.5}" min="${masterEx ? (masterEx.base_weight || 0) : 0}"><input type="number" class="input-muscle input-reps" value="${newReps}" placeholder="回" data-ex="${idx}" data-set="${s}"><input type="checkbox" class="set-check" data-ex="${idx}" data-set="${s}">`;
+            setsContainer.appendChild(row);
+
+            attachSetListeners(row, s);
+            persist();
+
+            if (ex.user_sets.length >= 10) btnAddPlanSet.style.display = 'none';
+          });
+        }
+
+        // Set1の入力値をSet2以降に自動同期（手動変更済みは上書きしない）
         const syncPlanSets = (selector) => {
           const inputs = div.querySelectorAll(selector);
           if (inputs.length < 2) return;
@@ -1448,8 +1514,13 @@ function renderPlan(plan) {
               for (let i = 1; i < inputs.length; i++) {
                 if (inputs[i].dataset.dirty !== 'true') {
                   inputs[i].value = val;
+                  if (ex.user_sets && ex.user_sets[i]) {
+                    if (selector.includes('weight')) ex.user_sets[i].weight = val;
+                    if (selector.includes('reps')) ex.user_sets[i].reps = val;
+                  }
                 }
               }
+              persist();
             });
           });
         };
@@ -1476,7 +1547,10 @@ function renderPlan(plan) {
   });
 }
 
-function checkAllSetsCompleted() { const a = $$('.set-check'), btn = $('#btn-complete'); btn.style.animation = [...a].every(c => c.checked) && a.length > 0 ? 'pulse 0.5s infinite alternate' : 'none'; }
+function checkAllSetsCompleted() { 
+  const a = $$('.set-check'), btn = $('#btn-complete'); 
+  if (btn) btn.style.animation = [...a].some(c => c.checked) && a.length > 0 ? 'pulse 0.5s infinite alternate' : 'none'; 
+}
 
 function completePlan() {
   if (!state.currentPlan) return;
@@ -1485,40 +1559,55 @@ function completePlan() {
   const completedExercises = [];
 
   allEx.forEach((ex, idx) => {
-    // この種目のチェックボックスをすべて取得し、一つでもチェックがあるか確認
-    const checkboxes = $$(`.set-check[data-ex="${idx}"]`);
-    const isChecked = [...checkboxes].some(cb => cb.checked);
+    const isCar = ex._isCardio || isCardio(ex.exercise_id);
+    const masterEx = getAvailableExercises().find(m => m.id === ex.exercise_id);
+    const snapshot = {
+      target_weight: masterEx ? masterEx.target_weight : null,
+      target_deadline: masterEx ? masterEx.target_deadline : null
+    };
 
-    if (isChecked) {
-      const isCar = ex._isCardio || isCardio(ex.exercise_id);
-      const masterEx = getAvailableExercises().find(m => m.id === ex.exercise_id);
-      const snapshot = {
-        target_weight: masterEx ? masterEx.target_weight : null,
-        target_deadline: masterEx ? masterEx.target_deadline : null
-      };
-
-      if (isCar) {
-        const durIn = $(`.input-cardio-dur[data-ex="${idx}"]`);
+    if (isCar) {
+      const durIn = $(`.input-cardio-dur[data-ex="${idx}"]`);
+      const cb = $(`.set-check[data-ex="${idx}"]`);
+      const isCarChecked = cb ? cb.checked : (ex.user_checked || false);
+      if (isCarChecked) {
         completedExercises.push({ 
           id: ex.exercise_id, 
           name: ex.exercise_name, 
-          duration: durIn ? parseInt(durIn.value) || 0 : ex.duration_minutes || 0, 
+          duration: durIn ? parseInt(durIn.value) || 0 : (ex.user_duration || ex.duration_minutes || 0), 
           sets: [], 
           rpe: null,
           ...snapshot
         });
-      } else {
-        const sets = []; 
-        $$(`.input-weight[data-ex="${idx}"]`).forEach((w, s) => { 
-          const ri = $(`.input-reps[data-ex="${idx}"][data-set="${s}"]`); 
-          sets.push({ weight: parseFloat(w.value) || 0, reps: parseInt(ri.value) || 0 }); 
-        });
+      }
+    } else {
+      // ★超重要: チェックボックスがONになっているセットのみを厳密に抽出
+      const sets = [];
+      const userSets = ex.user_sets || [];
+      userSets.forEach((st, s) => {
+        const wIn = $(`.input-weight[data-ex="${idx}"][data-set="${s}"]`);
+        const rIn = $(`.input-reps[data-ex="${idx}"][data-set="${s}"]`);
+        const cb = $(`.set-check[data-ex="${idx}"][data-set="${s}"]`);
+        
+        const isChecked = cb ? cb.checked : st.checked;
+        if (isChecked) {
+          const wVal = wIn ? parseFloat(wIn.value) : parseFloat(st.weight);
+          const rVal = rIn ? parseInt(rIn.value) : parseInt(st.reps);
+          sets.push({ 
+            weight: isNaN(wVal) ? 0 : wVal, 
+            reps: isNaN(rVal) ? 0 : rVal 
+          });
+        }
+      });
+
+      // 1セットでもチェックされたものがある場合のみ履歴に保存
+      if (sets.length > 0) {
         const rsl = $(`.rpe-slider[data-ex="${idx}"]`);
         completedExercises.push({ 
           id: ex.exercise_id, 
           name: ex.exercise_name, 
           sets, 
-          rpe: rsl ? parseInt(rsl.value) : null,
+          rpe: rsl ? parseInt(rsl.value) : (ex.user_rpe || 7),
           ...snapshot
         });
       }
