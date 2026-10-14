@@ -76,7 +76,9 @@ const EXERCISE_MASTER = [
   { id: "legs_012", exercise_name: "ダンベル・ランジ", primary_muscle: "大腿四頭筋", secondary_muscles: ["大臀筋", "ハムストリングス"], equipment: "ラバーダンベル", weight_step: 2.5 },
   { id: "shoulders_007", exercise_name: "インクライン・サイドレイズ", primary_muscle: "三角筋中部", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 1 },
   { id: "shoulders_008", exercise_name: "インクライン・リアレイズ", primary_muscle: "三角筋後部", secondary_muscles: ["僧帽筋"], equipment: "ラバーダンベル", weight_step: 1 },
-  { id: "arms_009", exercise_name: "ダンベル・フレンチプレス", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 2.5 }
+  { id: "arms_009", exercise_name: "ダンベル・フレンチプレス", primary_muscle: "上腕三頭筋", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 2.5 },
+  { id: "abs_005", exercise_name: "インクライン・リバースクランチ", primary_muscle: "腹直筋下部", secondary_muscles: ["腹直筋"], equipment: "アジャスタブルベンチ", weight_step: 0 },
+  { id: "abs_006", exercise_name: "ダンベル・クランチ", primary_muscle: "腹直筋", secondary_muscles: [], equipment: "ラバーダンベル", weight_step: 2.5 }
 ];
 
 // ---------- MUSCLE CATEGORY MAPPING (For Rotation Logic) ----------
